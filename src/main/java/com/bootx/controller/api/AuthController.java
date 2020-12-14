@@ -76,7 +76,7 @@ public class AuthController {
         Member member = new Member();
         member.init();
         member.setExtendCode(memberService.createExtendCode());
-        member.setUsername(enrollVo.getPhone());
+        member.setUsername("jlb_"+enrollVo.getPhone());
         member.setName(enrollVo.getName());
         member.setMobile(enrollVo.getPhone());
         member.setPhone(enrollVo.getPhone());
