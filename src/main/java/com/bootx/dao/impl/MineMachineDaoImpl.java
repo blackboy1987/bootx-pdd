@@ -1,13 +1,8 @@
 
 package com.bootx.dao.impl;
 
-import net.bdsc.dao.AdDao;
-import net.bdsc.dao.MineMachineDao;
-import net.bdsc.entity.Ad;
-import net.bdsc.entity.BitCoinAccount;
-import net.bdsc.entity.MemberRank;
-import net.bdsc.entity.MineMachine;
-import org.apache.commons.lang.StringUtils;
+import com.bootx.dao.MineMachineDao;
+import com.bootx.entity.MineMachine;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;

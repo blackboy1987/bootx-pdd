@@ -1,8 +1,8 @@
 
 package com.bootx.eth.common;
 
+import com.bootx.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonView;
-import net.bdsc.entity.BaseEntity;
 
 /**
  * 消息

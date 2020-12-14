@@ -1,12 +1,12 @@
 package com.bootx.eth.service.impl;
 
-import net.bdsc.eth.common.Result;
-import net.bdsc.eth.entity.CurrencyInfo;
-import net.bdsc.eth.entity.UserCurrencyInfoBean;
-import net.bdsc.eth.service.EthService;
-import net.bdsc.eth.util.ETHWallet;
-import net.bdsc.eth.util.ETHWalletUtils;
-import net.bdsc.eth.util.SignUtil;
+import com.bootx.eth.common.Result;
+import com.bootx.eth.entity.CurrencyInfo;
+import com.bootx.eth.entity.UserCurrencyInfoBean;
+import com.bootx.eth.service.EthService;
+import com.bootx.eth.util.ETHWallet;
+import com.bootx.eth.util.ETHWalletUtils;
+import com.bootx.eth.util.SignUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

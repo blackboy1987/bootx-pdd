@@ -1,6 +1,6 @@
 package com.bootx.eth.service;
 
-import net.bdsc.eth.common.Result;
+import com.bootx.eth.common.Result;
 
 import java.util.Map;
 

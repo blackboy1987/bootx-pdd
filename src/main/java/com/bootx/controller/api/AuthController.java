@@ -3,6 +3,7 @@ package com.bootx.controller.api;
 import com.bootx.common.Result;
 import com.bootx.entity.Member;
 import com.bootx.entity.MineMachine;
+import com.bootx.eth.service.EthAdminService;
 import com.bootx.security.UserAuthenticationToken;
 import com.bootx.service.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

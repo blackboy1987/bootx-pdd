@@ -1,7 +1,7 @@
 package com.bootx.eth.service.impl;
 
 import com.bootx.entity.Member;
-import com.bootx.service.EthAdminService;
+import com.bootx.eth.service.EthAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
