@@ -49,7 +49,18 @@ dependencies {
 
     compile group: 'org.apache.commons', name: 'commons-email', version: '1.5'
 
+    compile group: 'org.springframework.mobile', name: 'spring-mobile-device', version: '1.1.5.RELEASE'
+    compile group: 'com.alipay.sdk', name: 'alipay-sdk-java', version: '4.10.204.ALL'
 
+
+
+    compile 'org.web3j:geth:5.0.0'
+    compile 'org.web3j:parity:5.0.0'
+    compile 'org.web3j:utils:5.0.0'
+    compile 'org.web3j:core:5.0.0'
+    compile 'org.web3j:abi:5.0.0'
+    compile 'org.web3j:contracts:5.0.0'
+    compile 'org.bitcoinj:bitcoinj-core:0.15.8'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
