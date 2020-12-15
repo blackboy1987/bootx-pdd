@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: U7I16l1bR0iVulaFB44yszxoUvzo4zB6
- */
+
 package com.bootx.security;
 
 import java.lang.annotation.ElementType;

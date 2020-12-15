@@ -7,8 +7,6 @@ import com.bootx.eth.service.EthAdminService;
 import com.bootx.security.UserAuthenticationToken;
 import com.bootx.service.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,12 +37,8 @@ public class AuthController {
     private MineMachineOrderService mineMachineOrderService;
     @Autowired
     private EthAdminService ethAdminService;
-
-    /**
-     * CacheManager
-     */
-    private static final Ehcache cache = CacheManager.create().getCache("smsCode");
-
+    @Autowired
+    private CacheService cacheService;
 
     /**
      * 注册
@@ -57,16 +51,9 @@ public class AuthController {
         if(mobileExist){
             return Result.error("手机号存在，注册失败");
         }
-       try {
-           String code = cache.get(enrollVo.getPhone()).getObjectValue().toString();
-           if(!StringUtils.equalsIgnoreCase(code,enrollVo.getPhonecode())){
-               return Result.error("验证码校验失败，注册失败");
-           }else{
-               cache.remove(enrollVo.getPhone());
-           }
-       }catch (Exception e){
-           e.printStackTrace();
-       }
+        if(!cacheService.smsCodeCacheValidate(enrollVo.getPhone(),enrollVo.getPhonecode())){
+            return Result.error("验证码校验失败，注册失败");
+        }
         if(StringUtils.isNotBlank(enrollVo.getExtendCode())){
             Member parent = memberService.findByExtendCode(enrollVo.getExtendCode());
             if(parent==null){
@@ -119,15 +106,9 @@ public class AuthController {
         if(member==null){
             return Result.error("该手机号暂未注册！");
         }
-        try {
-            String code = cache.get(passVo.getPhone()).getObjectValue().toString();
-            if(!StringUtils.equalsIgnoreCase(code,passVo.getPhonecode())){
-                return Result.error("验证码校验失败");
-            }else{
-                cache.remove(passVo.getPhone());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+
+        if(!cacheService.smsCodeCacheValidate(passVo.getPhone(),passVo.getPhonecode())){
+            return Result.error("验证码校验失败");
         }
         member.setPassword(passVo.getPassword());
         memberService.update(member);

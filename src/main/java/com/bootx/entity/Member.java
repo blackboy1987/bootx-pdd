@@ -133,6 +133,18 @@ public class Member extends User {
 	private String encodedPassword;
 
 	/**
+	 * 资金密码
+	 */
+	@Length(min = 4, max = 20)
+	@Transient
+	private String password1;
+
+	/**
+	 * 加密资金密码
+	 */
+	private String encodedPassword1;
+
+	/**
 	 * E-mail
 	 */
 	@NotEmpty
@@ -362,6 +374,22 @@ public class Member extends User {
 	 */
 	public void setEncodedPassword(String encodedPassword) {
 		this.encodedPassword = encodedPassword;
+	}
+
+	public String getPassword1() {
+		return password1;
+	}
+
+	public void setPassword1(String password1) {
+		this.password1 = password1;
+	}
+
+	public String getEncodedPassword1() {
+		return encodedPassword1;
+	}
+
+	public void setEncodedPassword1(String encodedPassword1) {
+		this.encodedPassword1 = encodedPassword1;
 	}
 
 	/**
@@ -1098,6 +1126,10 @@ public class Member extends User {
 	@Transient
 	public boolean isValidCredentials(Object credentials) {
 		return credentials != null && StringUtils.equals(DigestUtils.md5Hex(credentials instanceof char[] ? String.valueOf((char[]) credentials) : String.valueOf(credentials)), getEncodedPassword());
+	}
+	@Transient
+	public boolean isValidCredentials1(Object credentials) {
+		return credentials != null && StringUtils.equals(DigestUtils.md5Hex(credentials instanceof char[] ? String.valueOf((char[]) credentials) : String.valueOf(credentials)), getEncodedPassword1());
 	}
 
 	/**

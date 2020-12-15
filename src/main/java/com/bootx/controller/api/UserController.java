@@ -4,7 +4,9 @@ import com.bootx.common.Result;
 import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.BitCoinAccountService;
+import com.bootx.service.CacheService;
 import com.bootx.service.MemberService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,8 @@ public class UserController {
     private BitCoinAccountService bitCoinAccountService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private CacheService cacheService;
 
     /**
      * data,{"type",200,"content","","date",{"totalEarnings","0.00","totalMoney","0.00","list",[{"id",1763110,"userId",218776,"assetType",1,"money",0,"frozenMoney",0,"state",true,"name","BTC","price","0.00"},{"id",1763111,"userId",218776,"assetType",2,"money",0,"frozenMoney",0,"state",true,"name","USDT","price","0.00"},{"id",1763112,"userId",218776,"assetType",3,"money",0,"frozenMoney",0,"state",true,"name","CNY","price","0.00"},{"id",1763113,"userId",218776,"assetType",4,"money",0,"frozenMoney",0,"state",true,"name","HBT","price","0.00"},{"id",1763114,"userId",218776,"assetType",5,"money",0,"frozenMoney",0,"state",true,"name","ETH","price","0.00"}]},"code",null,"message",null}
@@ -154,7 +158,7 @@ public class UserController {
             return Result.error("请先登录");
         }
 
-        return Result.success("");
+        return Result.success(null);
     }
 
     @PostMapping("/v2/order/rule")
@@ -172,4 +176,86 @@ public class UserController {
         // data:{"type":500,"content":"没有更多数据了","date":null,"code":null,"message":null}
         return Result.success("");
     }
+
+    /**
+     * 重置资金密码
+     * @param oldPass
+     * @param newPass
+     * @param sourPass
+     * @param request
+     * @param member
+     * @return
+     */
+    @PostMapping("/safe/recash")
+    public Result recash(String oldPass,String newPass,String sourPass,HttpServletRequest request,@CurrentUser Member member){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录信息已过期");
+        }
+        if(!member.isValidCredentials1(oldPass)){
+            return Result.error("原资金密码错误，请重新输入");
+        }
+        if(StringUtils.equalsIgnoreCase(newPass,sourPass)){
+            return Result.error("两次密码输入不一致");
+        }
+        member.setPassword1(sourPass);
+        memberService.update(member);
+        return Result.success("修改成功");
+    }
+
+    /**
+     * 忘记资金密码
+     * @param oldPass
+     * @param newPass
+     * @param sourPass
+     * @param request
+     * @param member
+     * @return
+     */
+    @PostMapping("/safe/forget_pass")
+    public Result forgetPass(String oldPass,String newPass,String sourPass,HttpServletRequest request,@CurrentUser Member member,String code){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录信息已过期");
+        }
+        if(StringUtils.isNotBlank(code)){
+            if(!cacheService.smsCodeCacheValidate(member.getMobile(),code)){
+                return Result.error("验证码校验失败");
+            }
+        }else{
+            if(!member.isValidCredentials1(oldPass)){
+                return Result.error("原资金密码错误，请重新输入");
+            }
+        }
+        if(StringUtils.equalsIgnoreCase(newPass,sourPass)){
+            return Result.error("两次密码输入不一致");
+        }
+        member.setPassword1(sourPass);
+        memberService.update(member);
+        return Result.success("修改成功");
+    }
+
+    @PostMapping("/safe/repass")
+    public Result repass(String oldPass,String newPass,String sourPass,HttpServletRequest request,@CurrentUser Member member){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录信息已过期");
+        }
+        if(!member.isValidCredentials1(oldPass)){
+            return Result.error("原登录密码错误，请重新输入");
+        }
+        if(StringUtils.equalsIgnoreCase(newPass,sourPass)){
+            return Result.error("两次密码输入不一致");
+        }
+        member.setPassword(sourPass);
+        memberService.update(member);
+        return Result.success("修改成功");
+    }
+
 }
