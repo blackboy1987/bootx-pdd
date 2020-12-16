@@ -1,6 +1,8 @@
 package com.bootx.entity;
 
 import javax.persistence.Entity;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 收益
@@ -12,79 +14,79 @@ public class Invest extends BaseEntity<Long>{
 
     private Long productId;
 
-    private Long productName;
+    private String productName;
 
-    private Long invest;
+    private BigDecimal invest;
 
-    private Long frozenInvest;
+    private BigDecimal frozenInvest;
 
-    private Long frozenInvestTemp;
+    private BigDecimal frozenInvestTemp;
 
-    private Long allBtc;
+    private BigDecimal allBtc;
 
-    private Long allHpt;
+    private BigDecimal allHpt;
 
-    private Long allEth;
+    private BigDecimal allEth;
 
-    private Long lastEth;
+    private BigDecimal lastEth;
 
-    private Long lastBtc;
+    private BigDecimal lastBtc;
 
-    private Long lastHpt;
+    private BigDecimal lastHpt;
 
-    private Long lastTime;
+    private Date lastTime;
 
-    private Long frozenTime;
+    private Date frozenTime;
 
-    private Long investTime;
+    private Date investTime;
 
-    private Long returnMoney;
+    private BigDecimal returnMoney;
 
-    private Long returnDays;
+    private Integer returnDays;
 
     private String userName;
 
     private String phone;
 
-    private Long isExpire;
+    private Boolean isExpire;
 
     private Long validity;
 
-    private Long allBtcPrice;
+    private BigDecimal allBtcPrice;
 
-    private Long allHptPrice;
+    private BigDecimal allHptPrice;
 
-    private Long lastBtcPrice;
+    private BigDecimal lastBtcPrice;
 
-    private Long lastHptPrice;
+    private BigDecimal lastHptPrice;
 
-    private Long allEthPrice;
+    private BigDecimal allEthPrice;
 
-    private Long lastEthPrice;
+    private BigDecimal lastEthPrice;
 
-    private Long type;
+    private Integer type;
 
-    private Long profit;
+    private BigDecimal profit;
 
     private Long profitYear;
 
-    private Long electric;
+    private BigDecimal electric;
 
-    private Long electricDiscount;
+    private BigDecimal electricDiscount;
 
-    private Long manage;
+    private BigDecimal manage;
 
-    private Long manageDiscount;
+    private BigDecimal manageDiscount;
 
-    private Long btcDiscount;
+    private BigDecimal btcDiscount;
 
-    private Long hbtDiscount;
+    private BigDecimal hbtDiscount;
 
-    private Long expireDate;
+    private Date expireDate;
 
-    private Long comeDate;
+    private Date comeDate;
 
-    private Long expirationDate;
+    private Date expirationDate;
 
     private Integer coinType;
 
@@ -104,123 +106,123 @@ public class Invest extends BaseEntity<Long>{
         this.productId = productId;
     }
 
-    public Long getProductName() {
+    public String getProductName() {
         return productName;
     }
 
-    public void setProductName(Long productName) {
+    public void setProductName(String productName) {
         this.productName = productName;
     }
 
-    public Long getInvest() {
+    public BigDecimal getInvest() {
         return invest;
     }
 
-    public void setInvest(Long invest) {
+    public void setInvest(BigDecimal invest) {
         this.invest = invest;
     }
 
-    public Long getFrozenInvest() {
+    public BigDecimal getFrozenInvest() {
         return frozenInvest;
     }
 
-    public void setFrozenInvest(Long frozenInvest) {
+    public void setFrozenInvest(BigDecimal frozenInvest) {
         this.frozenInvest = frozenInvest;
     }
 
-    public Long getFrozenInvestTemp() {
+    public BigDecimal getFrozenInvestTemp() {
         return frozenInvestTemp;
     }
 
-    public void setFrozenInvestTemp(Long frozenInvestTemp) {
+    public void setFrozenInvestTemp(BigDecimal frozenInvestTemp) {
         this.frozenInvestTemp = frozenInvestTemp;
     }
 
-    public Long getAllBtc() {
+    public BigDecimal getAllBtc() {
         return allBtc;
     }
 
-    public void setAllBtc(Long allBtc) {
+    public void setAllBtc(BigDecimal allBtc) {
         this.allBtc = allBtc;
     }
 
-    public Long getAllHpt() {
+    public BigDecimal getAllHpt() {
         return allHpt;
     }
 
-    public void setAllHpt(Long allHpt) {
+    public void setAllHpt(BigDecimal allHpt) {
         this.allHpt = allHpt;
     }
 
-    public Long getAllEth() {
+    public BigDecimal getAllEth() {
         return allEth;
     }
 
-    public void setAllEth(Long allEth) {
+    public void setAllEth(BigDecimal allEth) {
         this.allEth = allEth;
     }
 
-    public Long getLastEth() {
+    public BigDecimal getLastEth() {
         return lastEth;
     }
 
-    public void setLastEth(Long lastEth) {
+    public void setLastEth(BigDecimal lastEth) {
         this.lastEth = lastEth;
     }
 
-    public Long getLastBtc() {
+    public BigDecimal getLastBtc() {
         return lastBtc;
     }
 
-    public void setLastBtc(Long lastBtc) {
+    public void setLastBtc(BigDecimal lastBtc) {
         this.lastBtc = lastBtc;
     }
 
-    public Long getLastHpt() {
+    public BigDecimal getLastHpt() {
         return lastHpt;
     }
 
-    public void setLastHpt(Long lastHpt) {
+    public void setLastHpt(BigDecimal lastHpt) {
         this.lastHpt = lastHpt;
     }
 
-    public Long getLastTime() {
+    public Date getLastTime() {
         return lastTime;
     }
 
-    public void setLastTime(Long lastTime) {
+    public void setLastTime(Date lastTime) {
         this.lastTime = lastTime;
     }
 
-    public Long getFrozenTime() {
+    public Date getFrozenTime() {
         return frozenTime;
     }
 
-    public void setFrozenTime(Long frozenTime) {
+    public void setFrozenTime(Date frozenTime) {
         this.frozenTime = frozenTime;
     }
 
-    public Long getInvestTime() {
+    public Date getInvestTime() {
         return investTime;
     }
 
-    public void setInvestTime(Long investTime) {
+    public void setInvestTime(Date investTime) {
         this.investTime = investTime;
     }
 
-    public Long getReturnMoney() {
+    public BigDecimal getReturnMoney() {
         return returnMoney;
     }
 
-    public void setReturnMoney(Long returnMoney) {
+    public void setReturnMoney(BigDecimal returnMoney) {
         this.returnMoney = returnMoney;
     }
 
-    public Long getReturnDays() {
+    public Integer getReturnDays() {
         return returnDays;
     }
 
-    public void setReturnDays(Long returnDays) {
+    public void setReturnDays(Integer returnDays) {
         this.returnDays = returnDays;
     }
 
@@ -240,11 +242,11 @@ public class Invest extends BaseEntity<Long>{
         this.phone = phone;
     }
 
-    public Long getIsExpire() {
+    public Boolean getIsExpire() {
         return isExpire;
     }
 
-    public void setIsExpire(Long isExpire) {
+    public void setIsExpire(Boolean isExpire) {
         this.isExpire = isExpire;
     }
 
@@ -256,67 +258,67 @@ public class Invest extends BaseEntity<Long>{
         this.validity = validity;
     }
 
-    public Long getAllBtcPrice() {
+    public BigDecimal getAllBtcPrice() {
         return allBtcPrice;
     }
 
-    public void setAllBtcPrice(Long allBtcPrice) {
+    public void setAllBtcPrice(BigDecimal allBtcPrice) {
         this.allBtcPrice = allBtcPrice;
     }
 
-    public Long getAllHptPrice() {
+    public BigDecimal getAllHptPrice() {
         return allHptPrice;
     }
 
-    public void setAllHptPrice(Long allHptPrice) {
+    public void setAllHptPrice(BigDecimal allHptPrice) {
         this.allHptPrice = allHptPrice;
     }
 
-    public Long getLastBtcPrice() {
+    public BigDecimal getLastBtcPrice() {
         return lastBtcPrice;
     }
 
-    public void setLastBtcPrice(Long lastBtcPrice) {
+    public void setLastBtcPrice(BigDecimal lastBtcPrice) {
         this.lastBtcPrice = lastBtcPrice;
     }
 
-    public Long getLastHptPrice() {
+    public BigDecimal getLastHptPrice() {
         return lastHptPrice;
     }
 
-    public void setLastHptPrice(Long lastHptPrice) {
+    public void setLastHptPrice(BigDecimal lastHptPrice) {
         this.lastHptPrice = lastHptPrice;
     }
 
-    public Long getAllEthPrice() {
+    public BigDecimal getAllEthPrice() {
         return allEthPrice;
     }
 
-    public void setAllEthPrice(Long allEthPrice) {
+    public void setAllEthPrice(BigDecimal allEthPrice) {
         this.allEthPrice = allEthPrice;
     }
 
-    public Long getLastEthPrice() {
+    public BigDecimal getLastEthPrice() {
         return lastEthPrice;
     }
 
-    public void setLastEthPrice(Long lastEthPrice) {
+    public void setLastEthPrice(BigDecimal lastEthPrice) {
         this.lastEthPrice = lastEthPrice;
     }
 
-    public Long getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(Long type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
-    public Long getProfit() {
+    public BigDecimal getProfit() {
         return profit;
     }
 
-    public void setProfit(Long profit) {
+    public void setProfit(BigDecimal profit) {
         this.profit = profit;
     }
 
@@ -328,75 +330,75 @@ public class Invest extends BaseEntity<Long>{
         this.profitYear = profitYear;
     }
 
-    public Long getElectric() {
+    public BigDecimal getElectric() {
         return electric;
     }
 
-    public void setElectric(Long electric) {
+    public void setElectric(BigDecimal electric) {
         this.electric = electric;
     }
 
-    public Long getElectricDiscount() {
+    public BigDecimal getElectricDiscount() {
         return electricDiscount;
     }
 
-    public void setElectricDiscount(Long electricDiscount) {
+    public void setElectricDiscount(BigDecimal electricDiscount) {
         this.electricDiscount = electricDiscount;
     }
 
-    public Long getManage() {
+    public BigDecimal getManage() {
         return manage;
     }
 
-    public void setManage(Long manage) {
+    public void setManage(BigDecimal manage) {
         this.manage = manage;
     }
 
-    public Long getManageDiscount() {
+    public BigDecimal getManageDiscount() {
         return manageDiscount;
     }
 
-    public void setManageDiscount(Long manageDiscount) {
+    public void setManageDiscount(BigDecimal manageDiscount) {
         this.manageDiscount = manageDiscount;
     }
 
-    public Long getBtcDiscount() {
+    public BigDecimal getBtcDiscount() {
         return btcDiscount;
     }
 
-    public void setBtcDiscount(Long btcDiscount) {
+    public void setBtcDiscount(BigDecimal btcDiscount) {
         this.btcDiscount = btcDiscount;
     }
 
-    public Long getHbtDiscount() {
+    public BigDecimal getHbtDiscount() {
         return hbtDiscount;
     }
 
-    public void setHbtDiscount(Long hbtDiscount) {
+    public void setHbtDiscount(BigDecimal hbtDiscount) {
         this.hbtDiscount = hbtDiscount;
     }
 
-    public Long getExpireDate() {
+    public Date getExpireDate() {
         return expireDate;
     }
 
-    public void setExpireDate(Long expireDate) {
+    public void setExpireDate(Date expireDate) {
         this.expireDate = expireDate;
     }
 
-    public Long getComeDate() {
+    public Date getComeDate() {
         return comeDate;
     }
 
-    public void setComeDate(Long comeDate) {
+    public void setComeDate(Date comeDate) {
         this.comeDate = comeDate;
     }
 
-    public Long getExpirationDate() {
+    public Date getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Long expirationDate) {
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 

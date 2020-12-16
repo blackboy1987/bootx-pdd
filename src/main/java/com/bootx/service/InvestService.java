@@ -8,6 +8,7 @@ package com.bootx.service;
 
 import com.bootx.entity.Invest;
 import com.bootx.entity.Member;
+import com.bootx.entity.MineMachine;
 
 import java.util.List;
 
@@ -21,5 +22,5 @@ public interface InvestService extends BaseService<Invest, Long> {
 
     List<Invest> findListByCoinType(Member member, Integer coinType);
 
-    void create(Member member);
+    void create(Member member, MineMachine mineMachine,Integer coinType);
 }
