@@ -41,6 +41,9 @@ public class Member extends User {
 	public static final Set<String> PERMISSIONS = Collections.singleton("member");
 
 	public void init() {
+		setBankArea(null);
+		setBankCard(null);
+		setBankName(null);
 		setUsername(username);
 		setPassword(password);
 		setEmail(email);
@@ -52,12 +55,16 @@ public class Member extends User {
 		setIsEnabled(true);
 		setIsLocked(false);
 		setLockDate(null);
-
+		setIsAuth(false);
+		setName(null);
+		setCard(null);
 		setLastLoginDate(new Date());
 		setSafeKey(null);
 		setMemberDepositLogs(null);
 		setSocialUsers(null);
 		setPointLogs(null);
+		setParent(null);
+		setChildren(new HashSet<>());
 		
 	}
 
@@ -190,6 +197,10 @@ public class Member extends User {
 	 */
 	@Length(max = 200)
 	private String name;
+	/**
+	 * 身份证号
+	 */
+	private String card;
 
 	/**
 	 * 性别
@@ -315,6 +326,31 @@ public class Member extends User {
 	private String extendCode;
 
 	private String accountId;
+
+	@NotNull
+	private Boolean isAuth;
+
+	/**
+	 * 银行支行名
+	 */
+	private String bankArea;
+
+	/**
+	 * 所属银行
+	 */
+	private String bankName;
+
+	/**
+	 * 银行卡号
+	 */
+	private String bankCard;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Member parent;
+
+	@OneToMany(mappedBy = "parent",fetch = FetchType.LAZY)
+	private Set<Member> children = new HashSet<>();
+
 
 	/**
 	 * 获取用户名
@@ -523,6 +559,14 @@ public class Member extends User {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getCard() {
+		return card;
+	}
+
+	public void setCard(String card) {
+		this.card = card;
 	}
 
 	/**
@@ -919,6 +963,55 @@ public class Member extends User {
 
 	public void setAccountId(String accountId) {
 		this.accountId = accountId;
+	}
+
+	public Boolean getIsAuth() {
+		return isAuth;
+	}
+
+	public void setIsAuth(Boolean isAuth) {
+		this.isAuth = isAuth;
+	}
+
+	public String getBankArea() {
+		return bankArea;
+	}
+
+	public void setBankArea(String bankArea) {
+		this.bankArea = bankArea;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getBankCard() {
+		return bankCard;
+	}
+
+	public void setBankCard(String bankCard) {
+		this.bankCard = bankCard;
+	}
+
+
+	public Member getParent() {
+		return parent;
+	}
+
+	public void setParent(Member parent) {
+		this.parent = parent;
+	}
+
+	public Set<Member> getChildren() {
+		return children;
+	}
+
+	public void setChildren(Set<Member> children) {
+		this.children = children;
 	}
 
 	/**

@@ -27,9 +27,7 @@ import org.springframework.util.Assert;
 import javax.persistence.LockModeType;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 
@@ -327,4 +325,11 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		return extendCode;
     }
 
+	@Override
+	public List<Map<String, Object>> findListTeam(Member member) {
+		if(member==null){
+			return Collections.emptyList();
+		}
+		return jdbcTemplate.queryForList("select id,username userName,isAuth,createdDate createDate,(select count(id) from users as child  where child.parent_id= users.id and dtype='Member') child from users as users where parent_id=? and dtype='Member'",member.getId());
+	}
 }

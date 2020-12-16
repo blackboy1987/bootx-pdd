@@ -1,11 +1,11 @@
 package com.bootx.controller.api;
 
 import com.bootx.common.Result;
+import com.bootx.entity.BaseEntity;
 import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
-import com.bootx.service.BitCoinAccountService;
-import com.bootx.service.CacheService;
-import com.bootx.service.MemberService;
+import com.bootx.service.*;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +26,10 @@ public class UserController {
     private MemberService memberService;
     @Autowired
     private CacheService cacheService;
+    @Autowired
+    private ArticleService articleService;
+
+    private InvestService investService;
 
     /**
      * data,{"type",200,"content","","date",{"totalEarnings","0.00","totalMoney","0.00","list",[{"id",1763110,"userId",218776,"assetType",1,"money",0,"frozenMoney",0,"state",true,"name","BTC","price","0.00"},{"id",1763111,"userId",218776,"assetType",2,"money",0,"frozenMoney",0,"state",true,"name","USDT","price","0.00"},{"id",1763112,"userId",218776,"assetType",3,"money",0,"frozenMoney",0,"state",true,"name","CNY","price","0.00"},{"id",1763113,"userId",218776,"assetType",4,"money",0,"frozenMoney",0,"state",true,"name","HBT","price","0.00"},{"id",1763114,"userId",218776,"assetType",5,"money",0,"frozenMoney",0,"state",true,"name","ETH","price","0.00"}]},"code",null,"message",null}
@@ -96,7 +100,7 @@ public class UserController {
         return Result.success(data);
     }
 
-    @PostMapping("/profit/list")
+    @PostMapping("/profit/list2")
     public Result profitIndex(@CurrentUser Member member,Integer coinType, HttpServletRequest request){
         if(member==null){
             member = memberService.getCurrent(request);
@@ -148,7 +152,12 @@ public class UserController {
     }
 
 
-
+    /**
+     * 检查用户是否实名认证
+     * @param member
+     * @param request
+     * @return
+     */
     @PostMapping("/v2/auth/info")
     public Result authInfo(@CurrentUser Member member,HttpServletRequest request){
         if(member==null){
@@ -157,7 +166,9 @@ public class UserController {
         if(member==null){
             return Result.error("请先登录");
         }
-
+        if(member.getIsAuth()){
+            return Result.success("ok");
+        }
         return Result.success(null);
     }
 
@@ -256,6 +267,82 @@ public class UserController {
         member.setPassword(sourPass);
         memberService.update(member);
         return Result.success("修改成功");
+    }
+
+    @PostMapping("/receipt/receipt")
+    public Result receipt(HttpServletRequest request,@CurrentUser Member member){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录信息已过期");
+        }
+        Map<String,Object> data = new HashMap<>();
+        data.put("area",member.getBankArea());
+        data.put("bankCard",member.getBankCard());
+        data.put("theirBank",member.getBankName());
+        return Result.success(data);
+    }
+    @PostMapping("/receipt/create")
+    public Result receiptCreate(HttpServletRequest request,@CurrentUser Member member,String bankCard,String theirBank,String area){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录信息已过期");
+        }
+        member.setBankArea(area);
+        member.setBankName(theirBank);
+        member.setBankCard(bankCard);
+        memberService.update(member);
+        return Result.success("");
+    }
+    @PostMapping("/v2/new/detail")
+    @JsonView(BaseEntity.ViewView.class)
+    public Result newsDetail(HttpServletRequest request, @CurrentUser Member member, Integer type){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录信息已过期");
+        }
+        return Result.success(articleService.findLastest());
+    }
+    @PostMapping("/relation/list")
+    public Result relationList(HttpServletRequest request, @CurrentUser Member member){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录信息已过期");
+        }
+        return Result.success(memberService.findListTeam(member));
+    }
+
+    /**
+     * 收益列表
+     * @param request
+     * @param member
+     * @return
+     */
+    @PostMapping("/profit/list")
+    public Result profitList(HttpServletRequest request, @CurrentUser Member member,Integer coinType){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录信息已过期");
+        }
+        Map<String,Object> data = new HashMap<>();
+        data.put("allHpt",123.86);
+        data.put("allHptPrice",82.11);
+        data.put("allEth",0);
+        data.put("allBtcPrice",45.18);
+        data.put("allBtc",0.0003512);
+        data.put("allEthPrice",0);
+        data.put("list", investService.findListByCoinType(member,coinType));
+
+        return Result.success(data);
     }
 
 }

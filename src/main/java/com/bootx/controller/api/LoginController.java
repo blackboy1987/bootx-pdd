@@ -45,6 +45,7 @@ public class LoginController {
         }
         Map<String,Object> data = new HashMap<>();
         data.put("id",member.getId());
+        data.put("name",member.getName());
         data.put("userName",member.getUsername());
         data.put("code",member.getId()+"");
         data.put("addPass",true);

@@ -54,14 +54,17 @@ public class AuthController {
         if(!cacheService.smsCodeCacheValidate(enrollVo.getPhone(),enrollVo.getPhonecode())){
             return Result.error("验证码校验失败，注册失败");
         }
+        Member member = new Member();
+        member.init();
         if(StringUtils.isNotBlank(enrollVo.getExtendCode())){
             Member parent = memberService.findByExtendCode(enrollVo.getExtendCode());
             if(parent==null){
                 return Result.error("邀请码不存在，注册失败");
+            }else{
+                member.setParent(parent);
             }
         }
-        Member member = new Member();
-        member.init();
+
         member.setExtendCode(memberService.createExtendCode());
         member.setUsername("jlb_"+enrollVo.getPhone());
         member.setName(enrollVo.getName());

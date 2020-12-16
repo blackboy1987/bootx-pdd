@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -200,4 +201,6 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	Member findByExtendCode(String extendCode);
 
 	String createExtendCode();
+
+    List<Map<String,Object>> findListTeam(Member member);
 }

@@ -16,6 +16,7 @@ import com.bootx.service.BaseService;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -49,6 +50,9 @@ public abstract class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Seria
 	protected void setBaseDao(BaseDao<T, ID> baseDao) {
 		this.baseDao = baseDao;
 	}
+
+	@Autowired
+	public JdbcTemplate jdbcTemplate;
 
 	@Override
 	@Transactional(readOnly = true)
