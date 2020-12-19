@@ -33,11 +33,11 @@ public class OrderController {
        if(member==null){
            return Result.error("登录信息已过期");
        }
-       MineMachine mineMachine = mineMachineService.findByProductId(productId);
+       MineMachine mineMachine = mineMachineService.find(productId);
 
 
        //  data:{"type":200,"content":"","date":{"id":1123988,"sn":"384334186770595840176519"},"code":null,"message":null}
-       MineMachineOrder mineMachineOrder = mineMachineOrderService.create(member,mineMachine,quantity,day);
+       MineMachineOrder mineMachineOrder = mineMachineOrderService.create(member,mineMachine,quantity,day,null,null);
        Map<String,Object> map = new HashMap<>();
        map.put("id",mineMachineOrder.getId());
        map.put("sn",mineMachineOrder.getSn());

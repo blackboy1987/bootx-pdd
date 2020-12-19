@@ -203,5 +203,4 @@ public class Page<T> implements Serializable {
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
 	}
-
 }

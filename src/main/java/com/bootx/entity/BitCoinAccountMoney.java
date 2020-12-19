@@ -1,44 +1,29 @@
 package com.bootx.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 
 
-/**
- * {
- *                 "id":1763114,
- *                 "userId":218776,
- *                 "assetType":5,
- *                 "money":0,
- *                 "frozenMoney":0,
- *                 "state":true,
- *                 "name":"ETH",
- *                 "price":"0.00"
- *             }
- * @author black
- */
 @Entity
-@Table(name = "BitCoinAccount", uniqueConstraints = { @UniqueConstraint(columnNames = { "userId", "name" })})
-public class BitCoinAccount extends BaseEntity<Long> {
+@Table(name = "BitCoinAccountWallet", uniqueConstraints = { @UniqueConstraint(columnNames = { "userId", "bitCoinAccountId","assetType" })})
+public class BitCoinAccountMoney extends BaseEntity<Long> {
 
     private Long userId;
 
+    private Long bitCoinAccountId;
+
     private Integer assetType;
 
-    @Column(precision = 27, scale = 12)
     private BigDecimal money;
 
-    @Column(precision = 27, scale = 12)
     private BigDecimal frozenMoney;
 
-    private Boolean state;
+    private Integer state;
 
     private String name;
 
-    @Column(precision = 27, scale = 12)
     private BigDecimal price;
 
     public Long getUserId() {
@@ -47,6 +32,14 @@ public class BitCoinAccount extends BaseEntity<Long> {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Long getBitCoinAccountId() {
+        return bitCoinAccountId;
+    }
+
+    public void setBitCoinAccountId(Long bitCoinAccountId) {
+        this.bitCoinAccountId = bitCoinAccountId;
     }
 
     public Integer getAssetType() {
@@ -73,11 +66,11 @@ public class BitCoinAccount extends BaseEntity<Long> {
         this.frozenMoney = frozenMoney;
     }
 
-    public Boolean getState() {
+    public Integer getState() {
         return state;
     }
 
-    public void setState(Boolean state) {
+    public void setState(Integer state) {
         this.state = state;
     }
 

@@ -1,5 +1,7 @@
 
 package com.bootx.service.impl;
+import com.bootx.common.Page;
+import com.bootx.common.Pageable;
 import com.bootx.dao.InvestDao;
 import com.bootx.entity.Invest;
 import com.bootx.entity.Member;
@@ -31,14 +33,21 @@ public class InvestServiceImpl extends BaseServiceImpl<Invest, Long> implements 
     @Override
     public List<Invest> findListByCoinType(Member member, Integer coinType) {
         List<MineMachine> mineMachines = mineMachineService.findAll();
-        for (MineMachine mineMachine:mineMachines) {
-            create(member,mineMachine,coinType);
-        }
         return investDao.findListByCoinType(member,coinType);
     }
 
     @Override
-    public void create(Member member, MineMachine mineMachine,Integer coinType) {
+    public Page<Invest> findPage(Pageable pageable, Member member, Integer excision, Long productId, Integer type,Integer coinType, Date beginDate, Date endDate) {
+        return investDao.findPage(pageable,member,excision,mineMachineService.find(productId),type,coinType,beginDate,endDate);
+    }
+
+    @Override
+    public List<Invest> findList1(Member member, Integer excision, Long productId, Integer type, Integer coinType, Date beginDate, Date endDate) {
+        return investDao.findList1(member,excision,mineMachineService.find(productId),type,coinType,beginDate,endDate);
+    }
+
+    @Override
+    public void create(Member member, MineMachine mineMachine, Integer type, Integer excision) {
         Invest invest = new Invest();
         if(mineMachine!=null){
             invest.setProductId(mineMachine.getId());
@@ -70,7 +79,7 @@ public class InvestServiceImpl extends BaseServiceImpl<Invest, Long> implements 
         invest.setLastHptPrice(new BigDecimal("0.005"));
         invest.setAllEthPrice(new BigDecimal("0.3"));
         invest.setLastEthPrice(new BigDecimal("0.002"));
-        invest.setType(0);
+        invest.setType(type);
         invest.setProfit(new BigDecimal("0"));
         invest.setProfitYear(0L);
         invest.setElectric(new BigDecimal("1.5"));
@@ -82,8 +91,8 @@ public class InvestServiceImpl extends BaseServiceImpl<Invest, Long> implements 
         invest.setExpireDate(new Date());
         invest.setComeDate(new Date());
         invest.setExpirationDate(new Date());
-        invest.setCoinType(coinType);
-
+        invest.setCoinType(mineMachine.getCoinType());
+        invest.setExcision(excision);
         invest.setUserId(member.getId());
         invest.setUserName(member.getUsername());
         invest.setPhone(member.getPhone());

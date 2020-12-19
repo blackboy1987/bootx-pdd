@@ -1,11 +1,8 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: 22YIxwI+eUhJbwDWcIavVBs0O7OkiDj9
- */
+
 package com.bootx.service;
 
+import com.bootx.common.Page;
+import com.bootx.common.Pageable;
 import com.bootx.entity.Member;
 import com.bootx.entity.MineMachine;
 import com.bootx.entity.MineMachineOrder;
@@ -18,5 +15,7 @@ import com.bootx.entity.MineMachineOrder;
  */
 public interface MineMachineOrderService extends BaseService<MineMachineOrder, Long> {
 
-    MineMachineOrder create(Member member, MineMachine mineMachine, Integer quantity, Integer day);
+    MineMachineOrder create(Member member, MineMachine mineMachine, Integer quantity, Integer day, Integer excision,Integer orderType);
+
+    Page<MineMachineOrder> findPage(Pageable pageable, Member member, Integer excision, String orderType, String coinType);
 }

@@ -13,6 +13,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -123,4 +125,10 @@ public class BaseController {
 		return true;
 	}
 
+	protected BigDecimal setScale(BigDecimal amount){
+		if (amount != null) {
+			return amount.setScale(2, RoundingMode.FLOOR);
+		}
+		return amount;
+	}
 }

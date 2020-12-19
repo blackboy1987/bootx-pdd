@@ -52,7 +52,7 @@ dependencies {
     compile group: 'com.aliyun', name: 'aliyun-java-sdk-core', version: '4.5.17'
     compile group: 'com.aliyun', name: 'aliyun-java-sdk-sts', version: '3.0.2'
 
-
+    dependencies { compile fileTree(dir:'libs',include:['*.jar'])}
 
     compile 'org.web3j:geth:5.0.0'
     compile 'org.web3j:parity:5.0.0'

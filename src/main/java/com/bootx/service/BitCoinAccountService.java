@@ -20,4 +20,5 @@ public interface BitCoinAccountService extends BaseService<BitCoinAccount, Long>
 
     void initAccount(Member member);
 
+    BitCoinAccount findByUserIdAndAssetType(Long userId, Integer assetType);
 }

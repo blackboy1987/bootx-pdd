@@ -192,7 +192,31 @@ public class CommonController {
         }
     }
 
-
+    /**
+     * 更换绑定的手机号
+     * @param member
+     * @param request
+     * @return
+     */
+    @PostMapping("/obtain/phone/code")
+    public Result phoneCode(@CurrentUser Member member,HttpServletRequest request){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录信息已过期！");
+        }
+        String code = CodeUtils.create(6);
+        System.out.println(code);
+        String result = SmsUtils.send(member.getMobile(),"【聚力国际】 您本次操作的验证码为："+code+"。请再10分钟之内按页面提示提交验证码，如非本人操作，请忽略。！");
+        if(StringUtils.equalsIgnoreCase("0",result)){
+            // 发送成功写入到缓存
+            cache.put(new Element(member.getMobile(),code));
+            return Result.success("");
+        }else{
+            return Result.error("验证码发送失败！");
+        }
+    }
 
 
 }

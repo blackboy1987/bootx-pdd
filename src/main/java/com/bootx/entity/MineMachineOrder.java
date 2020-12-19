@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author black
+ */
 @Entity
 public class MineMachineOrder extends BaseEntity<Long>{
 
@@ -18,21 +21,32 @@ public class MineMachineOrder extends BaseEntity<Long>{
     private BigDecimal amount;
     private BigDecimal discount;
     private String memo;
+    /**
+     * 订单状态
+     * 0：已创建
+     * 1：去支付
+     * 2：已支付
+     * 3：已完成
+     * 4：已取消
+     * 5：退款中
+     * 6：已退款
+     * 其他：已取消
+     */
     private Integer state;
     private Integer payType;
     private String payPrice;
     private String terminationDate;
-    private int twelveSmstag;
-    private int oneSmstag;
-    private int earnest;
-    private int balancePayment;
+    private Integer twelveSmstag;
+    private Integer oneSmstag;
+    private Integer earnest;
+    private Integer balancePayment;
     private String returnMoney;
-    private int electricType;
-    private int day;
+    private Integer electricType;
+    private Integer day;
     private BigDecimal addElectric;
     private BigDecimal electricMoney;
     private BigDecimal rmbPrice;
-    private int coinType;
+    private Integer coinType;
     private String fromChannel;
     private String electric;
     private Date expirationDate;
@@ -64,6 +78,8 @@ public class MineMachineOrder extends BaseEntity<Long>{
     private String electricDicountMd5Format;
     private String encapsulationDay;
     private String reward;
+    private Integer orderType;
+    private Integer excision;
 
     public Long getCreator() {
         return creator;
@@ -520,8 +536,23 @@ public class MineMachineOrder extends BaseEntity<Long>{
     public void setReward(String reward) {
         this.reward = reward;
     }
-    
-    
+
+    public Integer getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(Integer orderType) {
+        this.orderType = orderType;
+    }
+
+    public Integer getExcision() {
+        return excision;
+    }
+
+    public void setExcision(Integer excision) {
+        this.excision = excision;
+    }
+
     public void init(){
         setCreator(0L);
         setModifier(0L);
@@ -554,5 +585,7 @@ public class MineMachineOrder extends BaseEntity<Long>{
         setElectricDicountMd5Format(null);
         setEncapsulationDay(null);
         setReward(null);
+        setOrderType(0);
+        setExcision(0);
     }
 }

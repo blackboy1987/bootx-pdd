@@ -1,6 +1,9 @@
 
 package com.bootx.dao;
 
+import com.bootx.common.Page;
+import com.bootx.common.Pageable;
+import com.bootx.entity.Member;
 import com.bootx.entity.MineMachineOrder;
 
 /**
@@ -11,4 +14,5 @@ import com.bootx.entity.MineMachineOrder;
  */
 public interface MineMachineOrderDao extends BaseDao<MineMachineOrder, Long> {
 
+    Page<MineMachineOrder> findPage(Pageable pageable, Member member, Integer excision, String orderType, String coinType);
 }

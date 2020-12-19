@@ -28,26 +28,8 @@ public class UserController {
     private CacheService cacheService;
     @Autowired
     private ArticleService articleService;
-
+    @Autowired
     private InvestService investService;
-
-    /**
-     * data,{"type",200,"content","","date",{"totalEarnings","0.00","totalMoney","0.00","list",[{"id",1763110,"userId",218776,"assetType",1,"money",0,"frozenMoney",0,"state",true,"name","BTC","price","0.00"},{"id",1763111,"userId",218776,"assetType",2,"money",0,"frozenMoney",0,"state",true,"name","USDT","price","0.00"},{"id",1763112,"userId",218776,"assetType",3,"money",0,"frozenMoney",0,"state",true,"name","CNY","price","0.00"},{"id",1763113,"userId",218776,"assetType",4,"money",0,"frozenMoney",0,"state",true,"name","HBT","price","0.00"},{"id",1763114,"userId",218776,"assetType",5,"money",0,"frozenMoney",0,"state",true,"name","ETH","price","0.00"}]},"code",null,"message",null}
-     *
-     */
-    @RequestMapping("/money/list")
-    public Result moneyList(@CurrentUser Member member, HttpServletRequest request){
-        Map<String,Object> data = new HashMap<>();
-        if(member==null){
-            member = memberService.getCurrent(request);
-        }
-        data.put("totalEarnings",0.0);
-        data.put("totalMoney",0.00);
-        System.out.println(member);
-        bitCoinAccountService.initAccount(member);
-        data.put("list",bitCoinAccountService.findByUserId(member.getId()));
-        return Result.success(data);
-    }
 
     @PostMapping("/info/index")
     public Result infoIndex(@CurrentUser Member member,HttpServletRequest request){
@@ -170,22 +152,6 @@ public class UserController {
             return Result.success("ok");
         }
         return Result.success(null);
-    }
-
-    @PostMapping("/v2/order/rule")
-    public Result a(){
-
-        // data:{"type":200,"content":"","date":{"id":1,"largess":5,"largessBtc":true,"largessFil":false,"largessHpt":true,"btcPrice":19213,"hptPrice":0.1,"ethPrice":594.35,"filPrice":29.84,"investRate":0,"exchangeRate":6.63,"hbtExchangeRate":10,"enableEthElectricBuy":false,"popusStatus":true,"ipfsActivityStatus":true,"filBlockStatus":true},"code":null,"message":null}
-        return Result.success("");
-
-
-    }
-
-    @PostMapping("/v2/order/myPage")
-    public Result orderMyPage(Integer excision,Integer page,Integer type,String orderType,Integer coinType){
-
-        // data:{"type":500,"content":"没有更多数据了","date":null,"code":null,"message":null}
-        return Result.success("");
     }
 
     /**

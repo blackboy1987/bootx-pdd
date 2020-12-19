@@ -16,9 +16,8 @@ import java.util.Set;
  * @version 6.1
  */
 @Entity
-@DiscriminatorColumn(name = "dtype")
-@Table(name = "Users", uniqueConstraints = { @UniqueConstraint(columnNames = { "dtype", "username" }), @UniqueConstraint(columnNames = { "dtype", "email" }), @UniqueConstraint(columnNames = { "dtype", "mobile" }) })
-@Inheritance
+@Table(name = "Users")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User extends BaseEntity<Long> {
 
 	private static final long serialVersionUID = 400776999956262L;

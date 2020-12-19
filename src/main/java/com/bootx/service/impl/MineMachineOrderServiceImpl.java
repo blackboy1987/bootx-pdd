@@ -1,17 +1,22 @@
 
 package com.bootx.service.impl;
 
+import com.bootx.common.Page;
+import com.bootx.common.Pageable;
+import com.bootx.dao.MineMachineOrderDao;
 import com.bootx.entity.Member;
 import com.bootx.entity.MineMachine;
 import com.bootx.entity.MineMachineOrder;
 import com.bootx.entity.Sn;
 import com.bootx.service.MineMachineOrderService;
+import com.bootx.service.MineMachineService;
 import com.bootx.service.SnService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Service - 广告
@@ -24,9 +29,13 @@ public class MineMachineOrderServiceImpl extends BaseServiceImpl<MineMachineOrde
 
     @Autowired
     private SnService snService;
+    @Autowired
+    private MineMachineOrderDao mineMachineOrderDao;
+    @Autowired
+    private MineMachineService mineMachineService;
 
     @Override
-    public MineMachineOrder create(Member member, MineMachine mineMachine, Integer quantity, Integer day) {
+    public MineMachineOrder create(Member member, MineMachine mineMachine, Integer quantity, Integer day, Integer excision,Integer orderType) {
         MineMachineOrder mineMachineOrder = new MineMachineOrder();
         mineMachineOrder.init();
         mineMachineOrder.setUserId(member.getId());
@@ -36,7 +45,7 @@ public class MineMachineOrderServiceImpl extends BaseServiceImpl<MineMachineOrde
         mineMachineOrder.setAmount(mineMachine.getPrice().multiply(new BigDecimal(quantity)));
         mineMachineOrder.setQuantity(quantity);
         mineMachineOrder.setMemo("系统赠送");
-        mineMachineOrder.setState(1);
+        mineMachineOrder.setState(0);
         mineMachineOrder.setPayType(3);
         mineMachineOrder.setPayPrice("1349.80 元");
         mineMachineOrder.setElectricType(1);
@@ -55,6 +64,14 @@ public class MineMachineOrderServiceImpl extends BaseServiceImpl<MineMachineOrde
         mineMachineOrder.setProductName(mineMachine.getName());
         mineMachineOrder.setProductId(mineMachine.getId());
         mineMachineOrder.setProductIcon(mineMachine.getIcon());
+        mineMachineOrder.setExcision(excision);
+        mineMachineOrder.setOrderType(orderType);
         return super.save(mineMachineOrder);
+    }
+
+    @Override
+    public Page<MineMachineOrder> findPage(Pageable pageable, Member member, Integer excision, String orderType, String coinType) {
+        List<MineMachine> mineMachineOrders = mineMachineService.findAll();
+        return mineMachineOrderDao.findPage(pageable, member, excision, orderType, coinType);
     }
 }

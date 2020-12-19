@@ -90,6 +90,8 @@ public class Invest extends BaseEntity<Long>{
 
     private Integer coinType;
 
+    private Integer excision;
+
     public Long getUserId() {
         return userId;
     }
@@ -408,5 +410,13 @@ public class Invest extends BaseEntity<Long>{
 
     public void setCoinType(Integer coinType) {
         this.coinType = coinType;
+    }
+
+    public Integer getExcision() {
+        return excision;
+    }
+
+    public void setExcision(Integer excision) {
+        this.excision = excision;
     }
 }

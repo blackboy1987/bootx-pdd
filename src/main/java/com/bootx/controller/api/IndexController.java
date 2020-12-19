@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 
 @RestController("iconApiIndexController")
@@ -38,23 +36,8 @@ public class IndexController {
     @PostMapping
     public Result index (String url, String url1, String method, String params, String data, HttpServletRequest request){
         System.out.println("url:"+url);
-        System.out.println("url1:"+url1);
         System.out.println("params:"+params);
         System.out.println("data:"+data);
-        System.out.println("method:"+method);
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++header++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()){
-            String headerName = headerNames.nextElement();
-            System.out.println(headerName+":"+request.getHeader(headerName));
-        }
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++header++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++cache++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie:cookies) {
-            System.out.println(cookie.getName()+":"+cookie.getValue());
-        }
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++cache++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("===================================================================================");
 
         return Result.success("",null);

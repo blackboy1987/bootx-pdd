@@ -62,4 +62,9 @@ public class BitCoinAccountServiceImpl extends BaseServiceImpl<BitCoinAccount, L
 			}
 		}
 	}
+
+	@Override
+	public BitCoinAccount findByUserIdAndAssetType(Long userId, Integer assetType) {
+		return bitCoinAccountDao.findByUserIdAndAssetType(userId,assetType);
+	}
 }
