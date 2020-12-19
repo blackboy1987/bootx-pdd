@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: 3OXo+1LVNaQ5rFdfxaoeUrINtEAW2P3M
- */
+
 package com.bootx.common;
 
 /**

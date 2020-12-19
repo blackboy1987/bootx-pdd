@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: gozuKbjLS1WZb7KyEA50vhHdsurB4NgJ
- */
+
 package com.bootx.exception;
 
 import org.apache.shiro.authc.AuthenticationException;

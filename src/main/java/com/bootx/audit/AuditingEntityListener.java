@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: 2vQpK6byIynPDjvcOXYUOuEBq8A3gMpg
- */
+
 package com.bootx.audit;
 
 import com.bootx.util.SpringUtils;

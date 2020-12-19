@@ -1,6 +1,4 @@
-/**
-  * Copyright 2020 json.cn 
-  */
+
 package com.bootx.entity;
 
 import javax.persistence.Entity;

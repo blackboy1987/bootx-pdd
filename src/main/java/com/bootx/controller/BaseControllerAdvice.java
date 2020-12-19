@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: ZUVDFbthn9z9Xcm0xcrpU0f11z9WnPrz
- */
+
 package com.bootx.controller;
 
 import com.bootx.common.DateEditor;

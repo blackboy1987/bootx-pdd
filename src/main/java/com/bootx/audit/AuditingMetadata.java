@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: Bb9TfUEBp0jA986Sgc8obgva9MNIMknc
- */
+
 package com.bootx.audit;
 
 import com.bootx.util.BeanUtils;

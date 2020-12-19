@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: 2jY/dlfzMro5Iwxo6tqvhIHH9dhFW5iW
- */
+
 package com.bootx.common;
 
 import com.bootx.util.FreeMarkerUtils;

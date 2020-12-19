@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  * @author black
  */
 @Entity
-@Table(name = "BitCoinAccountRule", uniqueConstraints = { @UniqueConstraint(columnNames = { "userId", "bitCoinAccountId",assetType })})
+@Table(name = "BitCoinAccountRule", uniqueConstraints = { @UniqueConstraint(columnNames = { "userId", "bitCoinAccountId","assetType" })})
 public class BitCoinAccountRule extends BaseEntity<Long> {
 
     private Long userId;

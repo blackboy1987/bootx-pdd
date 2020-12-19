@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: w7H03gS6kRbGnms7mfdWfaToJkp4iB0J
- */
+
 package com.bootx.dao;
 
 import com.bootx.common.Filter;

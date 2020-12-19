@@ -1,17 +1,12 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: 7dLOrMdkKxePPgqctvt0EkLFwwfASRRd
- */
-package com.bootx.common;
 
-import java.math.BigDecimal;
+package com.bootx.common;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.hibernate.search.bridge.TwoWayFieldBridge;
+
+import java.math.BigDecimal;
 
 /**
  * BigDecimal类型转换

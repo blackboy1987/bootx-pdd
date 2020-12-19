@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: aNovGLyperpmLTk+9SN66imN/92gDq+H
- */
+
 package com.bootx.dao.impl;
 
 import com.bootx.dao.MessageConfigDao;

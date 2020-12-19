@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: 69VCuKa/9qbrgal1V+cN8dg0QUOEOYzc
- */
+
 package com.bootx.entity;
 
 import javax.persistence.Column;

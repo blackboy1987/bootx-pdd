@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: a9iY+NSWQm+xSi61iz90x/KwOxs9FHPv
- */
+
 package com.bootx.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;

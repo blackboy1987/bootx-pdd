@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: PoFB0RaymZebKS8iE3+H5Xc8cndMfk91
- */
+
 package com.bootx.service.impl;
 
 import com.bootx.dao.AuditLogDao;

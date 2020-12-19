@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: b5vxH+DBc8dove+g1zdVwstf8nGuv5ZQ
- */
+
 package com.bootx.util;
 
 import com.fasterxml.jackson.core.JsonGenerationException;

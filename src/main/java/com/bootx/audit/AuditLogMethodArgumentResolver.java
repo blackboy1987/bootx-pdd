@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: UAXE3mN51KpQ9RFBznzudiMXYK4X+kzi
- */
+
 package com.bootx.audit;
 
 import com.bootx.entity.AuditLog;

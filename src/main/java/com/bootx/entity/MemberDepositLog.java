@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: XMtP58YNpELiI8OjpkNX7Um4CkUW2Yx4
- */
+
 package com.bootx.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;

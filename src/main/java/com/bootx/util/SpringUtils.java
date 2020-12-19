@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: gGaxTGMflzRQ0WTyvRo1oPBSZDp45vrN
- */
+
 package com.bootx.util;
 
 import org.springframework.beans.factory.DisposableBean;

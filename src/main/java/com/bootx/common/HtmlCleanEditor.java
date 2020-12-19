@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: qEz5dbljyvJvvZbUNbPOFLPkKaYyl3nr
- */
+
 package com.bootx.common;
 
 import java.beans.PropertyEditorSupport;

@@ -1,17 +1,9 @@
-/**
-  * Copyright 2020 json.cn 
-  */
+
 package com.bootx.controller.api.user.demo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-/**
- * Auto-generated: 2020-12-19 16:45:29
- *
- * @author json.cn (i@json.cn)
- * @website http://www.json.cn/java2pojo/
- */
 public class JsonRootBean {
 
     private int type;

@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: +jdMwxW0Agy9UgcRHpywaDA+e772y3Ah
- */
+
 package com.bootx.security;
 
 import com.bootx.entity.User;

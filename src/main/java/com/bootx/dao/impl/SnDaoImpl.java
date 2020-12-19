@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: 2ibjNJdITfmKQxMNmiMCKbbni2E/uQLC
- */
+
 package com.bootx.dao.impl;
 
 import com.bootx.dao.SnDao;

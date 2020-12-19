@@ -1,9 +1,4 @@
-/*
- * Copyright 2008-2018 shopxx.net. All rights reserved.
- * Support: localhost
- * License: localhost/license
- * FileId: MlAsGPQBEmN83fguBG988+AlpEZlqlUX
- */
+
 package com.bootx.dao;
 
 import com.bootx.entity.BitCoinType;
