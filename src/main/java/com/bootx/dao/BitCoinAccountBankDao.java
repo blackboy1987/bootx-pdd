@@ -11,4 +11,5 @@ import com.bootx.entity.BitCoinAccountBank;
  */
 public interface BitCoinAccountBankDao extends BaseDao<BitCoinAccountBank, Long> {
 
+    BitCoinAccountBank findByBitCoinAccountIdAndUserId(Long bitCoinAccountId, Long userId);
 }

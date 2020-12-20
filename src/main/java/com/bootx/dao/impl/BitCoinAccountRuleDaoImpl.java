@@ -5,6 +5,11 @@ import com.bootx.dao.BitCoinAccountRuleDao;
 import com.bootx.entity.BitCoinAccountRule;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 /**
  * Dao - 广告
  * 
@@ -14,4 +19,23 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BitCoinAccountRuleDaoImpl extends BaseDaoImpl<BitCoinAccountRule, Long> implements BitCoinAccountRuleDao {
 
+    @Override
+    public BitCoinAccountRule findByBitCoinAccountIdAndUserId(Long bitCoinAccountId, Long userId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<BitCoinAccountRule> criteriaQuery = criteriaBuilder.createQuery(BitCoinAccountRule.class);
+        Root<BitCoinAccountRule> root = criteriaQuery.from(BitCoinAccountRule.class);
+        criteriaQuery.select(root);
+        if (bitCoinAccountId == null || userId == null) {
+            return new BitCoinAccountRule();
+        }
+        Predicate restrictions = criteriaBuilder.conjunction();
+        restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("bitCoinAccountId"), bitCoinAccountId));
+        restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("userId"), userId));
+        criteriaQuery.where(restrictions);
+        try {
+            return super.findList(criteriaQuery, null, null, null, null).get(0);
+        } catch (Exception e) {
+            return new BitCoinAccountRule();
+        }
+    }
 }

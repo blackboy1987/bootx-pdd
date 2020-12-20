@@ -133,27 +133,6 @@ public class UserController {
         return Result.success(data);
     }
 
-
-    /**
-     * 检查用户是否实名认证
-     * @param member
-     * @param request
-     * @return
-     */
-    @PostMapping("/v2/auth/info")
-    public Result authInfo(@CurrentUser Member member,HttpServletRequest request){
-        if(member==null){
-            member = memberService.getCurrent(request);
-        }
-        if(member==null){
-            return Result.error("请先登录");
-        }
-        if(member.getIsAuth()){
-            return Result.success("ok");
-        }
-        return Result.success(null);
-    }
-
     /**
      * 重置资金密码
      * @param oldPass
@@ -249,6 +228,16 @@ public class UserController {
         data.put("theirBank",member.getBankName());
         return Result.success(data);
     }
+
+    /**
+     * 设置收款信息
+     * @param request
+     * @param member
+     * @param bankCard
+     * @param theirBank
+     * @param area
+     * @return
+     */
     @PostMapping("/receipt/create")
     public Result receiptCreate(HttpServletRequest request,@CurrentUser Member member,String bankCard,String theirBank,String area){
         if(member==null){

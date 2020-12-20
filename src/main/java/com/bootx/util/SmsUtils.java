@@ -23,6 +23,8 @@ public class SmsUtils {
         httpArg.append("c=").append(encodeUrlString(content, "UTF-8"));
  
         String result = request(httpUrl, httpArg.toString());
+        System.out.println(result);
+        System.out.println(content);
         return result;
     }
 

@@ -3,11 +3,8 @@ package com.bootx.service.impl;
 
 
 import com.bootx.dao.BitCoinAccountDao;
-import com.bootx.entity.BitCoinAccount;
-import com.bootx.entity.BitCoinType;
-import com.bootx.entity.Member;
-import com.bootx.service.BitCoinAccountService;
-import com.bootx.service.BitCoinTypeService;
+import com.bootx.entity.*;
+import com.bootx.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +25,14 @@ public class BitCoinAccountServiceImpl extends BaseServiceImpl<BitCoinAccount, L
 
 	@Autowired
 	private BitCoinTypeService bitCoinTypeService;
+	@Autowired
+	private BitCoinAccountRuleService bitCoinAccountRuleService;
+	@Autowired
+	private BitCoinAccountMoneyService bitCoinAccountMoneyService;
+	@Autowired
+	private BitCoinAccountWalletService bitCoinAccountWalletService;
+	@Autowired
+	private BitCoinAccountBankService bitCoinAccountBankService;
 
 	@Override
 	public List<BitCoinAccount> findByUserId(Long userId) {
@@ -53,7 +58,11 @@ public class BitCoinAccountServiceImpl extends BaseServiceImpl<BitCoinAccount, L
 				bitCoinAccount.setPrice(bitCoinType.getPrice());
 				bitCoinAccount.setState(true);
 				bitCoinAccount.setUserId(member.getId());
-				super.save(bitCoinAccount);
+				bitCoinAccount = super.save(bitCoinAccount);
+				bitCoinAccountBankService.init(member,bitCoinAccount);
+				bitCoinAccountMoneyService.init(member,bitCoinAccount);
+				bitCoinAccountWalletService.init(member,bitCoinAccount);
+				bitCoinAccountRuleService.init(member,bitCoinAccount);
 			}
 		}
 	}

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author black
@@ -47,10 +49,26 @@ public class PayController extends BaseController {
         }else{
             return Result.error("充值金额有误");
         }
+    }
 
+    @PostMapping("/getCompanyBank")
+    public Result getCompanyBank(@CurrentUser Member member, HttpServletRequest request){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录失效，请重新登录");
+        }
+        Map<String,Object> data = new HashMap<>();
+        data.put("id",198);
+        data.put("userId",-1);
+        data.put("bankCard","14310006688303000013");
+        data.put("theirBank",null);
+        data.put("area","上海华瑞银行股份有限公司营业部");
+        data.put("name","上海逢新耀网络科技有限公司");
 
+        return Result.success(data);
 
 
     }
-
 }
