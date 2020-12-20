@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -300,5 +301,37 @@ public class CommonController {
         }
     }
 
+    @PostMapping("/version")
+    public Result version(){
+
+        /**
+         * {
+         *         "id": 1,
+         *         "version": 591,
+         *         "versionName": "5.9.1",
+         *         "androidUrl": "https://hashbox.oss-cn-hangzhou.aliyuncs.com/download/H5AB7809E.wgt",
+         *         "iosUrl": "https://hashbox.oss-cn-hangzhou.aliyuncs.com/download/H5AB7809E.wgt",
+         *         "updateAddress": "https://testflight.apple.com/join/61lUFPtO",
+         *         "forcedUpdate": true,
+         *         "downUpdate": false,
+         *         "updateMemo": "",
+         *         "createDate": "2018-11-17 20:04:25",
+         *         "downUrl":
+         *     }
+         */
+        Map<String,Object> data = new HashMap<>();
+        data.put("id",1);
+        data.put("version",591);
+        data.put("versionName","5.9.1");
+        data.put("androidUrl","https://hashbox.oss-cn-hangzhou.aliyuncs.com/download/H5AB7809E.wgt");
+        data.put("iosUrl","https://hashbox.oss-cn-hangzhou.aliyuncs.com/download/H5AB7809E.wgt");
+        data.put("updateAddress","https://testflight.apple.com/join/61lUFPtO");
+        data.put("forcedUpdate",true);
+        data.put("downUpdate",false);
+        data.put("updateMemo","");
+        data.put("createDate",new Date());
+        data.put("downUrl","http://http://api.suanlifeng.com/down/wap/app");
+        return Result.success(data);
+    }
 
 }
