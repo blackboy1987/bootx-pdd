@@ -1,4 +1,4 @@
-package com.bootx.controller.api;
+package com.bootx.controller.api.app.user;
 
 import com.bootx.common.Result;
 import com.bootx.entity.BaseEntity;
@@ -6,7 +6,6 @@ import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.*;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,7 @@ import java.util.Map;
 
 @RestController("iconApiUserController")
 @RequestMapping("/app/user")
-public class UserController {
+public class IndexController {
 
     @Autowired
     private BitCoinAccountService bitCoinAccountService;
@@ -69,7 +68,7 @@ public class UserController {
         data.put( "parentName",null);
         data.put( "lastIp",member.getLastLoginIp());
         data.put( "mobile",member.getMobile());
-        data.put(  "addPass",true);
+        data.put("addPass",member.getEncodedPassword1()==null);
         data.put(  "userWallet",null);
         data.put(  "userMoney",null);
         data.put( "shopName",null);
@@ -120,99 +119,18 @@ public class UserController {
         data.put( "parentName",null);
         data.put( "lastIp",member.getLastLoginIp());
         data.put( "mobile",member.getMobile());
-        data.put(  "addPass",true);
+        data.put("addPass",member.getEncodedPassword1()==null);
         data.put(  "userWallet",null);
         data.put(  "userMoney",null);
         data.put( "shopName",null);
         data.put( "shopType",null);
         data.put( "typeName",null);
-
-
-
-
         return Result.success(data);
     }
 
-    /**
-     * 重置资金密码
-     * @param oldPass
-     * @param newPass
-     * @param sourPass
-     * @param request
-     * @param member
-     * @return
-     */
-    @PostMapping("/safe/recash")
-    public Result recash(String oldPass,String newPass,String sourPass,HttpServletRequest request,@CurrentUser Member member){
-        if(member==null){
-            member = memberService.getCurrent(request);
-        }
-        if(member==null){
-            return Result.error("登录信息已过期");
-        }
-        if(!member.isValidCredentials1(oldPass)){
-            return Result.error("原资金密码错误，请重新输入");
-        }
-        if(StringUtils.equalsIgnoreCase(newPass,sourPass)){
-            return Result.error("两次密码输入不一致");
-        }
-        member.setPassword1(sourPass);
-        memberService.update(member);
-        return Result.success("修改成功");
-    }
 
-    /**
-     * 忘记资金密码
-     * @param oldPass
-     * @param newPass
-     * @param sourPass
-     * @param request
-     * @param member
-     * @return
-     */
-    @PostMapping("/safe/forget_pass")
-    public Result forgetPass(String oldPass,String newPass,String sourPass,HttpServletRequest request,@CurrentUser Member member,String code){
-        if(member==null){
-            member = memberService.getCurrent(request);
-        }
-        if(member==null){
-            return Result.error("登录信息已过期");
-        }
-        if(StringUtils.isNotBlank(code)){
-            if(!cacheService.smsCodeCacheValidate(member.getMobile(),code)){
-                return Result.error("验证码校验失败");
-            }
-        }else{
-            if(!member.isValidCredentials1(oldPass)){
-                return Result.error("原资金密码错误，请重新输入");
-            }
-        }
-        if(StringUtils.equalsIgnoreCase(newPass,sourPass)){
-            return Result.error("两次密码输入不一致");
-        }
-        member.setPassword1(sourPass);
-        memberService.update(member);
-        return Result.success("修改成功");
-    }
 
-    @PostMapping("/safe/repass")
-    public Result repass(String oldPass,String newPass,String sourPass,HttpServletRequest request,@CurrentUser Member member){
-        if(member==null){
-            member = memberService.getCurrent(request);
-        }
-        if(member==null){
-            return Result.error("登录信息已过期");
-        }
-        if(!member.isValidCredentials1(oldPass)){
-            return Result.error("原登录密码错误，请重新输入");
-        }
-        if(StringUtils.equalsIgnoreCase(newPass,sourPass)){
-            return Result.error("两次密码输入不一致");
-        }
-        member.setPassword(sourPass);
-        memberService.update(member);
-        return Result.success("修改成功");
-    }
+
 
     @PostMapping("/receipt/receipt")
     public Result receipt(HttpServletRequest request,@CurrentUser Member member){

@@ -71,4 +71,13 @@ public class BitCoinAccountServiceImpl extends BaseServiceImpl<BitCoinAccount, L
 	public BitCoinAccount findByUserIdAndAssetType(Long userId, Integer assetType) {
 		return bitCoinAccountDao.findByUserIdAndAssetType(userId,assetType);
 	}
+
+	@Override
+	public BigDecimal getAmount(Long userId, Integer coinType) {
+		BitCoinAccount bitCoinAccount = findByUserIdAndAssetType(userId,coinType);
+		if(bitCoinAccount==null){
+			return BigDecimal.ZERO;
+		}
+		return bitCoinAccount.getMoney().subtract(bitCoinAccount.getFrozenMoney());
+	}
 }

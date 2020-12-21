@@ -1,4 +1,4 @@
-package com.bootx.controller.api.v2;
+package com.bootx.controller.api.app.user.v2;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
@@ -13,6 +13,7 @@ import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.Member;
 import com.bootx.entity.MineMachineOrder;
 import com.bootx.security.CurrentUser;
+import com.bootx.service.BitCoinAccountService;
 import com.bootx.service.MemberService;
 import com.bootx.service.MineMachineOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class OrderController extends BaseController {
     private MemberService memberService;
     @Autowired
     private MineMachineOrderService mineMachineOrderService;
+
+    @Autowired
+    private BitCoinAccountService bitCoinAccountService;
 
 
     @PostMapping("/page")
@@ -184,5 +188,49 @@ public class OrderController extends BaseController {
     public Result callback(Long orderId, Integer payType,String coupon){
         return Result.error("参数错误");
 
+    }
+
+
+
+    @PostMapping("/pay")
+    public Result pay(HttpServletRequest request, @CurrentUser Member member,Long orderId, Integer payType,Integer coinType,String pass,String coupon){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录信息已过期");
+        }
+        MineMachineOrder mineMachineOrder = mineMachineOrderService.find(orderId);
+        if(mineMachineOrder==null||mineMachineOrder.getUserId().compareTo(member.getId())!=0){
+            return Result.error("订单信息不正确");
+        }
+        if(!member.isValidCredentials1(pass)){
+            return Result.error("资金密码输入不正确");
+        }
+
+        BigDecimal amount = bitCoinAccountService.getAmount(member.getId(),coinType);
+        if(amount.compareTo(mineMachineOrder.getAmount())<0){
+            return Result.error("账户余额不足，支付失败");
+        }
+        mineMachineOrder.setState(2);
+        if(payType==null){
+            payType = coinType;
+        }
+        mineMachineOrder.setPayType(payType);
+        mineMachineOrderService.update(mineMachineOrder);
+
+        return Result.success("ok");
+    }
+
+    @PostMapping("/detail")
+    public Result detail(Long orderId, HttpServletRequest request, @CurrentUser Member member){
+        if(member==null){
+            member = memberService.getCurrent(request);
+        }
+        if(member==null){
+            return Result.error("登录信息已过期");
+        }
+        MineMachineOrder mineMachineOrder = mineMachineOrderService.find(orderId);
+        return Result.success(mineMachineOrder);
     }
 }

@@ -19,6 +19,8 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -219,4 +221,10 @@ public abstract class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Seria
 		}
 	}
 
+	protected BigDecimal setScale(BigDecimal amount){
+		if (amount != null) {
+			return amount.setScale(2, RoundingMode.FLOOR);
+		}
+		return amount;
+	}
 }

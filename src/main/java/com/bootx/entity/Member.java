@@ -413,6 +413,9 @@ public class Member extends User {
 
 	public void setPassword1(String password1) {
 		this.password1 = password1;
+		if (password1 != null) {
+			setEncodedPassword1(DigestUtils.md5Hex(password1));
+		}
 	}
 
 	public String getEncodedPassword1() {

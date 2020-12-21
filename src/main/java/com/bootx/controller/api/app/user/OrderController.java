@@ -1,4 +1,4 @@
-package com.bootx.controller.api;
+package com.bootx.controller.api.app.user;
 
 import com.bootx.common.Result;
 import com.bootx.entity.Member;
@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController("appUserOrderControllerController")
+@RestController("appUserOrderController")
 @RequestMapping("/app/user/order")
 public class OrderController {
 
@@ -37,7 +37,7 @@ public class OrderController {
 
 
        //  data:{"type":200,"content":"","date":{"id":1123988,"sn":"384334186770595840176519"},"code":null,"message":null}
-       MineMachineOrder mineMachineOrder = mineMachineOrderService.create(member,mineMachine,quantity,day,null,null);
+       MineMachineOrder mineMachineOrder = mineMachineOrderService.create(member,mineMachine,quantity,day,0,null);
        Map<String,Object> map = new HashMap<>();
        map.put("id",mineMachineOrder.getId());
        map.put("sn",mineMachineOrder.getSn());

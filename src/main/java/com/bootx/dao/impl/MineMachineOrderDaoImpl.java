@@ -43,14 +43,14 @@ public class MineMachineOrderDaoImpl extends BaseDaoImpl<MineMachineOrder, Long>
                 e.printStackTrace();
             }
         }
-        if (StringUtils.isNotBlank(coinType)&&!StringUtils.equalsIgnoreCase("undefined",coinType)) {
+        /*if (StringUtils.isNotBlank(coinType)&&!StringUtils.equalsIgnoreCase("undefined",coinType)) {
             try{
                 restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("coinType"), Integer.valueOf(coinType)));
             }catch (Exception e){
                 e.printStackTrace();
             }
 
-        }
+        }*/
         criteriaQuery.where(restrictions);
         return super.findPage(criteriaQuery, pageable);
     }

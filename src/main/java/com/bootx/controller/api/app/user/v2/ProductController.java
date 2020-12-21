@@ -1,4 +1,4 @@
-package com.bootx.controller.api.v2;
+package com.bootx.controller.api.app.user.v2;
 
 import com.bootx.common.Result;
 import com.bootx.entity.MineMachine;

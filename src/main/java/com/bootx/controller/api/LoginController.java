@@ -48,7 +48,7 @@ public class LoginController {
         data.put("name",member.getName());
         data.put("userName",member.getUsername());
         data.put("code",member.getId()+"");
-        data.put("addPass",true);
+        data.put("addPass",member.getEncodedPassword1()==null);
         data.put("activation",true);
         //成功： {"type":200,"content":"请求成功","data":{"code":"10051","addPass":true,"id":10051,"userName":"blackboy","activation":true}}
         //失败： {"type":400,"content":"手机号输入错误","date":null,"code":null,"message":null}

@@ -1,4 +1,4 @@
-package com.bootx.controller.api;
+package com.bootx.controller.api.user;
 
 import com.bootx.common.Result;
 import com.bootx.entity.Member;
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController("iconUserController")
 @RequestMapping("/user")
-public class User1Controller {
+public class indexController {
 
     @RequestMapping("/electric/page")
     public Result moneyList(@CurrentUser Member member, HttpServletRequest request){

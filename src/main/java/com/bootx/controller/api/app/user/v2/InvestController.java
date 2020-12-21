@@ -1,4 +1,4 @@
-package com.bootx.controller.api.v2;
+package com.bootx.controller.api.app.user.v2;
 
 import com.bootx.common.Page;
 import com.bootx.common.Pageable;
@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController("userV2ComeController")
-@RequestMapping("/app/user/v2/come")
-public class ComeController extends BaseController {
+@RestController("userV2InvestController")
+@RequestMapping("/app/user/v2/invest")
+public class InvestController extends BaseController {
 
     @Autowired
     private MemberService memberService;

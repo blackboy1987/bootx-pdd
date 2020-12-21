@@ -4,6 +4,7 @@ package com.bootx.service;
 import com.bootx.entity.BitCoinAccount;
 import com.bootx.entity.Member;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -21,4 +22,6 @@ public interface BitCoinAccountService extends BaseService<BitCoinAccount, Long>
     void initAccount(Member member);
 
     BitCoinAccount findByUserIdAndAssetType(Long userId, Integer assetType);
+
+    BigDecimal getAmount(Long userId, Integer coinType);
 }

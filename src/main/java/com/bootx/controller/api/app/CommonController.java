@@ -321,16 +321,16 @@ public class CommonController {
          */
         Map<String,Object> data = new HashMap<>();
         data.put("id",1);
-        data.put("version",591);
-        data.put("versionName","5.9.1");
-        data.put("androidUrl","https://hashbox.oss-cn-hangzhou.aliyuncs.com/download/H5AB7809E.wgt");
-        data.put("iosUrl","https://hashbox.oss-cn-hangzhou.aliyuncs.com/download/H5AB7809E.wgt");
-        data.put("updateAddress","https://testflight.apple.com/join/61lUFPtO");
+        data.put("version",682);
+        data.put("versionName","6.8.2");
+        data.put("androidUrl","https://boox-mall.oss-cn-hangzhou.aliyuncs.com/H5B95E076.wgt");
+        data.put("iosUrl","https://boox-mall.oss-cn-hangzhou.aliyuncs.com/H5B95E076.wgt");
+        data.put("updateAddress","https://boox-mall.oss-cn-hangzhou.aliyuncs.com/H5B95E076.wgt");
         data.put("forcedUpdate",true);
         data.put("downUpdate",false);
         data.put("updateMemo","");
         data.put("createDate",new Date());
-        data.put("downUrl","http://http://api.suanlifeng.com/down/wap/app");
+        data.put("downUrl","https://boox-mall.oss-cn-hangzhou.aliyuncs.com/H5B95E076.wgt");
         return Result.success(data);
     }
 

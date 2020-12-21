@@ -60,9 +60,6 @@ public class CommonController {
 
     @PostMapping("payData")
     public Result payData(){
-        /**
-         * {"id":6,"payId":6,"productId":null,"open":null,"name":"alipay","type":5,"remark":"支付宝","zh_name":null}
-         */
         List<Map<String,Object>> list = new ArrayList<>();
         Map<String,Object> map = new HashMap<>();
         map.put("id",6);
@@ -74,6 +71,19 @@ public class CommonController {
         map.put("remark","支付宝");
         map.put("zh_name",null);
         list.add(map);
+
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("id",5);
+        map1.put("payId",5);
+        map1.put("productId",null);
+        map1.put("open",null);
+        map1.put("name","CNY");
+        map1.put("type",10);
+        map1.put("remark","CNY");
+        map1.put("zh_name",null);
+        list.add(map1);
+
+
         return Result.success(list);
     }
 
