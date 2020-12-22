@@ -15,7 +15,10 @@ public class AccountLog extends BaseEntity<Long>{
 
     private String title;
 
-    private Integer status;
+    /**
+     * 审核状态：0：审核中，1：已到账 其他：未到账
+     */
+    private Integer state;
 
     private BigDecimal money;
 
@@ -23,6 +26,13 @@ public class AccountLog extends BaseEntity<Long>{
 
     private BigDecimal afterMoney;
 
+    private Integer assetType;
+
+    /**
+     * 类型：
+     * 1：增加余额
+     * 其他：减少余额
+     */
     private Integer dataType;
 
     public Long getUserId() {
@@ -41,12 +51,12 @@ public class AccountLog extends BaseEntity<Long>{
         this.title = title;
     }
 
-    public Integer getStatus() {
-        return status;
+    public Integer getState() {
+        return state;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setState(Integer state) {
+        this.state = state;
     }
 
     public BigDecimal getMoney() {
@@ -79,5 +89,13 @@ public class AccountLog extends BaseEntity<Long>{
 
     public void setDataType(Integer dataType) {
         this.dataType = dataType;
+    }
+
+    public Integer getAssetType() {
+        return assetType;
+    }
+
+    public void setAssetType(Integer assetType) {
+        this.assetType = assetType;
     }
 }

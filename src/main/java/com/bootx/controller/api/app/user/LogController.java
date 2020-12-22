@@ -1,4 +1,4 @@
-package com.bootx.controller.api.user;
+package com.bootx.controller.api.app.user;
 
 import com.bootx.common.Page;
 import com.bootx.common.Page1;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
-@RestController("/apiUserLogController")
-@RequestMapping("//app/user/log")
+@RestController("appUserLogController")
+@RequestMapping("/app/user/log")
 public class LogController extends BaseController {
 
     @Autowired
@@ -48,7 +48,7 @@ public class LogController extends BaseController {
         }
         Pageable pageable = new Pageable(page,limit);
         Page<AccountLog> page1 = accountLogService.findPage(pageable,member.getId(),type);
-        return Result.success(new Page1(page1.getContent(), page1.getTotal(), pageable));
+        return Result.success(new Page1<AccountLog>(page1.getContent(), page1.getTotal(), pageable));
     }
 
 }

@@ -46,15 +46,15 @@ public class Page1<T> implements Serializable {
 	/**
 	 * 构造方法
 	 *
-	 * @param content
+	 * @param list
 	 *            内容
 	 * @param total
 	 *            总记录数
 	 * @param pageable
 	 *            分页信息
 	 */
-	public Page1(List<T> content, long total, Pageable pageable) {
-		this.list.addAll(content);
+	public Page1(List<T> list, long total, Pageable pageable) {
+		this.list.addAll(list);
 		this.totalRow = total;
 		this.pageable = pageable;
 	}
@@ -145,7 +145,7 @@ public class Page1<T> implements Serializable {
 	 * 
 	 * @return 内容
 	 */
-	public List<T> getContent() {
+	public List<T> getList() {
 		return list;
 	}
 
