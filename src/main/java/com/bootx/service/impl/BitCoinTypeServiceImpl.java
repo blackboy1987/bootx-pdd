@@ -23,4 +23,9 @@ public class BitCoinTypeServiceImpl extends BaseServiceImpl<BitCoinType, Long> i
 	public BitCoinType findByName(String name) {
 		return bitCoinTypeDao.find("name",name);
 	}
+
+	@Override
+	public BitCoinType findByAssetType(Integer assetType) {
+		return bitCoinTypeDao.find("assetType",assetType);
+	}
 }

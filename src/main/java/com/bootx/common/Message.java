@@ -75,13 +75,11 @@ public class Message {
 	 *            类型
 	 * @param content
 	 *            内容
-	 * @param args
-	 *            参数
 	 */
-	public Message(Type type, String content,Object data, Object... args) {
+	public Message(Type type, String content,Object data) {
 		this.type = type;
 		this.data = data;
-		this.content = SpringUtils.getMessage(content, args);
+		this.content = SpringUtils.getMessage(content);
 	}
 
 	/**
@@ -89,12 +87,21 @@ public class Message {
 	 * 
 	 * @param content
 	 *            内容
-	 * @param args
-	 *            参数
 	 * @return 成功消息
 	 */
-	public static Message success(String content, Object... args) {
-		return new Message(Type.success, content, args);
+	public static Message success(String content) {
+		return new Message(Type.success, content);
+	}
+
+	/**
+	 * 返回成功消息
+	 *
+	 * @param data
+	 *            内容
+	 * @return 成功消息
+	 */
+	public static Message success(Object data) {
+		return new Message(Type.success, "请求成功", data);
 	}
 
 	/**
@@ -102,12 +109,10 @@ public class Message {
 	 * 
 	 * @param content
 	 *            内容
-	 * @param args
-	 *            参数
 	 * @return 警告消息
 	 */
-	public static Message warn(String content, Object... args) {
-		return new Message(Type.warn, content, args);
+	public static Message warn(String content) {
+		return new Message(Type.warn, content);
 	}
 
 	/**
@@ -119,8 +124,8 @@ public class Message {
 	 *            参数
 	 * @return 错误消息
 	 */
-	public static Message error(String content, Object... args) {
-		return new Message(Type.error, content, args);
+	public static Message error(String content) {
+		return new Message(Type.error, content);
 	}
 
 
@@ -129,12 +134,10 @@ public class Message {
 	 *
 	 * @param content
 	 *            内容
-	 * @param args
-	 *            参数
 	 * @return 成功消息
 	 */
-	public static Message success1(String content,Object data, Object... args) {
-		return new Message(Type.success, content,data, args);
+	public static Message success1(String content,Object data) {
+		return new Message(Type.success, content,data);
 	}
 
 	/**
@@ -142,12 +145,10 @@ public class Message {
 	 *
 	 * @param content
 	 *            内容
-	 * @param args
-	 *            参数
 	 * @return 警告消息
 	 */
-	public static Message warn1(String content,Object data, Object... args) {
-		return new Message(Type.warn, content,data, args);
+	public static Message warn1(String content,Object data) {
+		return new Message(Type.warn, content,data);
 	}
 
 	/**
@@ -159,8 +160,8 @@ public class Message {
 	 *            参数
 	 * @return 错误消息
 	 */
-	public static Message error1(String content, Object data,Object... args) {
-		return new Message(Type.error, content,data, args);
+	public static Message error1(String content, Object data) {
+		return new Message(Type.error, content,data);
 	}
 
 

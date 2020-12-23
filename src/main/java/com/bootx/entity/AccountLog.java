@@ -13,6 +13,10 @@ public class AccountLog extends BaseEntity<Long>{
 
     public Long userId;
 
+    private String mobile;
+
+    private String name;
+
     private String title;
 
     /**
@@ -41,6 +45,22 @@ public class AccountLog extends BaseEntity<Long>{
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getTitle() {

@@ -13,4 +13,5 @@ public interface BitCoinTypeService extends BaseService<BitCoinType, Long> {
 
     BitCoinType findByName(String name);
 
+    BitCoinType findByAssetType(Integer assetType);
 }

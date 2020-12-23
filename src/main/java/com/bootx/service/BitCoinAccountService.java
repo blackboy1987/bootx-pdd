@@ -1,6 +1,7 @@
 
 package com.bootx.service;
 
+import com.bootx.entity.AccountLog;
 import com.bootx.entity.BitCoinAccount;
 import com.bootx.entity.Member;
 
@@ -24,4 +25,6 @@ public interface BitCoinAccountService extends BaseService<BitCoinAccount, Long>
     BitCoinAccount findByUserIdAndAssetType(Long userId, Integer assetType);
 
     BigDecimal getAmount(Long userId, Integer coinType);
+
+    void addMoney(AccountLog accountLog);
 }

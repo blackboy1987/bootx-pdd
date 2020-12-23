@@ -7,6 +7,7 @@ import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.AccountLogService;
 import com.bootx.service.BitCoinAccountService;
+import com.bootx.service.CompanyBankService;
 import com.bootx.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,8 @@ public class PayController extends BaseController {
 
     @Autowired
     private AccountLogService accountLogService;
+    @Autowired
+    private CompanyBankService companyBankService;
 
     /**
      * 充值
@@ -77,8 +80,8 @@ public class PayController extends BaseController {
         data.put("bankCard","陈顺心");
         data.put("theirBank",null);
         data.put("area","陈顺心");
-        data.put("name","陈顺心");
+        data.put("name","《官方账号：283205226@qq.com》");
         data.put("img","https://boox-mall.oss-cn-hangzhou.aliyuncs.com/20201222090955.jpg");
-        return Result.success(data);
+        return Result.success(companyBankService.get());
     }
 }

@@ -22,6 +22,8 @@ public class BitCoinAccountServiceImpl extends BaseServiceImpl<BitCoinAccount, L
 
 	@Autowired
 	private BitCoinAccountDao bitCoinAccountDao;
+	@Autowired
+	private MemberService memberService;
 
 	@Autowired
 	private BitCoinTypeService bitCoinTypeService;
@@ -79,5 +81,39 @@ public class BitCoinAccountServiceImpl extends BaseServiceImpl<BitCoinAccount, L
 			return BigDecimal.ZERO;
 		}
 		return bitCoinAccount.getMoney().subtract(bitCoinAccount.getFrozenMoney());
+	}
+
+	@Override
+	public void addMoney(AccountLog accountLog) {
+		BitCoinAccount bitCoinAccount = findByUserIdAndAssetType(accountLog.getUserId(),accountLog.getAssetType());
+		if(bitCoinAccount==null){
+			bitCoinAccount = initAccount(memberService.find(accountLog.getId()),accountLog.getAssetType());
+			if(bitCoinAccount!=null){
+				bitCoinAccount.setMoney(bitCoinAccount.getMoney().add(accountLog.getMoney()));
+				super.save(bitCoinAccount);
+			}
+		}
+	}
+
+	private BitCoinAccount initAccount(Member member, Integer assetType) {
+		BitCoinType bitCoinType = bitCoinTypeService.findByAssetType(assetType);
+		BitCoinAccount bitCoinAccount = findByUserIdAndAssetType(member.getId(),assetType);
+		if(bitCoinAccount==null||bitCoinAccount.getId()==null&&bitCoinType!=null){
+			bitCoinAccount = new BitCoinAccount();
+			bitCoinAccount.setAssetType(assetType);
+			bitCoinAccount.setFrozenMoney(BigDecimal.ZERO);
+			bitCoinAccount.setMoney(BigDecimal.ZERO);
+			bitCoinAccount.setName(bitCoinType.getName());
+			bitCoinAccount.setPrice(bitCoinType.getPrice());
+			bitCoinAccount.setState(true);
+			bitCoinAccount.setUserId(member.getId());
+			bitCoinAccount = super.save(bitCoinAccount);
+			bitCoinAccountBankService.init(member,bitCoinAccount);
+			bitCoinAccountMoneyService.init(member,bitCoinAccount);
+			bitCoinAccountWalletService.init(member,bitCoinAccount);
+			bitCoinAccountRuleService.init(member,bitCoinAccount);
+			return bitCoinAccount;
+		}
+		return null;
 	}
 }

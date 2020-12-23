@@ -41,6 +41,8 @@ public class AccountLogServiceImpl extends BaseServiceImpl<AccountLog, Long> imp
             accountLog.setState(0);
             accountLog.setDataType(dataType);
             accountLog.setUserId(member.getId());
+            accountLog.setMobile(member.getMobile());
+            accountLog.setName(member.getName());
             return super.save(accountLog);
         }
 
