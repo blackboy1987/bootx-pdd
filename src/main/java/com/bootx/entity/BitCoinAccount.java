@@ -1,5 +1,7 @@
 package com.bootx.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -26,16 +28,20 @@ public class BitCoinAccount extends BaseEntity<Long> {
 
     private Long userId;
 
+    @JsonView({PageView.class})
     private Integer assetType;
 
     @Column(precision = 27, scale = 12)
+    @JsonView({PageView.class})
     private BigDecimal money;
 
     @Column(precision = 27, scale = 12)
+    @JsonView({PageView.class})
     private BigDecimal frozenMoney;
 
     private Boolean state;
 
+    @JsonView({PageView.class})
     private String name;
 
     @Column(precision = 27, scale = 12)

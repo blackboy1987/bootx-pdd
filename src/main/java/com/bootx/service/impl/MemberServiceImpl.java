@@ -327,4 +327,9 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		}
 		return jdbcTemplate.queryForList("select id,username userName,isAuth,createdDate createDate,(select count(id) from users as child  where child.parent_id= users.id and dtype='Member') child from users as users where parent_id=? and dtype='Member'",member.getId());
 	}
+
+	@Override
+	public Page<Member> findPage(Pageable pageable, String username, String name, Date beginDate, Date endDate) {
+		return memberDao.findPage(pageable,username,name,beginDate,endDate);
+	}
 }

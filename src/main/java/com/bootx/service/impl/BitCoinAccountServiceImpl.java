@@ -89,7 +89,11 @@ public class BitCoinAccountServiceImpl extends BaseServiceImpl<BitCoinAccount, L
 		if(bitCoinAccount==null){
 			bitCoinAccount = initAccount(memberService.find(accountLog.getId()),accountLog.getAssetType());
 			if(bitCoinAccount!=null){
-				bitCoinAccount.setMoney(bitCoinAccount.getMoney().add(accountLog.getMoney()));
+				BigDecimal money = accountLog.getMoney();
+				if(accountLog.getDataType()!=1){
+					money = money.multiply(new BigDecimal(-1));
+				}
+				bitCoinAccount.setMoney(bitCoinAccount.getMoney().add(money));
 				super.save(bitCoinAccount);
 			}
 		}

@@ -1,6 +1,7 @@
 
 package com.bootx.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -32,6 +33,7 @@ public class MemberRank extends BaseEntity<Long> {
 	@NotEmpty
 	@Length(max = 200)
 	@Column(nullable = false)
+	@JsonView({PageView.class})
 	private String name;
 
 	/**
@@ -56,6 +58,7 @@ public class MemberRank extends BaseEntity<Long> {
 	 */
 	@NotNull
 	@Column(nullable = false)
+	@JsonView({PageView.class})
 	private Boolean isDefault;
 
 	/**

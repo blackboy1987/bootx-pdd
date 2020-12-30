@@ -1,15 +1,12 @@
 package com.bootx.controller.api.app.user.v2;
 
 import com.bootx.common.Result;
-import com.bootx.entity.MineMachine;
 import com.bootx.service.BitCoinAccountService;
 import com.bootx.service.MineMachineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController("iconApiProductController")
 @RequestMapping("/app/user/v2/product")
@@ -23,8 +20,13 @@ public class ProductController {
 
     @PostMapping("/specials_v3")
     public Result specialsV3(){
-        List<MineMachine> listByCoinType = mineMachineService.findListByCoinType(5,1);
-        return Result.success(listByCoinType.get(0));
+       /* List<MineMachine> listByCoinType = mineMachineService.findListByCoinType(5,1);
+        if(listByCoinType.size()>0){
+            return Result.success(listByCoinType.get(0));
+        }else{
+            return Result.success(null);
+        }*/
+        return Result.success(mineMachineService.findDefault());
     }
 
     @PostMapping("/list/coinType")

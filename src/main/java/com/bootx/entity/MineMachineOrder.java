@@ -1,5 +1,7 @@
 package com.bootx.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -12,14 +14,21 @@ public class MineMachineOrder extends BaseEntity<Long>{
 
     private Long creator;
     private Long modifier;
+    @JsonView({PageView.class})
     private Long userId;
+    @JsonView({PageView.class})
     private Integer productType;
     private Long productId;
+    @JsonView({PageView.class})
     private BigDecimal price;
     private Integer invest;
+    @JsonView({PageView.class})
     private Integer quantity;
+    @JsonView({PageView.class})
     private BigDecimal amount;
+    @JsonView({PageView.class})
     private BigDecimal discount;
+    @JsonView({PageView.class})
     private String memo;
     /**
      * 订单状态
@@ -32,6 +41,7 @@ public class MineMachineOrder extends BaseEntity<Long>{
      * 6：已退款
      * 其他：已取消
      */
+    @JsonView({PageView.class})
     private Integer state;
     private Integer payType;
     private String payPrice;
@@ -41,24 +51,37 @@ public class MineMachineOrder extends BaseEntity<Long>{
     private Integer earnest;
     private Integer balancePayment;
     private String returnMoney;
+    @JsonView({PageView.class})
     private Integer electricType;
+    @JsonView({PageView.class})
     private Integer day;
+    @JsonView({PageView.class})
     private BigDecimal addElectric;
     private BigDecimal electricMoney;
+    @JsonView({PageView.class})
     private BigDecimal rmbPrice;
+    @JsonView({PageView.class})
     private Integer coinType;
+    @JsonView({PageView.class})
     private String fromChannel;
     private String electric;
     private Date expirationDate;
     private String comeDate;
     private String expireDate;
     private String investTime;
+    @JsonView({PageView.class})
     private String sn;
+    @JsonView({PageView.class})
     private String userName;
+    @JsonView({PageView.class})
     private String phone;
+    @JsonView({PageView.class})
     private String name;
+    @JsonView({PageView.class})
     private String productName;
+    @JsonView({PageView.class})
     private String productIcon;
+    @JsonView({PageView.class})
     private String productManage;
     private String manage;
     private String productManageDiscount;

@@ -198,4 +198,6 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	String createExtendCode();
 
     List<Map<String,Object>> findListTeam(Member member);
+
+	Page<Member> findPage(Pageable pageable, String username, String name, Date beginDate, Date endDate);
 }

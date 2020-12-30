@@ -2,69 +2,258 @@
 package com.bootx.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.math.BigDecimal;
-import java.util.Date;
 
+/**
+ * 矿机
+ */
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MineMachine extends BaseEntity<Long> {
 
+    /**
+     * 类型
+     */
+    @JsonView({PageView.class})
     private Integer type;
+    /**
+     * 矿机名称
+     */
+    @JsonView({PageView.class})
     private String name;
+    /**
+     * 标签
+     */
+    @JsonView({PageView.class})
     private String tag;
+    /**
+     * 图片
+     */
+    @JsonView({PageView.class})
     private String icon;
+    /**
+     * 图片
+     */
     private String images;
+    /**
+     *
+     */
     private Integer saleType;
+    /**
+     * rmb价格
+     */
+    @JsonView({PageView.class})
     private BigDecimal rmbPrice;
+    /**
+     * 价格
+     */
+    @JsonView({PageView.class})
     private BigDecimal price;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private Integer invest;
+    /**
+     * 算力
+     */
+    @JsonView({PageView.class})
     private BigDecimal profit;
+    /**
+     * rmb电费价格
+     */
+    @JsonView({PageView.class})
     private BigDecimal rmbElectricPrice;
+    /**
+     * 电费
+     */
+    @JsonView({PageView.class})
     private BigDecimal electric;
+    /**
+     * 电费折扣
+     */
+    @JsonView({PageView.class})
     private BigDecimal electricDiscount;
 
     /**
      * 管理费
      */
+    @JsonView({PageView.class})
     private Integer manage;
+    /**
+     * 管理费折扣
+     */
+    @JsonView({PageView.class})
     private Integer manageDiscount;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private Integer profitYear;
 
+    /**
+     * 限购数量
+     */
     @Column(name ="limits")
+    @JsonView({PageView.class})
     private Integer limit;
+    /**
+     * 默认购买数量
+     */
     private Integer defaultBuyNumber;
+    /**
+     * 是否上线
+     */
+    @JsonView({PageView.class})
     private Boolean isMarketable;
+    /**
+     * 是否特殊
+     */
+    @JsonView({PageView.class})
     private Boolean isSpecials;
+    /**
+     * 特殊的icon
+     */
+    @JsonView({PageView.class})
     private String specialsIcon;
+    /**
+     * 月销售量
+     */
+    @JsonView({PageView.class})
     private Integer monthSales;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private Boolean profitDay;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private String returnProfitDay;
+    /**
+     * 周销售量
+     */
+    @JsonView({PageView.class})
     private Integer weekSales;
+    /**
+     * 总销售量
+     */
+    @JsonView({PageView.class})
     private Integer sales;
+    /**
+     * 总费用
+     */
+    @JsonView({PageView.class})
     private BigDecimal money;
+    /**
+     * 库存数量
+     */
+    @JsonView({PageView.class})
     private Long stock;
+    /**
+     * 是否有库存
+     */
+    @JsonView({PageView.class})
     private Boolean isStock;
+    /**
+     * 过期时间
+     */
+    @JsonView({PageView.class})
     private String expirationDate;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private String validity;
+    /**
+     * 是否推荐
+     */
+    @JsonView({PageView.class})
     private Boolean isRecommend;
+    /**
+     * 对应的新闻id
+     */
+    @JsonView({PageView.class})
     private Integer newsId;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private String investTime;
+    /**
+     * btc 折扣
+     */
+    @JsonView({PageView.class})
     private Integer btcDiscount;
+    /**
+     * hbt 折扣
+     */
+    @JsonView({PageView.class})
     private BigDecimal hbtDiscount;
+    /**
+     * hbt 折扣类型
+     */
+    @JsonView({PageView.class})
     private Integer hbtDiscountType;
+    /**
+     * 最大算力
+     */
+    @JsonView({PageView.class})
     private String maxLimit;
+    /**
+     * 收益
+     */
+    @JsonView({PageView.class})
     private String earnest;
+    /**
+     * 返点
+     */
+    @JsonView({PageView.class})
     private String returnRate;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private String interest;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private String surplus;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private String maxQouta;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private String isReward;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private String hierarchy;
+    /**
+     * 用什么币才能购买
+     */
+    @JsonView({PageView.class})
     private Integer coinType;
+    /**
+     *
+     */
+    @JsonView({PageView.class})
     private BigDecimal exchangeRate;
+    /**
+     * 产品id
+     */
+    @JsonView({PageView.class})
     private String productId;
 
     public Integer getType() {

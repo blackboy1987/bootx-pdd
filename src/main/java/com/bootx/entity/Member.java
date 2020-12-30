@@ -113,7 +113,7 @@ public class Member extends User {
 	/**
 	 * 用户名
 	 */
-	@JsonView(BaseView.class)
+	@JsonView({PageView.class})
 	@NotEmpty(groups = Save.class)
 	@Length(min = 4, max = 20)
 	@Pattern.List({ @Pattern(regexp = "^[0-9a-zA-Z_\\u4e00-\\u9fa5]+$"), @Pattern(regexp = "^.*[^\\d].*$") })
@@ -153,6 +153,7 @@ public class Member extends User {
 	@Email
 	@Length(max = 200)
 	@Column(nullable = false)
+	@JsonView({PageView.class})
 	private String email;
 
 	/**
@@ -162,11 +163,13 @@ public class Member extends User {
 	@Length(max = 200)
 	@Pattern(regexp = "^1[3|4|5|6|7|8|9]\\d{9}$")
 	@Column(nullable = false)
+	@JsonView({PageView.class})
 	private String mobile;
 
 	/**
 	 * 积分
 	 */
+	@JsonView({PageView.class})
 	private Long point;
 
 	/**
@@ -191,10 +194,12 @@ public class Member extends User {
 	 * 姓名
 	 */
 	@Length(max = 200)
+	@JsonView({PageView.class})
 	private String name;
 	/**
 	 * 身份证号
 	 */
+	@JsonView({PageView.class})
 	private String card;
 
 	/**
@@ -223,6 +228,7 @@ public class Member extends User {
 	 * 电话
 	 */
 	@Length(max = 200)
+	@JsonView({PageView.class})
 	private String phone;
 
 	/**
@@ -318,26 +324,31 @@ public class Member extends User {
 
 	@NotEmpty
 	@Column(nullable = false,updatable = false,unique = true)
+	@JsonView({PageView.class})
 	private String extendCode;
 
 	private String accountId;
 
 	@NotNull
+	@JsonView({PageView.class})
 	private Boolean isAuth;
 
 	/**
 	 * 银行支行名
 	 */
+	@JsonView({PageView.class})
 	private String bankArea;
 
 	/**
 	 * 所属银行
 	 */
+	@JsonView({PageView.class})
 	private String bankName;
 
 	/**
 	 * 银行卡号
 	 */
+	@JsonView({PageView.class})
 	private String bankCard;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -346,6 +357,9 @@ public class Member extends User {
 	@OneToMany(mappedBy = "parent",fetch = FetchType.LAZY)
 	private Set<Member> children = new HashSet<>();
 
+	@Transient
+	@JsonView({PageView.class})
+	private List<BitCoinAccount> bitCoinAccounts = new ArrayList<>();
 
 	/**
 	 * 获取用户名
@@ -1010,6 +1024,14 @@ public class Member extends User {
 
 	public void setChildren(Set<Member> children) {
 		this.children = children;
+	}
+
+	public List<BitCoinAccount> getBitCoinAccounts() {
+		return bitCoinAccounts;
+	}
+
+	public void setBitCoinAccounts(List<BitCoinAccount> bitCoinAccounts) {
+		this.bitCoinAccounts = bitCoinAccounts;
 	}
 
 	/**

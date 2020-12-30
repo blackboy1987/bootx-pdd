@@ -76,4 +76,5 @@ public interface MemberDao extends BaseDao<Member, Long> {
 	 */
 	BigDecimal frozenTotalAmount();
 
+	Page<Member> findPage(Pageable pageable, String username, String name, Date beginDate, Date endDate);
 }

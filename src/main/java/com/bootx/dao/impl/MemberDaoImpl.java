@@ -128,4 +128,28 @@ public class MemberDaoImpl extends BaseDaoImpl<Member, Long> implements MemberDa
 		return result != null ? result : BigDecimal.ZERO;
 	}
 
+	@Override
+	public Page<Member> findPage(Pageable pageable, String username, String name, Date beginDate, Date endDate) {
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member> criteriaQuery = criteriaBuilder.createQuery(Member.class);
+		Root<Member> root = criteriaQuery.from(Member.class);
+		criteriaQuery.select(root);
+		Predicate restrictions = criteriaBuilder.conjunction();
+		if(StringUtils.isNotBlank(username)){
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.like(root.<String>get("username"), "%" + username + "%")));
+		}
+		if(StringUtils.isNotBlank(name)){
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.like(root.<String>get("name"), "%" + name + "%")));
+		}
+		if(beginDate!=null){
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.greaterThanOrEqualTo(root.<Date>get("createdDate"), beginDate)));
+		}
+		if(endDate!=null){
+			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.or(criteriaBuilder.lessThanOrEqualTo(root.<Date>get("createdDate"), endDate)));
+		}
+
+
+		criteriaQuery.where(restrictions);
+		return super.findPage(criteriaQuery,pageable);
+	}
 }
