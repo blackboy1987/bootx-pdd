@@ -20,7 +20,6 @@ dependencies {
 
     compile group: 'cn.hutool', name: 'hutool-all', version: '5.5.2'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
-    compile group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.11.7.Final'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.4.1'
     compile group: 'org.apache.commons', name: 'commons-compress', version: '1.20'
     compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
@@ -31,8 +30,6 @@ dependencies {
     compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.4.1'
     compile group: 'net.sf.ehcache', name: 'ehcache', version: '2.10.6'
-
-    compile group: 'org.ansj', name: 'ansj_lucene5_plug', version: '5.1.2.1'
 
     compile group: 'org.apache.shiro', name: 'shiro-ehcache', version: '1.7.0'
     compile group: 'org.apache.shiro', name: 'shiro-spring', version: '1.7.0'
@@ -52,16 +49,14 @@ dependencies {
     compile group: 'com.aliyun', name: 'aliyun-java-sdk-core', version: '4.5.17'
     compile group: 'com.aliyun', name: 'aliyun-java-sdk-sts', version: '3.0.2'
 
+    compile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.46.0'
+    compile group: 'net.sourceforge.htmlunit', name: 'htmlunit-core-js', version: '2.46.0'
+
+
+
     dependencies { compile fileTree(dir:'libs',include:['*.jar'])}
 
-    compile 'org.web3j:geth:5.0.0'
-    compile 'org.web3j:parity:5.0.0'
-    compile 'org.web3j:utils:5.0.0'
-    compile 'org.web3j:core:5.0.0'
-    compile 'org.web3j:abi:5.0.0'
-    compile 'org.web3j:contracts:5.0.0'
-    compile 'org.bitcoinj:bitcoinj-core:0.15.8'
-
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-elasticsearch', version: '2.4.1'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     runtimeOnly 'mysql:mysql-connector-java'

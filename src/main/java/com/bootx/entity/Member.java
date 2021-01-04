@@ -298,12 +298,6 @@ public class Member extends User {
 	private SafeKey safeKey;
 
 	/**
-	 * 地区
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Area area;
-
-	/**
 	 * 会员等级
 	 */
 	@NotNull
@@ -356,10 +350,6 @@ public class Member extends User {
 
 	@OneToMany(mappedBy = "parent",fetch = FetchType.LAZY)
 	private Set<Member> children = new HashSet<>();
-
-	@Transient
-	@JsonView({PageView.class})
-	private List<BitCoinAccount> bitCoinAccounts = new ArrayList<>();
 
 	/**
 	 * 获取用户名
@@ -886,25 +876,6 @@ public class Member extends User {
 	}
 
 	/**
-	 * 获取地区
-	 * 
-	 * @return 地区
-	 */
-	public Area getArea() {
-		return area;
-	}
-
-	/**
-	 * 设置地区
-	 * 
-	 * @param area
-	 *            地区
-	 */
-	public void setArea(Area area) {
-		this.area = area;
-	}
-
-	/**
 	 * 获取会员等级
 	 * 
 	 * @return 会员等级
@@ -1026,14 +997,6 @@ public class Member extends User {
 		this.children = children;
 	}
 
-	public List<BitCoinAccount> getBitCoinAccounts() {
-		return bitCoinAccounts;
-	}
-
-	public void setBitCoinAccounts(List<BitCoinAccount> bitCoinAccounts) {
-		this.bitCoinAccounts = bitCoinAccounts;
-	}
-
 	/**
 	 * 获取会员注册项值
 	 * 
@@ -1053,8 +1016,6 @@ public class Member extends User {
 			return getGender();
 		case BIRTH:
 			return getBirth();
-		case AREA:
-			return getArea();
 		case ADDRESS:
 			return getAddress();
 		case ZIP_CODE:
@@ -1126,11 +1087,6 @@ public class Member extends User {
 				setBirth((Date) memberAttributeValue);
 			}
 			break;
-		case AREA:
-			if (memberAttributeValue instanceof Area || memberAttributeValue == null) {
-				setArea((Area) memberAttributeValue);
-			}
-			break;
 		case ADDRESS:
 			if (memberAttributeValue instanceof String || memberAttributeValue == null) {
 				setAddress((String) memberAttributeValue);
@@ -1186,7 +1142,6 @@ public class Member extends User {
 		setName(null);
 		setGender(null);
 		setBirth(null);
-		setArea(null);
 		setAddress(null);
 		setZipCode(null);
 		setPhone(null);

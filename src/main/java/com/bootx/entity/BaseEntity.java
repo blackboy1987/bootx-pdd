@@ -5,8 +5,6 @@ import com.bootx.audit.AuditingEntityListener;
 import com.bootx.audit.CreatedDate;
 import com.bootx.audit.LastModifiedDate;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 import javax.validation.groups.Default;
@@ -110,9 +108,6 @@ public abstract class BaseEntity<ID extends Serializable> implements Serializabl
 	 */
 	@JsonView({BaseView.class,EditView.class,ListView.class, ViewView.class,PageView.class})
 	@CreatedDate
-	@Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
-	@DateBridge(resolution = Resolution.SECOND)
-	@SortableField
 	@Column(nullable = false, updatable = false)
 	private Date createdDate;
 
@@ -121,8 +116,6 @@ public abstract class BaseEntity<ID extends Serializable> implements Serializabl
 	 */
 	@JsonView(BaseView.class)
 	@LastModifiedDate
-	@Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
-	@DateBridge(resolution = Resolution.SECOND)
 	@Column(nullable = false)
 	private Date lastModifiedDate;
 

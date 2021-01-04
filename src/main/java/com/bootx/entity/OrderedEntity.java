@@ -3,7 +3,6 @@ package com.bootx.entity;
 
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.hibernate.search.annotations.*;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -29,8 +28,6 @@ public abstract class OrderedEntity<ID extends Serializable> extends BaseEntity<
 	/**
 	 * 排序
 	 */
-	@Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
-	@NumericField
 	@Min(0)
 	@Column(name = "orders")
 	private Integer order;

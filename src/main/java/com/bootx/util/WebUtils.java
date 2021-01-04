@@ -533,4 +533,50 @@ public final class WebUtils {
 		return result;
 	}
 
+	public static String get(String url, Map<String, Object> parameterMap, Map<String, Object> headers) {
+		Assert.hasText(url, "[Assertion failed] - url must have text; it must not be null, empty, or blank");
+
+		String result = null;
+		try {
+			List<NameValuePair> nameValuePairs = new ArrayList<>();
+			if (parameterMap != null) {
+				for (Map.Entry<String, Object> entry : parameterMap.entrySet()) {
+					String name = entry.getKey();
+					String value = ConvertUtils.convert(entry.getValue());
+					if (StringUtils.isNotEmpty(name)) {
+						nameValuePairs.add(new BasicNameValuePair(name, value));
+					}
+				}
+			}
+			HttpGet httpGet = new HttpGet(url + (StringUtils.contains(url, "?") ? "&" : "?") + EntityUtils.toString(new UrlEncodedFormEntity(nameValuePairs, "UTF-8")));
+			if (headers != null) {
+				for (Map.Entry<String, Object> entry : headers.entrySet()) {
+					String name = entry.getKey();
+					String value = ConvertUtils.convert(entry.getValue());
+					if (StringUtils.isNotEmpty(name)) {
+						httpGet.setHeader(name,value);
+					}
+				}
+			}
+			CloseableHttpResponse httpResponse = HTTP_CLIENT.execute(httpGet);
+			try {
+				HttpEntity httpEntity = httpResponse.getEntity();
+				if (httpEntity != null) {
+					result = EntityUtils.toString(httpEntity);
+					EntityUtils.consume(httpEntity);
+				}
+			} finally {
+				IOUtils.closeQuietly(httpResponse);
+			}
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		} catch (ParseException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		} catch (ClientProtocolException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+		return result;
+	}
 }

@@ -2,10 +2,12 @@
 package com.bootx.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import javax.annotation.Resource;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.math.BigDecimal;
@@ -29,6 +31,8 @@ public class BaseController {
 
 	@Autowired
 	private Validator validator;
+	@Resource
+	protected JdbcTemplate jdbcTemplate;
 
 	/**
 	 * 数据验证
