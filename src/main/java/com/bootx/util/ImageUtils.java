@@ -19,6 +19,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
 /**
  * Utils - 图片处理(支持JDK、GraphicsMagick、ImageMagick)
  * 
@@ -428,6 +429,37 @@ public final class ImageUtils {
 		b = b.length() == 1 ? "0" + b : b;
 		result.append("#").append(r).append(g).append(b);
 		return String.valueOf(result);
+	}
+
+	public static String url2Base64(String imgUrl) {
+		/*ByteArrayOutputStream data = new ByteArrayOutputStream();
+		InputStream is = null;
+		try {
+			URL url = new URL(imgUrl);
+			byte[] by = new byte[1024];
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setConnectTimeout(5000);
+			is = conn.getInputStream();
+			int len = -1;
+			while ((len = is.read(by)) != -1) {
+				data.write(by, 0, len);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(is!=null){
+					is.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		BASE64Encoder encoder = new BASE64Encoder();
+		return encoder.encode(data.toByteArray());*/
+		return imgUrl;
 	}
 
 }

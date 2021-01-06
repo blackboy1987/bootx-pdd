@@ -1,56 +1,17 @@
-package com.bootx.pdd.service;
+package com.bootx.pdd.entity;
 
-import com.bootx.constants.PddConfig;
-import com.bootx.pdd.service.impl.PddService;
-import com.bootx.util.JsonUtils;
-import com.pdd.pop.sdk.common.util.JsonUtil;
-import com.pdd.pop.sdk.http.PopAccessTokenClient;
-import com.pdd.pop.sdk.http.PopClient;
-import com.pdd.pop.sdk.http.PopHttpClient;
+import com.bootx.entity.Product;
 import com.pdd.pop.sdk.http.api.pop.request.PddGoodsAddRequest;
-import com.pdd.pop.sdk.http.api.pop.response.PddGoodsAddResponse;
-import com.pdd.pop.sdk.http.token.AccessTokenResponse;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author blackoy
+ * @author black
  */
-@Service
-public class PddServiceImpl implements PddService {
+public final class PddGoodsAdd {
 
-    @Override
-    public String token (String code){
-        PopAccessTokenClient accessTokenClient = new PopAccessTokenClient(PddConfig.clientId,PddConfig.clientSecret);
-        try {
-            AccessTokenResponse response = accessTokenClient.generate(code);
-            return response.getAccessToken();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public String refreshToken(String refreshToken) {
-        PopAccessTokenClient accessTokenClient = new PopAccessTokenClient(PddConfig.clientId,PddConfig.clientSecret);
-        try {
-            AccessTokenResponse response = accessTokenClient.refresh(refreshToken);
-            return response.getAccessToken();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public void addProduct() {
-
-        String accessToken = "your accessToken";
-        PopClient client = new PopHttpClient(PddConfig.clientId,PddConfig.clientSecret);
-
+    public static PddGoodsAddRequest build(Product product){
         PddGoodsAddRequest request = new PddGoodsAddRequest();
         // 坏果包赔
         request.setBadFruitClaim(0);
@@ -60,7 +21,6 @@ public class PddServiceImpl implements PddService {
         List<String> carouselGallery = new ArrayList<String>();
         carouselGallery.add("str");
         request.setCarouselGallery(carouselGallery);
-
         //	商品视频
         List<PddGoodsAddRequest.CarouselVideoItem> carouselVideo = new ArrayList<>();
         PddGoodsAddRequest.CarouselVideoItem item = new PddGoodsAddRequest.CarouselVideoItem();
@@ -230,41 +190,44 @@ public class PddServiceImpl implements PddService {
         request.setSizeSpecId(0L);
 
         List<PddGoodsAddRequest.SkuListItem> skuList = new ArrayList<>();
-        // sku对象列表,实例：[{ "is_onsale": 1, "limit_quantity": 999, "price": "2200", "weight": 1000, "multi_price": "1900", "thumb_url": "http://t06img.yangkeduo.com/images/2018-04-15/ced035033b5d40b589140af882621c03.jpg", "out_sku_sn": "L", "quantity": 100, "spec_id_list": "[25]", "oversea_sku": { "measurement_code": "计量单位编码", "taxation": "税费", "specifications": "规格" } }]
-        PddGoodsAddRequest.SkuListItem item2 = new PddGoodsAddRequest.SkuListItem();
-        // sku上架状态，0-已下架，1-上架中
-        item2.setIsOnsale(0);
-        // sku送装参数：长度
-        item2.setLength(0L);
-        // 	sku购买限制，只入参999
-        item2.setLimitQuantity(0L);
-        // 	商品团购价格
-        item2.setMultiPrice(0L);
-        // 	商品sku外部编码，同其他接口中的outer_id 、out_id、out_sku_sn、outer_sku_sn、out_sku_id、outer_sku_id 都为商家编码（sku维度）。
-        item2.setOutSkuSn("str");
-        // 第三方sku Id
-        item2.setOutSourceSkuId("str");
+        product.getSkus().stream().forEach(sku->{
+            // sku对象列表,实例：[{ "is_onsale": 1, "limit_quantity": 999, "price": "2200", "weight": 1000, "multi_price": "1900", "thumb_url": "http://t06img.yangkeduo.com/images/2018-04-15/ced035033b5d40b589140af882621c03.jpg", "out_sku_sn": "L", "quantity": 100, "spec_id_list": "[25]", "oversea_sku": { "measurement_code": "计量单位编码", "taxation": "税费", "specifications": "规格" } }]
+            PddGoodsAddRequest.SkuListItem item2 = new PddGoodsAddRequest.SkuListItem();
+            // sku上架状态，0-已下架，1-上架中
+            item2.setIsOnsale(0);
+            // sku送装参数：长度
+            item2.setLength(0L);
+            // 	sku购买限制，只入参999
+            item2.setLimitQuantity(0L);
+            // 	商品团购价格
+            item2.setMultiPrice(0L);
+            // 	商品sku外部编码，同其他接口中的outer_id 、out_id、out_sku_sn、outer_sku_sn、out_sku_id、outer_sku_id 都为商家编码（sku维度）。
+            item2.setOutSkuSn(sku.getSn());
+            // 第三方sku Id
+            item2.setOutSourceSkuId(sku.getSn());
 
-        // oversea_sku
-        PddGoodsAddRequest.SkuListItemOverseaSku overseaSku = new PddGoodsAddRequest.SkuListItemOverseaSku();
-        // 计量单位编码，从接口pdd.gooods.sku.measurement.list获取code
-        overseaSku.setMeasurementCode("str");
-        // 规格
-        overseaSku.setSpecifications("str");
-        // 税费
-        overseaSku.setTaxation(0);
-        item2.setOverseaSku(overseaSku);
-        // 商品单买价格
-        item2.setPrice(0L);
-        // 商品sku库存初始数量，后续库存update只使用stocks.update接口进行调用
-        item2.setQuantity(0L);
-        // 商品规格列表，根据pdd.goods.spec.id.get生成的规格属性id，例如：颜色规格下商家新增白色和黑色，大小规格下商家新增L和XL，则由4种spec组合，入参一种组合即可，在skulist中需要有4个spec组合的sku，示例：[20,5]
-        item2.setSpecIdList("str");
-        // 	sku 缩略图
-        item2.setThumbUrl("str");
-        // 	重量，单位为g
-        item2.setWeight(0L);
-        skuList.add(item2);
+            // oversea_sku
+            PddGoodsAddRequest.SkuListItemOverseaSku overseaSku = new PddGoodsAddRequest.SkuListItemOverseaSku();
+            // 计量单位编码，从接口pdd.gooods.sku.measurement.list获取code
+            overseaSku.setMeasurementCode("str");
+            // 规格
+            overseaSku.setSpecifications("str");
+            // 税费
+            overseaSku.setTaxation(0);
+            item2.setOverseaSku(overseaSku);
+            // 商品单买价格
+            item2.setPrice(0L);
+            // 商品sku库存初始数量，后续库存update只使用stocks.update接口进行调用
+            item2.setQuantity(0L);
+            // 商品规格列表，根据pdd.goods.spec.id.get生成的规格属性id，例如：颜色规格下商家新增白色和黑色，大小规格下商家新增L和XL，则由4种spec组合，入参一种组合即可，在skulist中需要有4个spec组合的sku，示例：[20,5]
+            item2.setSpecIdList("str");
+            // 	sku 缩略图
+            item2.setThumbUrl("str");
+            // 	重量，单位为g
+            item2.setWeight(0L);
+            skuList.add(item2);
+        });
+
         request.setSkuList(skuList);
         // 库存方式（0：普通型，1：日历型）
         request.setSkuType(0);
@@ -282,12 +245,6 @@ public class PddServiceImpl implements PddService {
         request.setZhiHuanBuXiu(0);
         // 发货方式。0：无物流发货；1：有物流发货。
         request.setDeliveryType(0);
-        PddGoodsAddResponse response = null;
-        try {
-            response = client.syncInvoke(request, accessToken);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println(JsonUtil.transferToJson(response));
+        return request;
     }
 }

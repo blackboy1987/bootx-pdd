@@ -6,6 +6,7 @@ import com.bootx.common.Pageable;
 import com.bootx.entity.Member;
 import com.bootx.entity.MemberDepositLog;
 import com.bootx.entity.PointLog;
+import com.bootx.entity.Store;
 import com.bootx.security.AuthenticationProvider;
 
 import javax.servlet.http.HttpServletRequest;
@@ -140,16 +141,6 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	void addBalance(Member member, BigDecimal amount, MemberDepositLog.Type type, String memo);
 
 	/**
-	 * 增加冻结金额
-	 * 
-	 * @param member
-	 *            会员
-	 * @param amount
-	 *            值
-	 */
-	void addFrozenAmount(Member member, BigDecimal amount);
-
-	/**
 	 * 增加积分
 	 * 
 	 * @param member
@@ -200,4 +191,6 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
     List<Map<String,Object>> findListTeam(Member member);
 
 	Page<Member> findPage(Pageable pageable, String username, String name, Date beginDate, Date endDate);
+
+	Member create(Store store);
 }

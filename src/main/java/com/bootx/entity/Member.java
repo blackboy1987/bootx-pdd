@@ -36,23 +36,17 @@ public class Member extends User {
 	public static final Set<String> PERMISSIONS = Collections.singleton("member");
 
 	public void init() {
-		setBankArea(null);
-		setBankCard(null);
-		setBankName(null);
 		setUsername(username);
 		setPassword(password);
 		setEmail(email);
 		setMobile(mobile);
 		setPoint(0L);
 		setBalance(BigDecimal.ZERO);
-		setFrozenAmount(BigDecimal.ZERO);
 		setAmount(BigDecimal.ZERO);
 		setIsEnabled(true);
 		setIsLocked(false);
 		setLockDate(null);
-		setIsAuth(false);
 		setName(null);
-		setCard(null);
 		setLastLoginDate(new Date());
 		setSafeKey(null);
 		setMemberDepositLogs(null);
@@ -117,7 +111,7 @@ public class Member extends User {
 	@NotEmpty(groups = Save.class)
 	@Length(min = 4, max = 20)
 	@Pattern.List({ @Pattern(regexp = "^[0-9a-zA-Z_\\u4e00-\\u9fa5]+$"), @Pattern(regexp = "^.*[^\\d].*$") })
-	@Column(nullable = false, updatable = false)
+	@Column(nullable = false, updatable = false,unique = true)
 	private String username;
 
 	/**
@@ -135,18 +129,6 @@ public class Member extends User {
 	private String encodedPassword;
 
 	/**
-	 * 资金密码
-	 */
-	@Length(min = 4, max = 20)
-	@Transient
-	private String password1;
-
-	/**
-	 * 加密资金密码
-	 */
-	private String encodedPassword1;
-
-	/**
 	 * E-mail
 	 */
 	@NotEmpty
@@ -159,10 +141,8 @@ public class Member extends User {
 	/**
 	 * 手机
 	 */
-	@NotEmpty
-	@Length(max = 200)
+	@Length(max = 11)
 	@Pattern(regexp = "^1[3|4|5|6|7|8|9]\\d{9}$")
-	@Column(nullable = false)
 	@JsonView({PageView.class})
 	private String mobile;
 
@@ -179,12 +159,6 @@ public class Member extends User {
 	private BigDecimal balance;
 
 	/**
-	 * 冻结金额
-	 */
-	@Column(precision = 27, scale = 12)
-	private BigDecimal frozenAmount;
-
-	/**
 	 * 消费金额
 	 */
 	@Column(precision = 27, scale = 12)
@@ -196,11 +170,6 @@ public class Member extends User {
 	@Length(max = 200)
 	@JsonView({PageView.class})
 	private String name;
-	/**
-	 * 身份证号
-	 */
-	@JsonView({PageView.class})
-	private String card;
 
 	/**
 	 * 性别
@@ -316,35 +285,6 @@ public class Member extends User {
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private Set<PointLog> pointLogs = new HashSet<>();
 
-	@NotEmpty
-	@Column(nullable = false,updatable = false,unique = true)
-	@JsonView({PageView.class})
-	private String extendCode;
-
-	private String accountId;
-
-	@NotNull
-	@JsonView({PageView.class})
-	private Boolean isAuth;
-
-	/**
-	 * 银行支行名
-	 */
-	@JsonView({PageView.class})
-	private String bankArea;
-
-	/**
-	 * 所属银行
-	 */
-	@JsonView({PageView.class})
-	private String bankName;
-
-	/**
-	 * 银行卡号
-	 */
-	@JsonView({PageView.class})
-	private String bankCard;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Member parent;
 
@@ -409,25 +349,6 @@ public class Member extends User {
 	 */
 	public void setEncodedPassword(String encodedPassword) {
 		this.encodedPassword = encodedPassword;
-	}
-
-	public String getPassword1() {
-		return password1;
-	}
-
-	public void setPassword1(String password1) {
-		this.password1 = password1;
-		if (password1 != null) {
-			setEncodedPassword1(DigestUtils.md5Hex(password1));
-		}
-	}
-
-	public String getEncodedPassword1() {
-		return encodedPassword1;
-	}
-
-	public void setEncodedPassword1(String encodedPassword1) {
-		this.encodedPassword1 = encodedPassword1;
 	}
 
 	/**
@@ -507,25 +428,6 @@ public class Member extends User {
 	}
 
 	/**
-	 * 获取冻结金额
-	 * 
-	 * @return 冻结金额
-	 */
-	public BigDecimal getFrozenAmount() {
-		return frozenAmount;
-	}
-
-	/**
-	 * 设置冻结金额
-	 * 
-	 * @param frozenAmount
-	 *            冻结金额
-	 */
-	public void setFrozenAmount(BigDecimal frozenAmount) {
-		this.frozenAmount = frozenAmount;
-	}
-
-	/**
 	 * 获取消费金额
 	 * 
 	 * @return 消费金额
@@ -561,14 +463,6 @@ public class Member extends User {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getCard() {
-		return card;
-	}
-
-	public void setCard(String card) {
-		this.card = card;
 	}
 
 	/**
@@ -932,55 +826,6 @@ public class Member extends User {
 		this.pointLogs = pointLogs;
 	}
 
-	public String getExtendCode() {
-		return extendCode;
-	}
-
-	public void setExtendCode(String extendCode) {
-		this.extendCode = extendCode;
-	}
-
-	public String getAccountId() {
-		return accountId;
-	}
-
-	public void setAccountId(String accountId) {
-		this.accountId = accountId;
-	}
-
-	public Boolean getIsAuth() {
-		return isAuth;
-	}
-
-	public void setIsAuth(Boolean isAuth) {
-		this.isAuth = isAuth;
-	}
-
-	public String getBankArea() {
-		return bankArea;
-	}
-
-	public void setBankArea(String bankArea) {
-		this.bankArea = bankArea;
-	}
-
-	public String getBankName() {
-		return bankName;
-	}
-
-	public void setBankName(String bankName) {
-		this.bankName = bankName;
-	}
-
-	public String getBankCard() {
-		return bankCard;
-	}
-
-	public void setBankCard(String bankCard) {
-		this.bankCard = bankCard;
-	}
-
-
 	public Member getParent() {
 		return parent;
 	}
@@ -1159,19 +1004,6 @@ public class Member extends User {
 		}
 	}
 
-	/**
-	 * 获取可用余额
-	 * 
-	 * @return 可用余额
-	 */
-	@Transient
-	public BigDecimal getAvailableBalance() {
-		if (getBalance() == null || getFrozenAmount() == null) {
-			return BigDecimal.ZERO;
-		}
-		return getBalance().compareTo(getFrozenAmount()) < 0 ? BigDecimal.ZERO : getBalance().subtract(getFrozenAmount());
-	}
-
 	@Override
 	@Transient
 	public String getDisplayName() {
@@ -1194,10 +1026,6 @@ public class Member extends User {
 	@Transient
 	public boolean isValidCredentials(Object credentials) {
 		return credentials != null && StringUtils.equals(DigestUtils.md5Hex(credentials instanceof char[] ? String.valueOf((char[]) credentials) : String.valueOf(credentials)), getEncodedPassword());
-	}
-	@Transient
-	public boolean isValidCredentials1(Object credentials) {
-		return credentials != null && StringUtils.equals(DigestUtils.md5Hex(credentials instanceof char[] ? String.valueOf((char[]) credentials) : String.valueOf(credentials)), getEncodedPassword1());
 	}
 
 	/**

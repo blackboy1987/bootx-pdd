@@ -5,13 +5,14 @@ import com.bootx.common.Page;
 import com.bootx.common.Pageable;
 import com.bootx.dao.MemberDao;
 import com.bootx.dao.MemberDepositLogDao;
-import com.bootx.dao.MemberRankDao;
 import com.bootx.dao.PointLogDao;
 import com.bootx.entity.*;
 import com.bootx.service.MailService;
+import com.bootx.service.MemberRankService;
 import com.bootx.service.MemberService;
 import com.bootx.service.SmsService;
 import com.bootx.util.CodeUtils;
+import com.bootx.util.JWTUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	@Autowired
 	private MemberDao memberDao;
 	@Autowired
-	private MemberRankDao memberRankDao;
+	private MemberRankService memberRankService;
 	@Autowired
 	private MemberDepositLogDao memberDepositLogDao;
 	@Autowired
@@ -191,27 +192,6 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	}
 
 	@Override
-	public void addFrozenAmount(Member member, BigDecimal amount) {
-		Assert.notNull(member, "[Assertion failed] - member is required; it must not be null");
-		Assert.notNull(amount, "[Assertion failed] - amount is required; it must not be null");
-
-		if (amount.compareTo(BigDecimal.ZERO) == 0) {
-			return;
-		}
-
-		if (!LockModeType.PESSIMISTIC_WRITE.equals(memberDao.getLockMode(member))) {
-			memberDao.flush();
-			memberDao.refresh(member, LockModeType.PESSIMISTIC_WRITE);
-		}
-
-		Assert.notNull(member.getFrozenAmount(), "[Assertion failed] - member frozenAmount is required; it must not be null");
-		Assert.state(member.getFrozenAmount().add(amount).compareTo(BigDecimal.ZERO) >= 0, "[Assertion failed] - member frozenAmount must be equal or greater than 0");
-
-		member.setFrozenAmount(member.getFrozenAmount().add(amount));
-		memberDao.flush();
-	}
-
-	@Override
 	public void addPoint(Member member, long amount, PointLog.Type type, String memo) {
 		Assert.notNull(member, "[Assertion failed] - member is required; it must not be null");
 		Assert.notNull(type, "[Assertion failed] - type is required; it must not be null");
@@ -261,7 +241,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		member.setAmount(member.getAmount().add(amount));
 		MemberRank memberRank = member.getMemberRank();
 		if (memberRank != null && BooleanUtils.isFalse(memberRank.getIsSpecial())) {
-			MemberRank newMemberRank = memberRankDao.findByAmount(member.getAmount());
+			MemberRank newMemberRank = memberRankService.findByAmount(member.getAmount());
 			if (newMemberRank != null && newMemberRank.getAmount() != null && newMemberRank.getAmount().compareTo(memberRank.getAmount()) > 0) {
 				member.setMemberRank(newMemberRank);
 			}
@@ -294,15 +274,12 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 
     @Override
     public Member getCurrent(HttpServletRequest request) {
-		String userId1 = request.getHeader("userId1");
-
+		String token = request.getHeader("token");
 		try{
-			return find(Long.valueOf(userId1));
+			return find(Long.valueOf(JWTUtils.parseToken(token).getId()));
 		}catch (Exception e){
-
 			e.printStackTrace();
 		}
-
 		return null;
     }
 
@@ -331,5 +308,16 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	@Override
 	public Page<Member> findPage(Pageable pageable, String username, String name, Date beginDate, Date endDate) {
 		return memberDao.findPage(pageable,username,name,beginDate,endDate);
+	}
+
+	@Override
+	public Member create(Store store) {
+	    Member member = new Member();
+		member.setUsername(store.getMallName());
+		member.setPassword("12345678");
+		member.setEmail(member.getUsername()+"@qq.com");
+		member.init();
+		member.setMemberRank(memberRankService.findDefault());
+	    return super.save(member);
 	}
 }

@@ -90,6 +90,8 @@ public class Product extends BaseEntity<Long> {
 
 	private Long stock;
 
+	private String pluginId;
+
 	public String getPrice() {
 		return price;
 	}
@@ -233,6 +235,14 @@ public class Product extends BaseEntity<Long> {
 
 	public void setStock(Long stock) {
 		this.stock = stock;
+	}
+
+	public String getPluginId() {
+		return pluginId;
+	}
+
+	public void setPluginId(String pluginId) {
+		this.pluginId = pluginId;
 	}
 
 	/**

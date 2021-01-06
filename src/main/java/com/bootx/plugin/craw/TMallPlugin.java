@@ -13,6 +13,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -64,7 +65,6 @@ public class TMallPlugin extends CrawlerPlugin {
         Product product = new Product();
        try{
            Document root = Jsoup.parse(url(url));
-           // Document root = Jsoup.parse(new File("C:\\Users\\black\\Desktop\\新建文本文档 (3).txt"),"UTF-8");
            title(root,product);
            product.setSpecifications(getSpecifications(root,product));
            more(root,product);
@@ -148,20 +148,35 @@ public class TMallPlugin extends CrawlerPlugin {
         for (Specification specification:specifications) {
             specification.getEntries().forEach(item->map.put(item.getValue(),item.getName()));
         }
-        Map<String, Sku> skuMap = jsonRootBean.getValItemInfo().getSkuMap();
-        for (String key:skuMap.keySet()) {
+        if(jsonRootBean.getValItemInfo()!=null&&jsonRootBean.getValItemInfo().getSkuMap().size()>0){
+            Map<String, Sku> skuMap = jsonRootBean.getValItemInfo().getSkuMap();
+            for (String key:skuMap.keySet()) {
+                com.bootx.entity.Sku sku = new com.bootx.entity.Sku();
+                sku.setSpecificationValues(new ArrayList<>());
+                sku.setProduct(product);
+                sku.setSn(skuMap.get(key).getSkuId());
+                sku.setStock(skuMap.get(key).getStock());
+                sku.setPrice(skuMap.get(key).getPrice());
+                String[] keys = StringUtils.split(key, ";");
+                for (String key1:keys) {
+                    sku.getSpecificationValues().add(new SpecificationValue(key1,map.get(key1)));
+                }
+                skus.add(sku);
+            }
+        }else{
             com.bootx.entity.Sku sku = new com.bootx.entity.Sku();
             sku.setSpecificationValues(new ArrayList<>());
             sku.setProduct(product);
-            sku.setSn(skuMap.get(key).getSkuId());
-            sku.setStock(skuMap.get(key).getStock());
-            sku.setPrice(skuMap.get(key).getPrice());
-            String[] keys = StringUtils.split(key, ";");
-            for (String key1:keys) {
-                sku.getSpecificationValues().add(new SpecificationValue(key1,map.get(key1)));
+            sku.setSn("abc");
+            sku.setStock(product.getStock());
+            try{
+                sku.setPrice(new BigDecimal(product.getPrice()));
+            }catch (Exception e){
+                e.printStackTrace();
             }
             skus.add(sku);
         }
+
         return skus;
     }
 
