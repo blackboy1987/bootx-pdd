@@ -3,6 +3,8 @@ package com.bootx.service;
 
 import com.bootx.entity.Product;
 
+import java.util.List;
+
 /**
  * Service - 审计日志
  * 
@@ -11,5 +13,5 @@ import com.bootx.entity.Product;
  */
 public interface ProductService extends BaseService<Product, Long> {
 
-	void crawler(String[] urls, Integer type);
+	List<Product> crawler(String[] urls, Integer type);
 }

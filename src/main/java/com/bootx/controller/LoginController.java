@@ -24,7 +24,7 @@ import java.util.Map;
  * @version 1.0
  */
 @RestController("memberLoginController")
-@RequestMapping("/api/login")
+@RequestMapping("/pdd/login")
 public class LoginController extends BaseController {
 
 	@Autowired

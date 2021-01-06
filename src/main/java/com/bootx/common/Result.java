@@ -15,13 +15,7 @@ public class Result {
 	private Integer code;
 
 	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class})
-	private Integer type;
-
-	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class})
 	private String content;
-
-	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class})
-	private String message;
 
 	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class})
 	private Object date;
@@ -35,28 +29,12 @@ public class Result {
 		this.code = code;
 	}
 
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
 	public String getContent() {
 		return content;
 	}
 
 	public void setContent(String content) {
 		this.content = content;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	public Object getDate() {
@@ -73,31 +51,29 @@ public class Result {
 	public Result() {
 	}
 
-	public Result(Integer type,Integer code, String message,String content, Object date) {
+	public Result(Integer code, String content, Object date) {
 		this.code = code;
-		this.type = type;
-		this.message = message;
 		this.content = content;
 		this.date = date;
 	}
 
-	public static Result success(String message, Object data) {
-		return new Result(200,0, message,message, data);
+	public static Result success(String content, Object data) {
+		return new Result(0, content, data);
 	}
 
-	public static Result ok (Integer type,Integer code, String message,String content, Object date) {
-		return new Result(type,code,message,content,date);
+	public static Result ok (Integer code, String content, Object date) {
+		return new Result(code,content,date);
 	}
-	public static Result ok (Integer type, String message,String content, Object date) {
-		return new Result(type,200,message,content,date);
+	public static Result ok (String content, Object date) {
+		return new Result(200,content,date);
 	}
 
 	public static Result success(Object data) {
-		return new Result(200,0, "请求成功","请求成功", data);
+		return new Result(200,"请求成功", data);
 	}
 
 
-	public static Result error(String message) {
-		return new Result(400,null, message,message, null);
+	public static Result error(String content) {
+		return new Result(400,content, null);
 	}
 }

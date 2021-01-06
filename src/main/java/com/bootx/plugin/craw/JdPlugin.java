@@ -5,20 +5,23 @@
  */
 package com.bootx.plugin.craw;
 
-import com.bootx.entity.PluginConfig;
-import com.bootx.entity.Product;
-import com.bootx.entity.ProductCategory;
+import com.bootx.entity.*;
 import com.bootx.plugin.CrawlerPlugin;
+import com.bootx.plugin.craw.pojo.jd.JsonRootBean;
+import com.bootx.util.JsonUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * Plugin - FTP存储
@@ -117,7 +120,155 @@ public class JdPlugin extends CrawlerPlugin {
 
 	@Override
 	public Product product(String url) {
-		return null;
+		String html = testUserHttpUnit(url);
+		Product product = new Product();
+		Document root = Jsoup.parse(html);
+		Elements elements = root.select("script[charset='gbk']");
+		if(elements!=null&&elements.size()>0){
+			String data = elements.first().data();
+			System.out.println(data);
+			data = data.replace(" ","").replace("\n","").replace("\r","").replace("\r\n","");
+			System.out.println(data);
+			data = data.split("varpageConfig=")[1].split(";try")[0];
+			System.out.println(data);
+
+			product.setParameterValues(parameterValues(root,product));
+			product.setSpecifications(specifications(root));
+			product.setIntroduction(introduction(root,product));
+			ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+			try{
+				Object eval = engine.eval("JSON.stringify(" + data + ")");
+				System.out.println(eval);
+				JsonRootBean jsonRootBean = JsonUtils.toObject(eval.toString(),JsonRootBean.class);
+				product.setName(jsonRootBean.getProduct().getName());
+				product.setProductImages(productImages(jsonRootBean));
+				product.setSkus(skus(jsonRootBean,product));
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+		return product;
+	}
+
+	private String introduction(Document root, Product product) {
+		product.setIntroductionImages(new ArrayList<>());
+		Element content = root.getElementById("J-detail-content");
+		if(content!=null){
+			Elements imgs = content.getElementsByTag("img");
+			if(imgs!=null){
+				imgs.stream().forEach(img->{
+					product.getIntroductionImages().add(img.attr("src"));
+				});
+			}
+
+
+			return content.html();
+		}
+		return "";
+
+	}
+
+	private List<ParameterValue> parameterValues(Document root, Product product) {
+		List<ParameterValue> parameterValues = new ArrayList<>();
+		Elements elements = root.getElementsByClass("p-parameter");
+		if(elements!=null){
+			AtomicReference<Integer> index = new AtomicReference<>(0);
+			elements.stream().forEach(item->{
+				ParameterValue parameterValue = new ParameterValue();
+				parameterValue.setEntries(new ArrayList<>());
+				parameterValue.setGroup("参数"+(index.getAndSet(index.get() + 1)));
+				Elements elements1 = item.getElementsByTag("li");
+				if(elements1!=null){
+					elements1.stream().forEach(item1->{
+						String text = item1.text();
+						if(StringUtils.isNotBlank(text)){
+							String[] texts = text.split(":");
+							if(texts.length==2){
+								parameterValue.getEntries().add(new ParameterValue.Entry(texts[0],texts[1]));
+							}
+						}
+					});
+				}
+				if(parameterValue.getEntries().size()>0){
+					parameterValues.add(parameterValue);
+				}
+			});
+		}
+		return parameterValues;
+	}
+
+	private List<Specification> specifications(Document root) {
+		Element chooseAttrs = root.getElementById("choose-attrs");
+		List<Specification> specifications = new ArrayList<>();
+		if(chooseAttrs!=null){
+			Elements pChooses = chooseAttrs.getElementsByClass("p-choose");
+			Integer order = 0;
+			for (Element pChoose:pChooses){
+				Specification specification = new Specification();
+				specification.setOrder(order++);
+				specification.setName(pChoose.attr("data-type"));
+				specification.setEntries(new ArrayList<>());
+				specification.setOptions(new ArrayList());
+				Elements dds = pChoose.getElementsByClass("dd");
+				if(dds!=null&&dds.size()>0){
+					Elements items = dds.first().getElementsByClass("item");
+					if(items!=null&&items.size()>0){
+						Integer order1 = 0;
+						items.stream().forEach(item->{
+							specification.getOptions().add(item.text());
+							Elements imgs = item.getElementsByTag("img");
+							if (imgs!=null&&imgs.size()>0) {
+								specification.getEntries().add(new Specification.Entry(item.text(),(order1+1)+"",imgs.first().attr("src")));
+							}else{
+								specification.getEntries().add(new Specification.Entry(item.text(),(order1+1)+"",null));
+							}
+						});
+					}
+				}
+			}
+		}
+		return specifications;
+	}
+
+	private Set<Sku> skus(JsonRootBean jsonRootBean,Product product) {
+		List<Map<String,String>> colorSizes = jsonRootBean.getProduct().getColorSize();
+		Set<Sku> skus = new HashSet<>();
+		Map<String,Integer> map = new HashMap<>();;
+		product.getSpecifications().stream().forEach(item->{
+			map.put(item.getName(),item.getOrder());
+		});
+		colorSizes.stream().forEach(item->{
+			Sku sku = new Sku();
+			sku.setSpecificationValues(new ArrayList<>());
+			for (String key:item.keySet()) {
+				SpecificationValue specificationValue = new SpecificationValue();
+				if(StringUtils.equals("skuId", key)){
+					sku.setSn(item.get("skuId"));
+				}else{
+					specificationValue.setName(key);
+					specificationValue.setValue(item.get(key));
+					specificationValue.setId(map.get(key)+"");
+				}
+				sku.getSpecificationValues().add(specificationValue);
+			}
+			skus.add(sku);
+		});
+		return skus;
+	}
+
+	private List<ProductImage> productImages(JsonRootBean jsonRootBean) {
+		AtomicReference<Integer> order = new AtomicReference<>(0);
+		return jsonRootBean.getProduct().getImageList().stream().map(img->{
+			ProductImage productImage = new ProductImage();
+			productImage.setLarge(img);
+			productImage.setMedium(img);
+			productImage.setSource(img);
+			productImage.setThumbnail(img);
+			productImage.setOrder(order.getAndSet(order.get() + 1));
+			return productImage;
+		}).collect(Collectors.toList());
+
+
 	}
 
 	@Override

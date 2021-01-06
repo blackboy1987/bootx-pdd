@@ -52,6 +52,10 @@ public class Product extends BaseEntity<Long> {
 	@Lob
 	private String introduction;
 
+	@Length(max = 6000)
+	@Convert(converter = IntroductionImagesConverter.class)
+	private List<String> introductionImages = new ArrayList<>();
+
 	/**
 	 * 参数值
 	 */
@@ -144,6 +148,14 @@ public class Product extends BaseEntity<Long> {
 	 */
 	public void setIntroduction(String introduction) {
 		this.introduction = introduction;
+	}
+
+	public List<String> getIntroductionImages() {
+		return introductionImages;
+	}
+
+	public void setIntroductionImages(List<String> introductionImages) {
+		this.introductionImages = introductionImages;
 	}
 
 	/**
@@ -297,5 +309,9 @@ public class Product extends BaseEntity<Long> {
 	 */
 	@Converter
 	public static class MoreInfoConverter extends BaseAttributeConverter<Map<String,Object>> {
+	}
+
+	@Converter
+	public static class IntroductionImagesConverter extends BaseAttributeConverter<List<String>> {
 	}
 }

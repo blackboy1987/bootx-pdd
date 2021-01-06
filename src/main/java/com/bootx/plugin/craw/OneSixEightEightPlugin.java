@@ -67,9 +67,10 @@ public class OneSixEightEightPlugin extends CrawlerPlugin {
     @Override
     public Product product(String url) {
         Product product = new Product();
-        // Document root = Jsoup.parse(url(url));
+
        try{
-           Document root = Jsoup.parse(new File("C:\\Users\\black\\Desktop\\新建文本文档 (2).txt"),"UTF-8");
+           Document root = Jsoup.parse(url(url));
+           // Document root = Jsoup.parse(new File("C:\\Users\\black\\Desktop\\新建文本文档 (2).txt"),"UTF-8");
            title(root,product);
            more(root,product);
        }catch (Exception e){

@@ -29,6 +29,8 @@ public class SpecificationValue implements Serializable {
 	@NotNull
 	private String id;
 
+	private String name;
+
 	/**
 	 * 值
 	 */
@@ -41,6 +43,12 @@ public class SpecificationValue implements Serializable {
 
 	public SpecificationValue(@NotNull String id, @NotEmpty @Length(max = 200) String value) {
 		this.id = id;
+		this.value = value;
+	}
+
+	public SpecificationValue(@NotNull String id, String name, @NotEmpty @Length(max = 200) String value) {
+		this.id = id;
+		this.name = name;
 		this.value = value;
 	}
 
@@ -61,6 +69,14 @@ public class SpecificationValue implements Serializable {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
