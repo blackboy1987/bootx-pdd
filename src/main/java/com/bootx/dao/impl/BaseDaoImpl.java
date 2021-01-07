@@ -241,7 +241,11 @@ public abstract class BaseDaoImpl<T extends BaseEntity<ID>, ID extends Serializa
 	public void persist(T entity) {
 		Assert.notNull(entity, "[Assertion failed] - entity is required; it must not be null");
 
-		entityManager.persist(entity);
+		try{
+			entityManager.persist(entity);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override

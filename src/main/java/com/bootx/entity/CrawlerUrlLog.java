@@ -1,6 +1,7 @@
 package com.bootx.entity;
 
 import com.bootx.common.BaseAttributeConverter;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -19,21 +20,34 @@ public class CrawlerUrlLog extends BaseEntity<Long>{
     @JoinColumn(nullable = false,updatable = false)
     private CrawlerLog crawlerLog;
 
+    private String crawlerLogSn;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false,updatable = false)
+    private Member member;
+
     @NotEmpty
     @Column(length = 400,nullable = false,updatable = false,unique = true)
     private String url;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Product product;
-
-    @NotEmpty
-    @Column(nullable = false,updatable = false,unique = true)
     private String productId;
 
     @Convert(converter = MoreInfoConverter.class)
     private Map<String,Object> moreInfo = new HashMap<>();
 
+    private Integer type;
+
     private String memo;
+
+
+    /**
+     * 0：正在抓取
+     * 1：抓取完成
+     * 2：抓取失败
+     */
+    @JsonView({PageView.class})
+    private Integer status;
 
     public CrawlerLog getCrawlerLog() {
         return crawlerLog;
@@ -43,20 +57,28 @@ public class CrawlerUrlLog extends BaseEntity<Long>{
         this.crawlerLog = crawlerLog;
     }
 
+    public String getCrawlerLogSn() {
+        return crawlerLogSn;
+    }
+
+    public void setCrawlerLogSn(String crawlerLogSn) {
+        this.crawlerLogSn = crawlerLogSn;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
     public String getUrl() {
         return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public String getProductId() {
@@ -75,12 +97,28 @@ public class CrawlerUrlLog extends BaseEntity<Long>{
         this.moreInfo = moreInfo;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public String getMemo() {
         return memo;
     }
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     /**

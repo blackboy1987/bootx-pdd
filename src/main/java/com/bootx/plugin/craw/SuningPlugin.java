@@ -128,7 +128,7 @@ public class SuningPlugin extends CrawlerPlugin {
 	public Product product(String url) {
 		Product product = new Product();
 		// Document root = Jsoup.parse(new URL(url), 5000);
-		Document root = Jsoup.parse(testUserHttpUnit(url));
+		Document root = Jsoup.parse(testUserHttpUnit(url,5000));
 		// 商品名称
 		String productName = root.getElementById("itemDisplayName").text();
 		String mainprice = root.getElementsByClass("mainprice").first().text();

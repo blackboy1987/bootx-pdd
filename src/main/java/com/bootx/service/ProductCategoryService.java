@@ -125,4 +125,5 @@ public interface ProductCategoryService extends BaseService<ProductCategory, Lon
 	 */
 	List<ProductCategory> findChildren(Long productCategoryId, boolean recursive, Integer count, boolean useCache);
 
+    ProductCategory findByOtherId(String otherId);
 }

@@ -44,6 +44,7 @@ public class InitController extends BaseController {
     }
     @GetMapping("/category")
     public String category(String pluginId){
+        jdbcTemplate.update("update productcategory set parent_id=null where pluginId=?",pluginId);
         jdbcTemplate.update("delete from productcategory where pluginId=?",pluginId);
         CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);
         List<ProductCategory> productCategories = crawlerPlugin.productCategory();

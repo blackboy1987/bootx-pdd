@@ -168,4 +168,8 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 		productCategory.setGrade(productCategory.getParentIds().length);
 	}
 
+	@Override
+	public ProductCategory findByOtherId(String otherId) {
+		return productCategoryDao.find("otherId",otherId);
+	}
 }

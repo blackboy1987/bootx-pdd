@@ -3,7 +3,6 @@ package com.bootx.plugin.craw.pojo.jd;
 import com.bootx.common.BaseAttributeConverter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.Convert;
 import javax.persistence.Converter;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Product implements Serializable {
+public class Product1 implements Serializable {
     private ImageAndVideoJson imageAndVideoJson;
     private Long skuid;
     private String name;
@@ -24,9 +23,6 @@ public class Product implements Serializable {
     private Integer pType;
     private Long venderId;
     private String shopId;
-
-    @Convert(converter = ColorSizeConverter.class)
-    private List<Map<String, String>> colorSize = new ArrayList<>();
 
     private String desc;
 
@@ -124,14 +120,6 @@ public class Product implements Serializable {
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
-    }
-
-    public List<Map<String, String>> getColorSize() {
-        return colorSize;
-    }
-
-    public void setColorSize(List<Map<String, String>> colorSize) {
-        this.colorSize = colorSize;
     }
 
     public String getDesc() {

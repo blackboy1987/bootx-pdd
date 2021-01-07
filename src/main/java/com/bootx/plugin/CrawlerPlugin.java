@@ -205,7 +205,7 @@ public abstract class CrawlerPlugin implements Comparable<CrawlerPlugin> {
 	}
 
 
-	public String testUserHttpUnit(String url){
+	public String testUserHttpUnit(String url,Integer timeout){
 
 		try{
 			//构造一个webClient 模拟Chrome 浏览器
@@ -221,7 +221,7 @@ public abstract class CrawlerPlugin implements Comparable<CrawlerPlugin> {
 			webClient.getOptions().setCssEnabled(false);
 			webClient.getOptions().setThrowExceptionOnScriptError(false);
 			webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-			webClient.getOptions().setTimeout(5000);
+			webClient.getOptions().setTimeout(timeout);
 			HtmlPage rootPage = webClient.getPage(url);
 //设置一个运行JavaScript的时间
 			webClient.waitForBackgroundJavaScript(5000);

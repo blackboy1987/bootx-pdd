@@ -1,10 +1,12 @@
 package com.bootx.entity;
 
 import com.bootx.common.BaseAttributeConverter;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,14 +21,28 @@ public class CrawlerLog extends BaseEntity<Long>{
 
     @NotEmpty
     @Column(nullable = false,updatable = false,unique = true)
+    @JsonView({PageView.class})
     private String sn;
 
     @OneToMany(mappedBy = "crawlerLog",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Set<CrawlerUrlLog> crawlerUrlLogs = new HashSet<>();
 
+    @Column(length = 500)
+    @Convert(converter = PluginIdConverter.class)
+    @JsonView({PageView.class})
+    private List<String> pluginIds = new ArrayList<>();
+
     @NotNull
     @Column(nullable = false,updatable = false)
+    @JsonView({PageView.class})
     private Integer type;
+
+    /**
+     * 0：正在抓取
+     * 1：抓取完成
+     */
+    @JsonView({PageView.class})
+    private Integer status;
 
     public Member getMember() {
         return member;
@@ -60,6 +76,21 @@ public class CrawlerLog extends BaseEntity<Long>{
         this.type = type;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public List<String> getPluginIds() {
+        return pluginIds;
+    }
+
+    public void setPluginIds(List<String> pluginIds) {
+        this.pluginIds = pluginIds;
+    }
     /**
      * 类型转换 - 规格项
      *
@@ -67,6 +98,6 @@ public class CrawlerLog extends BaseEntity<Long>{
      * @version 1.0
      */
     @Converter
-    public static class UrlConverter extends BaseAttributeConverter<List<String>> {
+    public static class PluginIdConverter extends BaseAttributeConverter<List<String>> {
     }
 }

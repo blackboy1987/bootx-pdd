@@ -11,4 +11,5 @@ import com.bootx.entity.CrawlerUrlLog;
  */
 public interface CrawlerUrlLogDao extends BaseDao<CrawlerUrlLog, Long> {
 
+    CrawlerUrlLog findByUrlAndCrawlerLogSn(String url, String crawlerLogSn);
 }

@@ -27,6 +27,11 @@ public class Product extends BaseEntity<Long> {
 
 	private static final long serialVersionUID = -6977025562650112419L;
 
+	private String sn;
+
+	@Transient
+	private String crawlerLogSn;
+
 	/**
 	 * 名称
 	 */
@@ -52,9 +57,7 @@ public class Product extends BaseEntity<Long> {
 	@Lob
 	private String introduction;
 
-	@Length(max = 6000)
-	@Convert(converter = IntroductionImagesConverter.class)
-	private List<String> introductionImages = new ArrayList<>();
+
 
 	/**
 	 * 参数值
@@ -73,9 +76,7 @@ public class Product extends BaseEntity<Long> {
 	/**
 	 * 规格项
 	 */
-	@Valid
-	@Column(length = 4000)
-	@Convert(converter = SpecificationConverter.class)
+	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private List<Specification> specifications = new ArrayList<>();
 	/**
 	 * 商品分类
@@ -84,6 +85,9 @@ public class Product extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(nullable = false)
 	private ProductCategory productCategory;
+
+	@Transient
+	private Long productCategoryId;
 
 	@Valid
 	@Column(length = 4000)
@@ -95,6 +99,27 @@ public class Product extends BaseEntity<Long> {
 	private Long stock;
 
 	private String pluginId;
+
+	private String url;
+
+	@OneToOne(mappedBy = "product",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	private IntroductionImage introductionImage;
+
+	public String getSn() {
+		return sn;
+	}
+
+	public void setSn(String sn) {
+		this.sn = sn;
+	}
+
+	public String getCrawlerLogSn() {
+		return crawlerLogSn;
+	}
+
+	public void setCrawlerLogSn(String crawlerLogSn) {
+		this.crawlerLogSn = crawlerLogSn;
+	}
 
 	public String getPrice() {
 		return price;
@@ -150,12 +175,12 @@ public class Product extends BaseEntity<Long> {
 		this.introduction = introduction;
 	}
 
-	public List<String> getIntroductionImages() {
-		return introductionImages;
+	public IntroductionImage getIntroductionImage() {
+		return introductionImage;
 	}
 
-	public void setIntroductionImages(List<String> introductionImages) {
-		this.introductionImages = introductionImages;
+	public void setIntroductionImage(IntroductionImage introductionImage) {
+		this.introductionImage = introductionImage;
 	}
 
 	/**
@@ -231,6 +256,14 @@ public class Product extends BaseEntity<Long> {
 		return productCategory;
 	}
 
+	public Long getProductCategoryId() {
+		return productCategoryId;
+	}
+
+	public void setProductCategoryId(Long productCategoryId) {
+		this.productCategoryId = productCategoryId;
+	}
+
 	/**
 	 * 设置商品分类
 	 *
@@ -255,6 +288,14 @@ public class Product extends BaseEntity<Long> {
 
 	public void setPluginId(String pluginId) {
 		this.pluginId = pluginId;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	/**
@@ -298,20 +339,7 @@ public class Product extends BaseEntity<Long> {
 	 * @version 1.0
 	 */
 	@Converter
-	public static class SpecificationConverter extends BaseAttributeConverter<List<Specification>> {
-	}
-
-	/**
-	 * 类型转换 - 规格项
-	 *
-	 * @author IGOMALL  Team
-	 * @version 1.0
-	 */
-	@Converter
 	public static class MoreInfoConverter extends BaseAttributeConverter<Map<String,Object>> {
 	}
 
-	@Converter
-	public static class IntroductionImagesConverter extends BaseAttributeConverter<List<String>> {
-	}
 }

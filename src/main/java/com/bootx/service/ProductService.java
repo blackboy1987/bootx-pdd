@@ -1,6 +1,7 @@
 
 package com.bootx.service;
 
+import com.bootx.entity.CrawlerLog;
 import com.bootx.entity.Product;
 
 import java.util.List;
@@ -13,5 +14,6 @@ import java.util.List;
  */
 public interface ProductService extends BaseService<Product, Long> {
 
-	List<Product> crawler(String[] urls, Integer type);
+	List<Product> crawler(CrawlerLog crawlerLog,String[] urls, Integer type);
+
 }

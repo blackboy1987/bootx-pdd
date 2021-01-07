@@ -9,11 +9,8 @@ import cn.hutool.core.builder.EqualsBuilder;
 import cn.hutool.core.builder.HashCodeBuilder;
 import com.bootx.common.BaseAttributeConverter;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,41 +22,31 @@ import java.util.List;
  * @version 1.0
  */
 @Entity
-public class Specification extends OrderedEntity<Long> {
+public class Specification extends BaseEntity<Long> {
 
-	private static final long serialVersionUID = -6346775052811140926L;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Product product;
 
 	/**
 	 * 名称
 	 */
-	@NotEmpty
-	@Length(max = 200)
-	@Column(nullable = false)
 	private String name;
 
-	/**
-	 * 绑定分类
-	 */
-	@NotNull(groups = Save.class)
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(nullable = false, updatable = false)
-	private ProductCategory productCategory;
-
-	/**
-	 * 可选项
-	 */
-	@NotEmpty
-	@Column(nullable = false, length = 4000)
+	@Column(length = 2000)
 	@Convert(converter = OptionConverter.class)
 	private List<String> options = new ArrayList<>();
 
-	/**
-	 * 条目
-	 */
-	@Valid
-	@javax.validation.constraints.NotEmpty
-	@Transient
+	@Column(length = 6000)
+	@Convert(converter = SpecificationEntityConverter.class)
 	private List<Specification.Entry> entries = new ArrayList<>();
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 
 	/**
 	 * 获取名称
@@ -80,24 +67,6 @@ public class Specification extends OrderedEntity<Long> {
 		this.name = name;
 	}
 
-	/**
-	 * 获取绑定分类
-	 * 
-	 * @return 绑定分类
-	 */
-	public ProductCategory getProductCategory() {
-		return productCategory;
-	}
-
-	/**
-	 * 设置绑定分类
-	 * 
-	 * @param productCategory
-	 *            绑定分类
-	 */
-	public void setProductCategory(ProductCategory productCategory) {
-		this.productCategory = productCategory;
-	}
 
 	/**
 	 * 获取可选项
@@ -145,6 +114,16 @@ public class Specification extends OrderedEntity<Long> {
 	 */
 	@Converter
 	public static class OptionConverter extends BaseAttributeConverter<List<String>> {
+	}
+
+	/**
+	 * 类型转换 - 规格项
+	 *
+	 * @author IGOMALL  Team
+	 * @version 1.0
+	 */
+	@Converter
+	public static class SpecificationEntityConverter extends BaseAttributeConverter<List<Specification.Entry>> {
 	}
 
 
@@ -252,4 +231,6 @@ public class Specification extends OrderedEntity<Long> {
 			return HashCodeBuilder.reflectionHashCode(this);
 		}
 	}
+
+
 }

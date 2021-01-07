@@ -11,14 +11,14 @@ import com.fasterxml.jackson.annotation.JsonView;
  */
 public class Result {
 
-	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class})
+	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class, BaseEntity.PageView.class})
 	private Integer code;
 
-	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class})
+	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class, BaseEntity.PageView.class})
 	private String content;
 
-	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class})
-	private Object date;
+	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class, BaseEntity.PageView.class})
+	private Object data;
 
 
 	public Integer getCode() {
@@ -37,12 +37,12 @@ public class Result {
 		this.content = content;
 	}
 
-	public Object getDate() {
-		return date;
+	public Object getData() {
+		return data;
 	}
 
-	public void setDate(Object date) {
-		this.date = date;
+	public void setData(Object data) {
+		this.data = data;
 	}
 
 	/**
@@ -51,10 +51,10 @@ public class Result {
 	public Result() {
 	}
 
-	public Result(Integer code, String content, Object date) {
+	public Result(Integer code, String content, Object data) {
 		this.code = code;
 		this.content = content;
-		this.date = date;
+		this.data = data;
 	}
 
 	public static Result success(String content, Object data) {

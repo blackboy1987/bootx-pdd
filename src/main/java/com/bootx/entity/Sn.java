@@ -55,7 +55,8 @@ public class Sn extends BaseEntity<Long> {
 		 */
 		PAYMENT_TRANSACTION,
 
-		/**
+        crawler,
+        /**
 		 * 平台服务
 		 */
 		PLATFORM_SERVICE

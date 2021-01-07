@@ -2,6 +2,7 @@
 package com.bootx.service;
 
 import com.bootx.entity.CrawlerLog;
+import com.bootx.entity.Member;
 
 /**
  * Service - 审计日志
@@ -11,5 +12,5 @@ import com.bootx.entity.CrawlerLog;
  */
 public interface CrawlerLogService extends BaseService<CrawlerLog, Long> {
 
-    void save(String[] urls, Integer type);
+    CrawlerLog save(Member member, String[] urls, Integer type);
 }
