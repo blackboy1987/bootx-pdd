@@ -44,7 +44,9 @@ public class CrawlerLogServiceImpl extends BaseServiceImpl<CrawlerLog, Long> imp
             if(StringUtils.isNotBlank(CrawlerUtils.getPlugInId(url)) &&!crawlerLog.getPluginIds().contains(CrawlerUtils.getPlugInId(url))){
                 crawlerLog.getPluginIds().add(CrawlerUtils.getPlugInId(url));
             }
-
+            crawlerLog.setTotal(urls.length);
+            crawlerLog.setSuccess(0);
+            crawlerLog.setFail(0);
         }
         return super.save(crawlerLog);
     }

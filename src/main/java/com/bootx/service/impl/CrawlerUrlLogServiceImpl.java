@@ -2,9 +2,12 @@
 package com.bootx.service.impl;
 
 import com.bootx.dao.CrawlerUrlLogDao;
+import com.bootx.entity.CrawlerLog;
 import com.bootx.entity.CrawlerUrlLog;
+import com.bootx.service.CrawlerLogService;
 import com.bootx.service.CrawlerUrlLogService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -19,6 +22,8 @@ public class CrawlerUrlLogServiceImpl extends BaseServiceImpl<CrawlerUrlLog, Lon
 
     @Resource
     private CrawlerUrlLogDao crawlerUrlLogDao;
+    @Resource
+    private CrawlerLogService crawlerLogService;
 
     @Override
     public CrawlerUrlLog findByUrl(String url) {
@@ -33,7 +38,15 @@ public class CrawlerUrlLogServiceImpl extends BaseServiceImpl<CrawlerUrlLog, Lon
             crawlerUrlLog.setProductId(productSn);
             crawlerUrlLog.setMemo(memo);
             super.update(crawlerUrlLog);
-            jdbcTemplate.update("update crawlerlog as crawlerLog set status=1 where crawlerLog.status=0 and (select count(crawlerUrlLog.id) from crawlerurllog as crawlerUrlLog where crawlerUrlLog.crawlerLog_id=crawlerLog.id and crawlerUrlLog.status=0)=0");
+            CrawlerLog crawlerLog = crawlerUrlLog.getCrawlerLog();
+            if(status==1){
+                // 成功
+                crawlerLog.setSuccess(crawlerLog.getSuccess()+1);
+            }else if(status==2){
+                // 失败
+                crawlerLog.setSuccess(crawlerLog.getFail()+1);
+            }
+            crawlerLogService.update(crawlerLog);
         }
     }
 
@@ -44,7 +57,15 @@ public class CrawlerUrlLogServiceImpl extends BaseServiceImpl<CrawlerUrlLog, Lon
             crawlerUrlLog.setStatus(status);
             crawlerUrlLog.setMemo(memo);
             super.update(crawlerUrlLog);
-            jdbcTemplate.update("update crawlerlog as crawlerLog set status=1 where crawlerLog.status=0 and (select count(crawlerUrlLog.id) from crawlerurllog as crawlerUrlLog where crawlerUrlLog.crawlerLog_id=crawlerLog.id and crawlerUrlLog.status=0)=0");
+            CrawlerLog crawlerLog = crawlerUrlLog.getCrawlerLog();
+            if(status==1){
+                // 成功
+                crawlerLog.setSuccess(crawlerLog.getSuccess()+1);
+            }else if(status==2){
+                // 失败
+                crawlerLog.setSuccess(crawlerLog.getFail()+1);
+            }
+            crawlerLogService.update(crawlerLog);
         }
     }
 

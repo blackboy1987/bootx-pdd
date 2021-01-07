@@ -4,6 +4,7 @@ import com.bootx.common.BaseAttributeConverter;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -43,6 +44,24 @@ public class CrawlerLog extends BaseEntity<Long>{
      */
     @JsonView({PageView.class})
     private Integer status;
+
+    @NotNull
+    @Min(0)
+    @Column(nullable = false)
+    @JsonView({PageView.class})
+    private Integer total;
+
+    @NotNull
+    @Min(0)
+    @Column(nullable = false)
+    @JsonView({PageView.class})
+    private Integer success;
+
+    @NotNull
+    @Min(0)
+    @Column(nullable = false)
+    @JsonView({PageView.class})
+    private Integer fail;
 
     public Member getMember() {
         return member;
@@ -91,6 +110,31 @@ public class CrawlerLog extends BaseEntity<Long>{
     public void setPluginIds(List<String> pluginIds) {
         this.pluginIds = pluginIds;
     }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+
+    public Integer getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Integer success) {
+        this.success = success;
+    }
+
+    public Integer getFail() {
+        return fail;
+    }
+
+    public void setFail(Integer fail) {
+        this.fail = fail;
+    }
+
     /**
      * 类型转换 - 规格项
      *
