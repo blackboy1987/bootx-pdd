@@ -75,13 +75,13 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements St
 	}
 
 	@Override
-	public Store create(AccessToken accessToken){
-		Store store = findByMallId(Long.valueOf(accessToken.getOwnerId()));
+	public Store create(String ownerId,String ownerName){
+		Store store = findByMallId(Long.valueOf(ownerId));
 		if(store==null){
 			try {
 				store = new Store();
-				store.setMallName(accessToken.getOwnerName());
-				store.setMallId(Long.valueOf(accessToken.getOwnerId()));
+				store.setMallName(ownerName);
+				store.setMallId(Long.valueOf(ownerId));
 				return super.save(store);
 			}catch (Exception e){
 				e.printStackTrace();

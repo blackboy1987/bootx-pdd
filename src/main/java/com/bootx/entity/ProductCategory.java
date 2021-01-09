@@ -5,6 +5,7 @@
  */
 package com.bootx.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -39,6 +40,7 @@ public class ProductCategory extends OrderedEntity<Long> {
 	@NotEmpty
 	@Length(max = 200)
 	@Column(nullable = false)
+	@JsonView({PageView.class,TreeView.class})
 	private String name;
 
 	/**
@@ -57,6 +59,7 @@ public class ProductCategory extends OrderedEntity<Long> {
 	 * 上级分类
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonView({PageView.class})
 	private ProductCategory parent;
 
 	/**
@@ -71,6 +74,7 @@ public class ProductCategory extends OrderedEntity<Long> {
 	 */
 	@OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
 	@OrderBy("order asc")
+	@JsonView({TreeView.class})
 	private Set<ProductCategory> children = new HashSet<>();
 
 	private String otherId;

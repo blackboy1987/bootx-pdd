@@ -48,6 +48,7 @@ dependencies {
 
     compile group: 'com.aliyun', name: 'aliyun-java-sdk-core', version: '4.5.17'
     compile group: 'com.aliyun', name: 'aliyun-java-sdk-sts', version: '3.0.2'
+    compile 'com.aliyun.oss:aliyun-sdk-oss:3.10.2'
 
     compile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.46.0'
     compile group: 'net.sourceforge.htmlunit', name: 'htmlunit-core-js', version: '2.46.0'

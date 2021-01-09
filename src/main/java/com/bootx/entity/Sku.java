@@ -8,8 +8,11 @@ package com.bootx.entity;
 import com.bootx.common.BaseAttributeConverter;
 import com.fasterxml.jackson.annotation.JsonView;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Converter;
 import javax.validation.Valid;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,53 +23,25 @@ import java.util.List;
  * @author IGOMALL  Team
  * @version 1.0
  */
-@Entity
-public class Sku extends BaseEntity<Long> {
+public class Sku implements Serializable {
 
-	private static final long serialVersionUID = 2167830430439593293L;
-
-	/**
-	 * 商品
-	 */
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(nullable = false, updatable = false)
-	private Product product;
-
-	@Transient
+	@JsonView({BaseEntity.EditView.class})
 	private String sn;
 
 	/**
 	 * 规格值
 	 */
-	@JsonView(BaseView.class)
 	@Valid
 	@Column(length = 4000)
 	@Convert(converter = SpecificationValueConverter.class)
+	@JsonView({BaseEntity.EditView.class})
 	private List<SpecificationValue> specificationValues = new ArrayList<>();
 
+	@JsonView({BaseEntity.EditView.class})
 	private Long stock;
 
+	@JsonView({BaseEntity.EditView.class})
 	private BigDecimal price;
-
-
-	/**
-	 * 获取商品
-	 * 
-	 * @return 商品
-	 */
-	public Product getProduct() {
-		return product;
-	}
-
-	/**
-	 * 设置商品
-	 * 
-	 * @param product
-	 *            商品
-	 */
-	public void setProduct(Product product) {
-		this.product = product;
-	}
 
 	public String getSn() {
 		return sn;

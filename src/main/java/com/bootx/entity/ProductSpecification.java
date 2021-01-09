@@ -14,14 +14,14 @@ import java.util.List;
  * @version 6.1
  */
 @Entity
-public class IntroductionImage extends BaseEntity<Long> {
+public class ProductSpecification extends BaseEntity<Long> {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	private Product product;
 
 	@Lob
-	@Convert(converter =ImagesConverter.class)
-	private List<String> images = new ArrayList<>();
+	@Convert(converter =SpecificationConverter.class)
+	private List<Specification> parameterValues = new ArrayList<>();
 
 
 	public Product getProduct() {
@@ -32,15 +32,15 @@ public class IntroductionImage extends BaseEntity<Long> {
 		this.product = product;
 	}
 
-	public List<String> getImages() {
-		return images;
+	public List<Specification> getParameterValues() {
+		return parameterValues;
 	}
 
-	public void setImages(List<String> images) {
-		this.images = images;
+	public void setParameterValues(List<Specification> parameterValues) {
+		this.parameterValues = parameterValues;
 	}
 
 	@Converter
-	public static class ImagesConverter extends BaseAttributeConverter<List<String>> {
+	public static class SpecificationConverter extends BaseAttributeConverter<List<Specification>> {
 	}
 }

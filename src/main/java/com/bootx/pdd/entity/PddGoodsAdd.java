@@ -5,6 +5,7 @@ import com.pdd.pop.sdk.http.api.pop.request.PddGoodsAddRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author black
@@ -18,20 +19,19 @@ public final class PddGoodsAdd {
         // 限购次数
         request.setBuyLimit(0L);
         // (必填)商品轮播图，按次序上传，图片格式支持JPEG/JPG/PNG， 图片尺寸长宽比1：1且尺寸不低于480px，图片大小最高1MB
-        List<String> carouselGallery = new ArrayList<String>();
-        carouselGallery.add("str");
+        List<String> carouselGallery = product.getProductImages().stream().map(item->item.getSource()).collect(Collectors.toList());;
         request.setCarouselGallery(carouselGallery);
         //	商品视频
-        List<PddGoodsAddRequest.CarouselVideoItem> carouselVideo = new ArrayList<>();
-        PddGoodsAddRequest.CarouselVideoItem item = new PddGoodsAddRequest.CarouselVideoItem();
+        // List<PddGoodsAddRequest.CarouselVideoItem> carouselVideo = new ArrayList<>();
+        // PddGoodsAddRequest.CarouselVideoItem item = new PddGoodsAddRequest.CarouselVideoItem();
         // 商品视频id
-        item.setFileId(0L);
+        // item.setFileId(0L);
         // 商品视频url
-        item.setVideoUrl("str");
-        carouselVideo.add(item);
-        request.setCarouselVideo(carouselVideo);
+        // item.setVideoUrl("str");
+        // carouselVideo.add(item);
+        // request.setCarouselVideo(carouselVideo);
         // 轮播视频
-        request.setCarouselVideoUrl("str");
+        // request.setCarouselVideoUrl("str");
         // (必填)叶子类目ID
         request.setCatId(0L);
         // (必填)物流运费模板ID，可使用pdd.logistics.template.get获取
@@ -190,7 +190,7 @@ public final class PddGoodsAdd {
         request.setSizeSpecId(0L);
 
         List<PddGoodsAddRequest.SkuListItem> skuList = new ArrayList<>();
-        product.getSkus().stream().forEach(sku->{
+        product.getProductSku().getSkus().stream().forEach(sku->{
             // sku对象列表,实例：[{ "is_onsale": 1, "limit_quantity": 999, "price": "2200", "weight": 1000, "multi_price": "1900", "thumb_url": "http://t06img.yangkeduo.com/images/2018-04-15/ced035033b5d40b589140af882621c03.jpg", "out_sku_sn": "L", "quantity": 100, "spec_id_list": "[25]", "oversea_sku": { "measurement_code": "计量单位编码", "taxation": "税费", "specifications": "规格" } }]
             PddGoodsAddRequest.SkuListItem item2 = new PddGoodsAddRequest.SkuListItem();
             // sku上架状态，0-已下架，1-上架中

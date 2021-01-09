@@ -4,7 +4,6 @@ import com.bootx.constants.PddConfig;
 import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.Member;
 import com.bootx.entity.Store;
-import com.bootx.pdd.entity.AccessToken;
 import com.bootx.pdd.service.PddService;
 import com.bootx.security.UserAuthenticationToken;
 import com.bootx.service.MemberService;
@@ -13,6 +12,7 @@ import com.bootx.service.UserService;
 import com.bootx.util.ImageUtils;
 import com.pdd.pop.sdk.http.api.pop.response.PddGoodsImageUploadResponse;
 import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
+import com.pdd.pop.sdk.http.token.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,19 +39,20 @@ public class IndexController extends BaseController {
     private UserService userService;
 
     @GetMapping
-    public AccessToken index(String code){
-        AccessToken accessToken = pddService.token(code);
-        if(accessToken!=null){
-            Store store = storeService.findByMallId(Long.valueOf(accessToken.getOwnerId()));
+    public AccessTokenResponse index(String code) throws Exception {
+        AccessTokenResponse accessTokenResponse = pddService.token(code);
+        if(accessTokenResponse!=null){
+            Store store = storeService.findByMallId(Long.valueOf(accessTokenResponse.getOwnerId()));
             if(store==null){
-                store = storeService.create(accessToken);
+                store = storeService.create(accessTokenResponse.getOwnerId(),accessTokenResponse.getOwnerName());
             }
+            store.setAccessToken(accessTokenResponse.getAccessToken());
             Member member = store.getMember();
             if(member!=null){
                 userService.login(new UserAuthenticationToken(Member.class, member.getUsername(), "12345678", false, "0:0:0:0"));
             }
         }
-        return accessToken;
+        return accessTokenResponse;
     }
 
     @GetMapping("/upload")

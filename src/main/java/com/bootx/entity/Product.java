@@ -4,17 +4,16 @@
  * License: http://www.shopxx.net/license
  */
 package com.bootx.entity;
-
 import com.bootx.common.BaseAttributeConverter;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Entity - 商品
@@ -27,6 +26,7 @@ public class Product extends BaseEntity<Long> {
 
 	private static final long serialVersionUID = -6977025562650112419L;
 
+	@JsonView({PageView.class,EditView.class})
 	private String sn;
 
 	@Transient
@@ -35,75 +35,101 @@ public class Product extends BaseEntity<Long> {
 	/**
 	 * 名称
 	 */
-	@JsonView(BaseView.class)
 	@NotEmpty
 	@Length(max = 200)
 	@Column(nullable = false)
+	@JsonView({PageView.class,EditView.class})
 	private String name;
 
+	@JsonView({PageView.class,EditView.class})
 	private String price;
 
 	/**
 	 * 商品图片
 	 */
-	@Valid
-	@Column(length = 4000)
+	@Lob
 	@Convert(converter = ProductImageConverter.class)
+	@JsonView({EditView.class})
 	private List<ProductImage> productImages = new ArrayList<>();
 
 	/**
 	 * 介绍
 	 */
-	@Lob
-	private String introduction;
+	@OneToOne(mappedBy = "product",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	private ProductIntroduction productIntroduction;
+
+	@OneToOne(mappedBy = "product",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@JsonView({EditView.class})
+	private ProductIntroductionImage productIntroductionImage;
 
 
+	@OneToOne(mappedBy = "product",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@JsonView({EditView.class})
+	private ProductParameterValue productParameterValue;
 
-	/**
-	 * 参数值
-	 */
-	@Valid
-	@Column(length = 4000)
-	@Convert(converter = ParameterValueConverter.class)
-	private List<ParameterValue> parameterValues = new ArrayList<>();
-
-	/**
-	 * SKU
-	 */
-	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-	private Set<Sku> skus = new HashSet<>();
+	@OneToOne(mappedBy = "product",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@JsonView({EditView.class})
+	private ProductSku productSku;
 
 	/**
 	 * 规格项
 	 */
-	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@Valid
+	@Column(length = 4000)
+	@Convert(converter = SpecificationConverter.class)
+	@JsonView({EditView.class})
 	private List<Specification> specifications = new ArrayList<>();
 	/**
 	 * 商品分类
 	 */
-	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(nullable = false)
 	private ProductCategory productCategory;
 
-	@Transient
-	private Long productCategoryId;
+	@Column(length = 100)
+	@Convert(converter = ProductCategoryIdConverter.class)
+	private List<Long> productCategoryIds = new ArrayList<>();
 
-	@Valid
-	@Column(length = 4000)
-	@Convert(converter = MoreInfoConverter.class)
-	@Transient
-	private Map<String,Object> moreInfo = new HashMap<>();
+	@Column(length = 500)
+	@Convert(converter = ProductCategoryNamesConverter.class)
+	@JsonView({PageView.class})
+	private List<String> productCategoryNames = new ArrayList<>();
 
 
+	@JsonView({EditView.class})
 	private Long stock;
 
+	@JsonView({PageView.class})
 	private String pluginId;
 
+	@JsonView({PageView.class})
 	private String url;
 
-	@OneToOne(mappedBy = "product",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-	private IntroductionImage introductionImage;
+	@Column(length = 100)
+	@Convert(converter = ProductStoreConverter.class)
+	@JsonView({EditView.class})
+	private ProductStore productStore;
+
+
+	public Product() {
+		setSn("");
+		setCrawlerLogSn("");
+		setName("");
+		setPrice("");
+		setProductImages(new ArrayList<>());
+		setProductIntroduction(new ProductIntroduction(this));
+		setProductParameterValue(new ProductParameterValue(this));
+		setProductSku(new ProductSku(this));
+		setSpecifications(new ArrayList<>());
+		setProductCategory(new ProductCategory());
+		setProductCategoryIds(new ArrayList<>());
+		setProductCategoryNames(new ArrayList<>());
+		setProductStore(new ProductStore());
+		setStock(0L);
+		setPluginId("");
+		setUrl("");
+		setProductIntroductionImage(new ProductIntroductionImage(this));
+
+	}
 
 	public String getSn() {
 		return sn;
@@ -121,14 +147,6 @@ public class Product extends BaseEntity<Long> {
 		this.crawlerLogSn = crawlerLogSn;
 	}
 
-	public String getPrice() {
-		return price;
-	}
-
-	public void setPrice(String price) {
-		this.price = price;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -137,141 +155,84 @@ public class Product extends BaseEntity<Long> {
 		this.name = name;
 	}
 
-	/**
-	 * 获取商品图片
-	 *
-	 * @return 商品图片
-	 */
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
+	}
+
 	public List<ProductImage> getProductImages() {
 		return productImages;
 	}
 
-	/**
-	 * 设置商品图片
-	 *
-	 * @param productImages
-	 *            商品图片
-	 */
 	public void setProductImages(List<ProductImage> productImages) {
 		this.productImages = productImages;
 	}
 
-	/**
-	 * 获取介绍
-	 *
-	 * @return 介绍
-	 */
-	public String getIntroduction() {
-		return introduction;
+	public ProductIntroduction getProductIntroduction() {
+		return productIntroduction;
 	}
 
-	/**
-	 * 设置介绍
-	 *
-	 * @param introduction
-	 *            介绍
-	 */
-	public void setIntroduction(String introduction) {
-		this.introduction = introduction;
+	public void setProductIntroduction(ProductIntroduction productIntroduction) {
+		this.productIntroduction = productIntroduction;
 	}
 
-	public IntroductionImage getIntroductionImage() {
-		return introductionImage;
+	public ProductParameterValue getProductParameterValue() {
+		return productParameterValue;
 	}
 
-	public void setIntroductionImage(IntroductionImage introductionImage) {
-		this.introductionImage = introductionImage;
+	public void setProductParameterValue(ProductParameterValue productParameterValue) {
+		this.productParameterValue = productParameterValue;
 	}
 
-	/**
-	 * 获取参数值
-	 *
-	 * @return 参数值
-	 */
-	public List<ParameterValue> getParameterValues() {
-		return parameterValues;
+	public ProductSku getProductSku() {
+		return productSku;
 	}
 
-	/**
-	 * 设置参数值
-	 *
-	 * @param parameterValues
-	 *            参数值
-	 */
-	public void setParameterValues(List<ParameterValue> parameterValues) {
-		this.parameterValues = parameterValues;
+	public void setProductSku(ProductSku productSku) {
+		this.productSku = productSku;
 	}
 
-	public Map<String, Object> getMoreInfo() {
-		return moreInfo;
-	}
-
-	public void setMoreInfo(Map<String, Object> moreInfo) {
-		this.moreInfo = moreInfo;
-	}
-
-	/**
-	 * 获取SKU
-	 *
-	 * @return SKU
-	 */
-	public Set<Sku> getSkus() {
-		return skus;
-	}
-
-	/**
-	 * 设置SKU
-	 *
-	 * @param skus
-	 *            SKU
-	 */
-	public void setSkus(Set<Sku> skus) {
-		this.skus = skus;
-	}
-	/**
-	 * 获取规格项
-	 *
-	 * @return 规格项
-	 */
 	public List<Specification> getSpecifications() {
 		return specifications;
 	}
 
-	/**
-	 * 设置规格项
-	 *
-	 * @param specifications
-	 *            规格项
-	 */
 	public void setSpecifications(List<Specification> specifications) {
 		this.specifications = specifications;
 	}
 
-	/**
-	 * 获取商品分类
-	 *
-	 * @return 商品分类
-	 */
 	public ProductCategory getProductCategory() {
 		return productCategory;
 	}
 
-	public Long getProductCategoryId() {
-		return productCategoryId;
-	}
-
-	public void setProductCategoryId(Long productCategoryId) {
-		this.productCategoryId = productCategoryId;
-	}
-
-	/**
-	 * 设置商品分类
-	 *
-	 * @param productCategory
-	 *            商品分类
-	 */
 	public void setProductCategory(ProductCategory productCategory) {
 		this.productCategory = productCategory;
+	}
+
+	public List<Long> getProductCategoryIds() {
+		return productCategoryIds;
+	}
+
+	public void setProductCategoryIds(List<Long> productCategoryIds) {
+		this.productCategoryIds = productCategoryIds;
+	}
+
+	public List<String> getProductCategoryNames() {
+		return productCategoryNames;
+	}
+
+	public void setProductCategoryNames(List<String> productCategoryNames) {
+		this.productCategoryNames = productCategoryNames;
+	}
+
+	public ProductStore getProductStore() {
+		return productStore;
+	}
+
+	public void setProductStore(ProductStore productStore) {
+		this.productStore = productStore;
 	}
 
 	public Long getStock() {
@@ -298,18 +259,19 @@ public class Product extends BaseEntity<Long> {
 		this.url = url;
 	}
 
-	/**
-	 * 获取缩略图
-	 *
-	 * @return 缩略图
-	 */
-	@JsonView(BaseView.class)
+
 	@Transient
-	public String getThumbnail() {
-		if (CollectionUtils.isEmpty(getProductImages())) {
-			return null;
-		}
+	@JsonView({PageView.class})
+	public String getImage(){
 		return getProductImages().get(0).getThumbnail();
+	}
+
+	public ProductIntroductionImage getProductIntroductionImage() {
+		return productIntroductionImage;
+	}
+
+	public void setProductIntroductionImage(ProductIntroductionImage productIntroductionImage) {
+		this.productIntroductionImage = productIntroductionImage;
 	}
 
 	/**
@@ -333,6 +295,16 @@ public class Product extends BaseEntity<Long> {
 	}
 
 	/**
+	 * 类型转换 - 参数值
+	 *
+	 * @author IGOMALL  Team
+	 * @version 1.0
+	 */
+	@Converter
+	public static class SpecificationConverter extends BaseAttributeConverter<List<Specification>> {
+	}
+
+	/**
 	 * 类型转换 - 规格项
 	 *
 	 * @author IGOMALL  Team
@@ -341,5 +313,28 @@ public class Product extends BaseEntity<Long> {
 	@Converter
 	public static class MoreInfoConverter extends BaseAttributeConverter<Map<String,Object>> {
 	}
+
+
+	/**
+	 * 类型转换 - 规格项
+	 *
+	 * @author IGOMALL  Team
+	 * @version 1.0
+	 */
+	@Converter
+	public static class SkuConverter extends BaseAttributeConverter<List<Sku>> {
+	}
+	@Converter
+	public static class ProductCategoryIdConverter extends BaseAttributeConverter<List<Long>> {
+	}
+	@Converter
+	public static class ProductCategoryNamesConverter extends BaseAttributeConverter<List<String>> {
+	}
+	@Converter
+	public static class ProductStoreConverter extends BaseAttributeConverter<ProductStore> {
+	}
+
+
+
 
 }

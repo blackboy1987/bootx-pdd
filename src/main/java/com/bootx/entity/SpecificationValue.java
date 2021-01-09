@@ -8,9 +8,7 @@ package com.bootx.entity;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -26,7 +24,6 @@ public class SpecificationValue implements Serializable {
 	/**
 	 * ID
 	 */
-	@NotNull
 	private String id;
 
 	private String name;
@@ -34,19 +31,18 @@ public class SpecificationValue implements Serializable {
 	/**
 	 * 值
 	 */
-	@NotEmpty
 	@Length(max = 200)
 	private String value;
 
 	public SpecificationValue() {
 	}
 
-	public SpecificationValue(@NotNull String id, @NotEmpty @Length(max = 200) String value) {
+	public SpecificationValue(String id, @Length(max = 200) String value) {
 		this.id = id;
 		this.value = value;
 	}
 
-	public SpecificationValue(@NotNull String id, String name, @NotEmpty @Length(max = 200) String value) {
+	public SpecificationValue(String id, String name,  @Length(max = 200) String value) {
 		this.id = id;
 		this.name = name;
 		this.value = value;

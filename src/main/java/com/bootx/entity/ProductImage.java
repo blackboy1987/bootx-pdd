@@ -5,6 +5,7 @@
  */
 package com.bootx.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -59,6 +60,7 @@ public class ProductImage implements Serializable, Comparable<ProductImage> {
 	 */
 	@NotEmpty
 	@Length(max = 200)
+	@JsonView({BaseEntity.EditView.class})
 	private String source;
 
 	/**
@@ -66,6 +68,7 @@ public class ProductImage implements Serializable, Comparable<ProductImage> {
 	 */
 	@NotEmpty
 	@Length(max = 200)
+	@JsonView({BaseEntity.EditView.class})
 	private String large;
 
 	/**
@@ -73,6 +76,7 @@ public class ProductImage implements Serializable, Comparable<ProductImage> {
 	 */
 	@NotEmpty
 	@Length(max = 200)
+	@JsonView({BaseEntity.EditView.class})
 	private String medium;
 
 	/**
@@ -80,12 +84,14 @@ public class ProductImage implements Serializable, Comparable<ProductImage> {
 	 */
 	@NotEmpty
 	@Length(max = 200)
+	@JsonView({BaseEntity.EditView.class})
 	private String thumbnail;
 
 	/**
 	 * 排序
 	 */
 	@Min(0)
+	@JsonView({BaseEntity.EditView.class})
 	private Integer order;
 
 	public ProductImage() {

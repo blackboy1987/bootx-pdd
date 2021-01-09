@@ -1,13 +1,16 @@
 
 package com.bootx.service.impl;
 
+import com.bootx.common.Page;
+import com.bootx.common.Pageable;
 import com.bootx.dao.CrawlerUrlLogDao;
-import com.bootx.entity.CrawlerLog;
-import com.bootx.entity.CrawlerUrlLog;
+import com.bootx.entity.*;
+import com.bootx.pdd.service.GoodsService;
 import com.bootx.service.CrawlerLogService;
 import com.bootx.service.CrawlerUrlLogService;
+import com.bootx.service.ProductService;
+import com.bootx.service.StoreService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -24,6 +27,12 @@ public class CrawlerUrlLogServiceImpl extends BaseServiceImpl<CrawlerUrlLog, Lon
     private CrawlerUrlLogDao crawlerUrlLogDao;
     @Resource
     private CrawlerLogService crawlerLogService;
+    @Resource
+    private ProductService productService;
+    @Resource
+    private GoodsService goodsService;
+    @Resource
+    private StoreService storeService;
 
     @Override
     public CrawlerUrlLog findByUrl(String url) {
@@ -31,7 +40,7 @@ public class CrawlerUrlLogServiceImpl extends BaseServiceImpl<CrawlerUrlLog, Lon
     }
 
     @Override
-    public void updateInfo(String url,String productSn,String crawlerLogSn,String memo,Integer status) {
+    public void updateInfo(String url,Long productSn,String crawlerLogSn,String memo,Integer status) {
         CrawlerUrlLog crawlerUrlLog = findByUrlAndCrawlerLogSn(url,crawlerLogSn);
         if(crawlerUrlLog!=null){
             crawlerUrlLog.setStatus(status);
@@ -72,5 +81,18 @@ public class CrawlerUrlLogServiceImpl extends BaseServiceImpl<CrawlerUrlLog, Lon
     @Override
     public CrawlerUrlLog findByUrlAndCrawlerLogSn(String url, String crawlerLogSn) {
         return crawlerUrlLogDao.findByUrlAndCrawlerLogSn(url,crawlerLogSn);
+    }
+
+    @Override
+    public Page<CrawlerUrlLog> findPage(Pageable pageable, Member member, Integer status) {
+        return crawlerUrlLogDao.findPage(pageable,member,status);
+    }
+
+    @Override
+    public void upload(Long id) throws Exception {
+        CrawlerUrlLog crawlerUrlLog = find(id);
+        Store store = storeService.find(4L);
+        Product product = productService.find(crawlerUrlLog.getProductId());
+        goodsService.pddGoodsAdd(product,store.getAccessToken());
     }
 }

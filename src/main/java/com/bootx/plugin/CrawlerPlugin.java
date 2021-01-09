@@ -1,6 +1,7 @@
 
 package com.bootx.plugin;
 
+import com.bootx.entity.Member;
 import com.bootx.entity.PluginConfig;
 import com.bootx.entity.Product;
 import com.bootx.entity.ProductCategory;
@@ -144,7 +145,7 @@ public abstract class CrawlerPlugin implements Comparable<CrawlerPlugin> {
 
 	public abstract List<ProductCategory> productCategory();
 
-	public abstract Product product(String url);
+	public abstract Product product(Member member,String url);
 
 	public abstract List<Product> search(String keywords);
 

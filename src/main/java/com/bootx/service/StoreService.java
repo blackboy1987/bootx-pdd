@@ -2,7 +2,6 @@
 package com.bootx.service;
 
 import com.bootx.entity.Store;
-import com.bootx.pdd.entity.AccessToken;
 import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
 import com.pdd.pop.sdk.http.token.AccessTokenResponse;
 
@@ -21,5 +20,5 @@ public interface StoreService extends BaseService<Store, Long> {
 
 	Store update(PddMallInfoGetResponse response);
 
-	Store create(AccessToken accessToken);
+	Store create(String ownerId,String ownerName);
 }

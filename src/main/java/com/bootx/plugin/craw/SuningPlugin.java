@@ -18,7 +18,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -125,7 +124,7 @@ public class SuningPlugin extends CrawlerPlugin {
 	}
 
 	@Override
-	public Product product(String url) {
+	public Product product(Member member,String url) {
 		Product product = new Product();
 		// Document root = Jsoup.parse(new URL(url), 5000);
 		Document root = Jsoup.parse(testUserHttpUnit(url,5000));
@@ -135,9 +134,9 @@ public class SuningPlugin extends CrawlerPlugin {
 		product.setPrice(mainprice);
 		product.setName(productName);
 		product.setProductImages(productImages(root));
-		product.setIntroduction(introduction(root));
-		product.setParameterValues(parameterValues(root));
-		product.setSkus(skus(root,product));
+		product.getProductIntroduction().setContent(introduction(root));
+		product.getProductParameterValue().setParameterValues(parameterValues(root));
+		product.getProductSku().setSkus(skus(root,product));
 		product.setProductCategory(productCategory(root));
 		return product;
 	}
@@ -164,8 +163,8 @@ public class SuningPlugin extends CrawlerPlugin {
 		return third;
 	}
 
-	private Set<Sku> skus(Document root,Product product) {
-		Set<Sku> skus = new HashSet<>();
+	private List<Sku> skus(Document root,Product product) {
+		List<Sku> skus = new ArrayList<>();
 		// proinfo-buytype
 		Elements proinfoBuytypes = root.getElementById("J-TZM").getElementsByClass("proattr-radio");
 		List<Specification> specifications = new ArrayList<>();
@@ -227,7 +226,6 @@ public class SuningPlugin extends CrawlerPlugin {
 				specificationValue.setId(i+"");
 				sku.getSpecificationValues().add(specificationValue);
 			}
-			sku.setProduct(product);
 			skus.add(sku);
 		}
 		return skus;

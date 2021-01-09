@@ -1,7 +1,10 @@
 
 package com.bootx.dao;
 
+import com.bootx.common.Page;
+import com.bootx.common.Pageable;
 import com.bootx.entity.CrawlerUrlLog;
+import com.bootx.entity.Member;
 
 /**
  * Dao - 审计日志
@@ -12,4 +15,6 @@ import com.bootx.entity.CrawlerUrlLog;
 public interface CrawlerUrlLogDao extends BaseDao<CrawlerUrlLog, Long> {
 
     CrawlerUrlLog findByUrlAndCrawlerLogSn(String url, String crawlerLogSn);
+
+    Page<CrawlerUrlLog> findPage(Pageable pageable, Member member, Integer status);
 }

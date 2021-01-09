@@ -38,11 +38,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**");
 
        registry.addInterceptor(loginInterceptor())
-                .addPathPatterns("/member/api/**","/pdd/**")
+                .addPathPatterns("/member/api/**","/pdd1/**")
                 .excludePathPatterns("/pdd/login","/pdd/logout","/pdd/currentUser");
 
         registry.addInterceptor(currentUserHandlerInterceptor1())
-                .addPathPatterns("/member/api/**","/pdd/**");
+                .addPathPatterns("/member/api/**","/pdd1/**");
 
     }
 

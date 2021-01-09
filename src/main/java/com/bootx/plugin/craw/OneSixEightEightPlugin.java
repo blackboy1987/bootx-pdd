@@ -18,8 +18,10 @@ import org.springframework.stereotype.Component;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component("oneSixEightEightPlugin")
 public class OneSixEightEightPlugin extends CrawlerPlugin {
@@ -65,7 +67,7 @@ public class OneSixEightEightPlugin extends CrawlerPlugin {
     }
 
     @Override
-    public Product product(String url) {
+    public Product product(Member member,String url) {
         Product product = new Product();
 
        try{
@@ -91,8 +93,6 @@ public class OneSixEightEightPlugin extends CrawlerPlugin {
                     Object eval = engine.eval("JSON.stringify(" + data.substring(0,data.length()-1) + ")");
                     System.out.println(eval);
                     JsonRootBean jsonRootBean = JsonUtils.toObject(eval.toString(),JsonRootBean.class);
-                    product.getMoreInfo().put("priceRange",jsonRootBean.getPriceRange());
-                    product.getMoreInfo().put("priceRangeOriginal",jsonRootBean.getPriceRangeOriginal());
                     product.setPrice(jsonRootBean.getPrice());
                     skus(jsonRootBean,product);
                 }catch (Exception e){
@@ -113,7 +113,7 @@ public class OneSixEightEightPlugin extends CrawlerPlugin {
 
     private void skus(JsonRootBean jsonRootBean, Product product) {
         List<SkuProps> skuProps = jsonRootBean.getSkuProps();
-        Set<com.bootx.entity.Sku> skus = new HashSet<>();
+        List<com.bootx.entity.Sku> skus = new ArrayList<>();
         Map<String, Sku> skuMap = jsonRootBean.getSkuMap();
         Map<String,Integer> map = new HashMap<>();
         List<Specification> specifications = new ArrayList<>();
@@ -136,7 +136,6 @@ public class OneSixEightEightPlugin extends CrawlerPlugin {
             Sku sku = skuMap.get(key);
             com.bootx.entity.Sku sku1 = new com.bootx.entity.Sku();
             sku1.setSn(sku.getSkuId());
-            sku1.setProduct(product);
 
             String [] keys = key.split("&gt;");
             for (String key1:keys) {
@@ -144,7 +143,7 @@ public class OneSixEightEightPlugin extends CrawlerPlugin {
             }
             skus.add(sku1);
         }
-        product.setSkus(skus);
+        product.getProductSku().setSkus(skus);
     }
 
     private void title(Document root, Product product) {

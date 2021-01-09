@@ -5,21 +5,15 @@
  */
 package com.bootx.dao.impl;
 
-import com.bootx.common.Filter;
-import com.bootx.common.Order;
 import com.bootx.dao.ProductCategoryDao;
-import com.bootx.entity.Platform;
 import com.bootx.entity.ProductCategory;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.*;
 
 /**
@@ -30,20 +24,6 @@ import java.util.*;
  */
 @Repository
 public class ProductCategoryDaoImpl extends BaseDaoImpl<ProductCategory, Long> implements ProductCategoryDao {
-
-	@Override
-	public List<ProductCategory> findList(Platform platform, Integer count, List<Filter> filters, List<Order> orders) {
-		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<ProductCategory> criteriaQuery = criteriaBuilder.createQuery(ProductCategory.class);
-		Root<ProductCategory> root = criteriaQuery.from(ProductCategory.class);
-		criteriaQuery.select(root);
-		Predicate restrictions = criteriaBuilder.conjunction();
-		if (platform != null) {
-			restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("platform"), platform));
-		}
-		criteriaQuery.where(restrictions);
-		return super.findList(criteriaQuery);
-	}
 
 	@Override
 	public List<ProductCategory> findRoots(Integer count) {
@@ -94,6 +74,69 @@ public class ProductCategoryDaoImpl extends BaseDaoImpl<ProductCategory, Long> i
 		} else {
 			String jpql = "select productCategory from ProductCategory productCategory where productCategory.parent = :parent order by productCategory.order asc";
 			query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("parent", productCategory);
+			if (count != null) {
+				query.setMaxResults(count);
+			}
+			return query.getResultList();
+		}
+	}
+
+	@Override
+	public List<ProductCategory> findRoots(String pluginId, Integer count) {
+		if(StringUtils.isBlank(pluginId)){
+			return findRoots(count);
+		}
+
+		String jpql = "select productCategory from ProductCategory productCategory where productCategory.pluginId = :pluginId and productCategory.parent is null order by productCategory.order asc";
+		TypedQuery<ProductCategory> query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("pluginId",pluginId);
+		if (count != null) {
+			query.setMaxResults(count);
+		}
+		return query.getResultList();
+	}
+
+	@Override
+	public List<ProductCategory> findParents(String pluginId, ProductCategory productCategory, boolean recursive, Integer count) {
+		if (productCategory == null || productCategory.getParent() == null) {
+			return Collections.emptyList();
+		}
+		TypedQuery<ProductCategory> query;
+		if (recursive) {
+			String jpql = "select productCategory from ProductCategory productCategory where productCategory.pluginId = :pluginId and productCategory.id in (:ids) order by productCategory.grade asc";
+			query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("pluginId",pluginId).setParameter("ids", Arrays.asList(productCategory.getParentIds()));
+		} else {
+			String jpql = "select productCategory from ProductCategory productCategory where productCategory = :productCategory";
+			query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("productCategory", productCategory.getParent());
+		}
+		if (count != null) {
+			query.setMaxResults(count);
+		}
+		return query.getResultList();
+	}
+
+	@Override
+	public List<ProductCategory> findChildren(String pluginId, ProductCategory productCategory, boolean recursive, Integer count) {
+		if(StringUtils.isBlank(pluginId)){
+			return findChildren(productCategory,recursive,count);
+		}
+		TypedQuery<ProductCategory> query;
+		if (recursive) {
+			if (productCategory != null) {
+				String jpql = "select productCategory from ProductCategory productCategory where productCategory.pluginId = :pluginId and productCategory.treePath like :treePath order by productCategory.grade asc, productCategory.order asc";
+				query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("pluginId",pluginId).setParameter("treePath", "%" + ProductCategory.TREE_PATH_SEPARATOR + productCategory.getId() + ProductCategory.TREE_PATH_SEPARATOR + "%");
+			} else {
+				String jpql = "select productCategory from ProductCategory productCategory where productCategory.pluginId = :pluginId order by productCategory.grade asc, productCategory.order asc";
+				query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("pluginId",pluginId);
+			}
+			if (count != null) {
+				query.setMaxResults(count);
+			}
+			List<ProductCategory> result = query.getResultList();
+			sort(result);
+			return result;
+		} else {
+			String jpql = "select productCategory from ProductCategory productCategory where productCategory.pluginId = :pluginId and productCategory.parent = :parent order by productCategory.order asc";
+			query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("pluginId",pluginId).setParameter("parent", productCategory);
 			if (count != null) {
 				query.setMaxResults(count);
 			}

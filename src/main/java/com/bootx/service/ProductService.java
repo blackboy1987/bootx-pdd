@@ -16,4 +16,5 @@ public interface ProductService extends BaseService<Product, Long> {
 
 	List<Product> crawler(CrawlerLog crawlerLog,String[] urls, Integer type);
 
+    Product findBySn(String sn);
 }

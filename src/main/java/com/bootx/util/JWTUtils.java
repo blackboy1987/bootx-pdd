@@ -23,13 +23,12 @@ public class JWTUtils {
     }
 
     public static Claims parseToken(String token){
-        Claims claims =
-                Jwts.parser().setSigningKey("wangmh").parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parser().setSigningKey("wangmh").parseClaimsJws(token).getBody();
         return claims;
     }
 
     public static void main(String[] args) {
-        Claims claims = parseToken("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxIiwic3ViIjoi5bCP55m9IiwiaWF0IjoxNTg5NjQwNzgwLCJleHAiOjE1OTExMTIwMDgsImlkIjoxLCJ1c2VybmFtZSI6ImFkbWluMSJ9.rRchUdLxEzFBW9pGEoAQiV3TuklQsLF8_z-ZQHaR080");
+        Claims claims = parseToken("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI3Iiwic3ViIjoiYmxhY2tib3kiLCJpYXQiOjE2MDkyOTE1NjYsImV4cCI6MTYwOTM3Nzk2NiwiaWQiOjcsInVzZXJuYW1lIjoieGlhbGkifQ.xrBcaFwS52_qrMR5C9-Lt6yg2YnUdXnxM1Z0eCKnfWA");
 
         System.out.println(claims);
     }

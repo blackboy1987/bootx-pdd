@@ -61,7 +61,7 @@ public class TMallPlugin extends CrawlerPlugin {
     }
 
     @Override
-    public Product product(String url) {
+    public Product product(Member member,String url) {
         Product product = new Product();
        try{
            Document root = Jsoup.parse(url(url));
@@ -122,7 +122,7 @@ public class TMallPlugin extends CrawlerPlugin {
                 product.setName(jsonRootBean.getItemDO().getTitle());
                 product.setStock(jsonRootBean.getItemDO().getQuantity());
                 product.setProductImages(productImages(jsonRootBean,product));
-                product.setSkus(skus(jsonRootBean,product));
+                product.getProductSku().setSkus(skus(jsonRootBean,product));
                 break;
             }
         }
@@ -141,9 +141,9 @@ public class TMallPlugin extends CrawlerPlugin {
         return productImages;
     }
 
-    private Set<com.bootx.entity.Sku> skus(JsonRootBean jsonRootBean, Product product) {
+    private List<com.bootx.entity.Sku> skus(JsonRootBean jsonRootBean, Product product) {
         List<Specification> specifications = product.getSpecifications();
-        Set<com.bootx.entity.Sku> skus = new HashSet<>();
+        List<com.bootx.entity.Sku> skus = new ArrayList<>();
         Map<String,String> map = new HashMap<>();
         for (Specification specification:specifications) {
             specification.getEntries().forEach(item->map.put(item.getValue(),item.getName()));
@@ -153,7 +153,6 @@ public class TMallPlugin extends CrawlerPlugin {
             for (String key:skuMap.keySet()) {
                 com.bootx.entity.Sku sku = new com.bootx.entity.Sku();
                 sku.setSpecificationValues(new ArrayList<>());
-                sku.setProduct(product);
                 sku.setSn(skuMap.get(key).getSkuId());
                 sku.setStock(skuMap.get(key).getStock());
                 sku.setPrice(skuMap.get(key).getPrice());
@@ -166,7 +165,6 @@ public class TMallPlugin extends CrawlerPlugin {
         }else{
             com.bootx.entity.Sku sku = new com.bootx.entity.Sku();
             sku.setSpecificationValues(new ArrayList<>());
-            sku.setProduct(product);
             sku.setSn("abc");
             sku.setStock(product.getStock());
             try{

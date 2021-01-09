@@ -29,6 +29,8 @@ public class Store extends BaseEntity<Long>{
     @Column(updatable = false)
     private Integer merchantType;
 
+    private String accessToken;
+
     public Member getMember() {
         return member;
     }
@@ -75,5 +77,13 @@ public class Store extends BaseEntity<Long>{
 
     public void setMerchantType(Integer merchantType) {
         this.merchantType = merchantType;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }

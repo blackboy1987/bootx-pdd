@@ -29,13 +29,15 @@ public class CrawlerUrlLog extends BaseEntity<Long>{
 
     @NotEmpty
     @Column(length = 400,nullable = false,updatable = false,unique = true)
+    @JsonView({PageView.class})
     private String url;
 
-    private String productId;
+    private Long productId;
 
     @Convert(converter = MoreInfoConverter.class)
     private Map<String,Object> moreInfo = new HashMap<>();
 
+    @JsonView({PageView.class})
     private Integer type;
 
     private String memo;
@@ -48,6 +50,10 @@ public class CrawlerUrlLog extends BaseEntity<Long>{
      */
     @JsonView({PageView.class})
     private Integer status;
+
+    @Transient
+    @JsonView({PageView.class})
+    private Product product;
 
     public CrawlerLog getCrawlerLog() {
         return crawlerLog;
@@ -81,11 +87,11 @@ public class CrawlerUrlLog extends BaseEntity<Long>{
         this.url = url;
     }
 
-    public String getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
@@ -119,6 +125,14 @@ public class CrawlerUrlLog extends BaseEntity<Long>{
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     /**

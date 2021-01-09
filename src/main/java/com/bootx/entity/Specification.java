@@ -1,13 +1,10 @@
-/*
- * Copyright 2005-2017 shopxx.net. All rights reserved.
- * Support: http://www.shopxx.net
- * License: http://www.shopxx.net/license
- */
+
 package com.bootx.entity;
 
 import cn.hutool.core.builder.EqualsBuilder;
 import cn.hutool.core.builder.HashCodeBuilder;
 import com.bootx.common.BaseAttributeConverter;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -21,32 +18,23 @@ import java.util.List;
  * @author IGOMALL  Team
  * @version 1.0
  */
-@Entity
-public class Specification extends BaseEntity<Long> {
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Product product;
+public class Specification implements Serializable {
 
 	/**
 	 * 名称
 	 */
+	@JsonView({BaseEntity.EditView.class})
 	private String name;
 
 	@Column(length = 2000)
 	@Convert(converter = OptionConverter.class)
+	@JsonView({BaseEntity.EditView.class})
 	private List<String> options = new ArrayList<>();
 
 	@Column(length = 6000)
 	@Convert(converter = SpecificationEntityConverter.class)
+	@JsonView({BaseEntity.EditView.class})
 	private List<Specification.Entry> entries = new ArrayList<>();
-
-	public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
-	}
 
 	/**
 	 * 获取名称

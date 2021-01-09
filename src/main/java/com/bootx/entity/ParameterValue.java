@@ -3,10 +3,9 @@ package com.bootx.entity;
 
 import cn.hutool.core.builder.EqualsBuilder;
 import cn.hutool.core.builder.HashCodeBuilder;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +23,14 @@ public class ParameterValue implements Serializable {
 	/**
 	 * 参数组
 	 */
-	@NotEmpty
 	@Length(max = 200)
+	@JsonView({BaseEntity.EditView.class})
 	private String group;
 
 	/**
 	 * 条目
 	 */
-	@Valid
-	@javax.validation.constraints.NotEmpty
+	@JsonView({BaseEntity.EditView.class})
 	private List<Entry> entries = new ArrayList<>();
 
 	/**

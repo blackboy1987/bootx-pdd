@@ -5,15 +5,11 @@
  */
 package com.bootx.service.impl;
 
-import com.bootx.common.Filter;
-import com.bootx.common.Order;
 import com.bootx.dao.ProductCategoryDao;
-import com.bootx.entity.Platform;
 import com.bootx.entity.ProductCategory;
 import com.bootx.service.ProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -35,12 +31,6 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ProductCategory> findList(Platform platform, Integer count, List<Filter> filters, List<Order> orders) {
-		return productCategoryDao.findList(platform, count, filters, orders);
-	}
-
-	@Override
-	@Transactional(readOnly = true)
 	public List<ProductCategory> findRoots() {
 		return productCategoryDao.findRoots(null);
 	}
@@ -53,7 +43,6 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 
 	@Override
 	@Transactional(readOnly = true)
-	@Cacheable(value = "productCategory", condition = "#useCache")
 	public List<ProductCategory> findRoots(Integer count, boolean useCache) {
 		return productCategoryDao.findRoots(count);
 	}
@@ -66,7 +55,6 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 
 	@Override
 	@Transactional(readOnly = true)
-	@Cacheable(value = "productCategory", condition = "#useCache")
 	public List<ProductCategory> findParents(Long productCategoryId, boolean recursive, Integer count, boolean useCache) {
 		ProductCategory productCategory = productCategoryDao.find(productCategoryId);
 		if (productCategoryId != null && productCategory == null) {
@@ -89,7 +77,6 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 
 	@Override
 	@Transactional(readOnly = true)
-	@Cacheable(value = "productCategory", condition = "#useCache")
 	public List<ProductCategory> findChildren(Long productCategoryId, boolean recursive, Integer count, boolean useCache) {
 		ProductCategory productCategory = productCategoryDao.find(productCategoryId);
 		if (productCategoryId != null && productCategory == null) {
@@ -171,5 +158,53 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 	@Override
 	public ProductCategory findByOtherId(String otherId) {
 		return productCategoryDao.find("otherId",otherId);
+	}
+
+	@Override
+	public List<ProductCategory> findRoots(String pluginId) {
+		return productCategoryDao.findRoots(pluginId,null);
+	}
+
+	@Override
+	public List<ProductCategory> findRoots(String pluginId, Integer count) {
+		return productCategoryDao.findRoots(pluginId,count);
+	}
+
+	@Override
+	public List<ProductCategory> findRoots(String pluginId, Integer count, boolean useCache) {
+		return productCategoryDao.findRoots(pluginId,count);
+	}
+
+	@Override
+	public List<ProductCategory> findParents(String pluginId, ProductCategory productCategory, boolean recursive, Integer count) {
+		return productCategoryDao.findParents(pluginId,productCategory,recursive,count);
+	}
+
+	@Override
+	public List<ProductCategory> findParents(String pluginId, Long productCategoryId, boolean recursive, Integer count, boolean useCache) {
+		ProductCategory productCategory = productCategoryDao.find(productCategoryId);
+		if (productCategoryId != null && productCategory == null) {
+			return Collections.emptyList();
+		}
+		return productCategoryDao.findParents(pluginId,productCategory, recursive, count);
+	}
+
+	@Override
+	public List<ProductCategory> findTree(String pluginId) {
+		return productCategoryDao.findChildren(pluginId,null, true, null);
+	}
+
+	@Override
+	public List<ProductCategory> findChildren(String pluginId, ProductCategory productCategory, boolean recursive, Integer count) {
+		return productCategoryDao.findChildren(pluginId,productCategory, recursive, count);
+	}
+
+	@Override
+	public List<ProductCategory> findChildren(String pluginId, Long productCategoryId, boolean recursive, Integer count, boolean useCache) {
+		ProductCategory productCategory = productCategoryDao.find(productCategoryId);
+		if (productCategoryId != null && productCategory == null) {
+			return Collections.emptyList();
+		}
+		return productCategoryDao.findChildren(pluginId,productCategory, recursive, count);
 	}
 }
