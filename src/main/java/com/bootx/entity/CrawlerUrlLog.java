@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +44,15 @@ public class CrawlerUrlLog extends BaseEntity<Long>{
 
     private String memo;
 
+    @Column(length = 20)
+    @Convert(converter = Product.ProductCategoryIdConverter.class)
+    private List<Long> pddProductCategoryIds = new ArrayList<>();
+
+
+    @Column(length = 50)
+    @Convert(converter = Product.ProductCategoryNamesConverter.class)
+    @JsonView({PageView.class})
+    private List<String> pddProductCategoryNames = new ArrayList<>();
 
     /**
      * 0：正在抓取
@@ -134,6 +145,23 @@ public class CrawlerUrlLog extends BaseEntity<Long>{
     public void setProduct(Product product) {
         this.product = product;
     }
+
+    public List<Long> getPddProductCategoryIds() {
+        return pddProductCategoryIds;
+    }
+
+    public void setPddProductCategoryIds(List<Long> pddProductCategoryIds) {
+        this.pddProductCategoryIds = pddProductCategoryIds;
+    }
+
+    public List<String> getPddProductCategoryNames() {
+        return pddProductCategoryNames;
+    }
+
+    public void setPddProductCategoryNames(List<String> pddProductCategoryNames) {
+        this.pddProductCategoryNames = pddProductCategoryNames;
+    }
+
 
     /**
      * 类型转换 - 规格项

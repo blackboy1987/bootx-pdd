@@ -85,14 +85,15 @@ public class Product extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ProductCategory productCategory;
 
-	@Column(length = 100)
+	@Column(length = 60)
 	@Convert(converter = ProductCategoryIdConverter.class)
 	private List<Long> productCategoryIds = new ArrayList<>();
 
-	@Column(length = 500)
+	@Column(length = 300)
 	@Convert(converter = ProductCategoryNamesConverter.class)
 	@JsonView({PageView.class})
 	private List<String> productCategoryNames = new ArrayList<>();
+
 
 
 	@JsonView({EditView.class})

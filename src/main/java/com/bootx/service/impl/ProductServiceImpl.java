@@ -42,7 +42,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 			Product product1 = findByUrl(url);
 			if(product1!=null){
 				products.add(product1);
-				crawlerUrlLogService.updateInfo(url,product1.getId(),crawlerLog.getSn(),"采集完成",1);
+				crawlerUrlLogService.updateInfo(url,product1,crawlerLog.getSn(),"采集完成",1);
 				continue;
 			}
 			String pluginId = CrawlerUtils.getPlugInId(url);
@@ -54,9 +54,8 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 					product.setCrawlerLogSn(crawlerLog.getSn());
 					product.setPluginId(pluginId);
 					product = save(product);
-					System.out.println(product.getId());
 					products.add(product);
-					crawlerUrlLogService.updateInfo(url,product.getId(),crawlerLog.getSn(),"采集完成",1);
+					crawlerUrlLogService.updateInfo(url,product,crawlerLog.getSn(),"采集完成",1);
 				}else{
 					crawlerUrlLogService.updateInfo(url,null,crawlerLog.getSn(),"采集失败",2);
 				}

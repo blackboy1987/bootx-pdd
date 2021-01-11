@@ -11,10 +11,12 @@ import com.bootx.service.BaseService;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import javax.annotation.Resource;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -49,7 +51,10 @@ public abstract class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Seria
 	}
 
 	@Autowired
-	public JdbcTemplate jdbcTemplate;
+	protected JdbcTemplate jdbcTemplate;
+
+	@Resource
+	protected RedisTemplate<String,String> redisTemplate;
 
 	@Override
 	@Transactional(readOnly = true)

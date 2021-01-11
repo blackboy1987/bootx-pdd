@@ -6,8 +6,12 @@
 package com.bootx.service.impl;
 
 import com.bootx.dao.ProductCategoryDao;
+import com.bootx.elasticsearch.entity.ProductCategoryTree;
 import com.bootx.entity.ProductCategory;
 import com.bootx.service.ProductCategoryService;
+import com.bootx.util.JsonUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,8 @@ import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Service - 商品分类
@@ -158,6 +164,44 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 	@Override
 	public ProductCategory findByOtherId(String otherId) {
 		return productCategoryDao.find("otherId",otherId);
+	}
+
+    @Override
+    public List<ProductCategoryTree> findTree1(String pluginId) {
+		String result = redisTemplate.opsForValue().get(pluginId);
+		if(StringUtils.isBlank(result)){
+			List<ProductCategoryTree> productCategoryTrees = findTree(pluginId,null);
+			redisTemplate.opsForValue().set(pluginId,JsonUtils.toJson(productCategoryTrees));
+			return productCategoryTrees;
+		}
+		return JsonUtils.toObject(result, new TypeReference<List<ProductCategoryTree>>() {
+		});
+
+	}
+
+	private List<ProductCategoryTree> findTree(String pluginId, Long parenId) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select parent.id,parent.name,(select count(child.id) from `bootx-pdd`.productcategory as child where child.parent_id=parent.id and child.pluginId='").append(pluginId).append("') childrenCount from `bootx-pdd`.productcategory as parent");
+		sb.append(" where parent.pluginId='").append(pluginId).append("' ");
+		if(parenId==null){
+			sb.append(" and parent.parent_id is null ");
+		}else{
+			sb.append(" and parent.parent_id=").append(parenId);
+		}
+		sb.append(" order by parent.id asc;");
+		List<Map<String,Object>> list = jdbcTemplate.queryForList(sb.toString());
+
+		return list.stream().map(item->{
+			ProductCategoryTree productCategoryTree = new ProductCategoryTree();
+			productCategoryTree.setId(Long.valueOf(item.get("id")+""));
+			productCategoryTree.setName(item.get("name")+"");
+			if(Integer.parseInt(item.get("childrenCount")+"")>0){
+				productCategoryTree.setChildren(findTree(pluginId,productCategoryTree.getId()));
+			}
+			return productCategoryTree;
+		}).collect(Collectors.toList());
+
+
 	}
 
 	@Override

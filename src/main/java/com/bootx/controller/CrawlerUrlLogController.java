@@ -46,4 +46,11 @@ public class CrawlerUrlLogController extends BaseController {
         crawlerUrlLogService.upload(ids,storeIds,type);
         return Result.success("ok");
     }
+
+
+    @PostMapping("/updateProductCategory")
+    public Result upload(Long id,Long[] productCategoryId, @CurrentUser Member member) {
+        crawlerUrlLogService.updateProductCategory(id,productCategoryId,member);
+        return Result.success("ok");
+    }
 }

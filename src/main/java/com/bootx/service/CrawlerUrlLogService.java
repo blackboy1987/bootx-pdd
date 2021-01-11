@@ -5,6 +5,7 @@ import com.bootx.common.Page;
 import com.bootx.common.Pageable;
 import com.bootx.entity.CrawlerUrlLog;
 import com.bootx.entity.Member;
+import com.bootx.entity.Product;
 
 /**
  * Service - 审计日志
@@ -16,7 +17,7 @@ public interface CrawlerUrlLogService extends BaseService<CrawlerUrlLog, Long> {
 
     CrawlerUrlLog findByUrl(String url);
 
-    void updateInfo(String url,Long productId,String crawlerLogSn,String memo,Integer status);
+    void updateInfo(String url, Product product, String crawlerLogSn, String memo, Integer status);
 
     void updateInfo(String url,String crawlerLogSn, String memo,Integer status);
 
@@ -25,4 +26,7 @@ public interface CrawlerUrlLogService extends BaseService<CrawlerUrlLog, Long> {
     Page<CrawlerUrlLog> findPage(Pageable pageable, Member member, Integer status);
 
     void upload(Long[] ids,Long[] storeIds,Integer type) throws Exception;
+
+    void updateProductCategory(Long id, Long[] productCategoryId, Member member);
+
 }

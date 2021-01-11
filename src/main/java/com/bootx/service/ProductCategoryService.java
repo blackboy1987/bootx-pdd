@@ -1,10 +1,7 @@
-/*
- * Copyright 2005-2017 shopxx.net. All rights reserved.
- * Support: http://www.shopxx.net
- * License: http://www.shopxx.net/license
- */
+
 package com.bootx.service;
 
+import com.bootx.elasticsearch.entity.ProductCategoryTree;
 import com.bootx.entity.ProductCategory;
 
 import java.util.List;
@@ -203,4 +200,7 @@ public interface ProductCategoryService extends BaseService<ProductCategory, Lon
 
 
     ProductCategory findByOtherId(String otherId);
+
+	List<ProductCategoryTree> findTree1(String pluginId);
+
 }

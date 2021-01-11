@@ -6,14 +6,12 @@ import com.bootx.common.Pageable;
 import com.bootx.dao.CrawlerUrlLogDao;
 import com.bootx.entity.*;
 import com.bootx.pdd.service.GoodsService;
-import com.bootx.service.CrawlerLogService;
-import com.bootx.service.CrawlerUrlLogService;
-import com.bootx.service.ProductService;
-import com.bootx.service.StoreService;
+import com.bootx.service.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service - 审计日志
@@ -31,6 +29,8 @@ public class CrawlerUrlLogServiceImpl extends BaseServiceImpl<CrawlerUrlLog, Lon
     @Resource
     private ProductService productService;
     @Resource
+    private ProductCategoryService productCategoryService;
+    @Resource
     private GoodsService goodsService;
     @Resource
     private StoreService storeService;
@@ -41,11 +41,13 @@ public class CrawlerUrlLogServiceImpl extends BaseServiceImpl<CrawlerUrlLog, Lon
     }
 
     @Override
-    public void updateInfo(String url,Long productSn,String crawlerLogSn,String memo,Integer status) {
+    public void updateInfo(String url,Product product,String crawlerLogSn,String memo,Integer status) {
         CrawlerUrlLog crawlerUrlLog = findByUrlAndCrawlerLogSn(url,crawlerLogSn);
         if(crawlerUrlLog!=null){
             crawlerUrlLog.setStatus(status);
-            crawlerUrlLog.setProductId(productSn);
+            crawlerUrlLog.setPddProductCategoryIds(product.getProductCategoryIds());
+            crawlerUrlLog.setPddProductCategoryNames(product.getProductCategoryNames());
+            crawlerUrlLog.setProductId(product.getId());
             crawlerUrlLog.setMemo(memo);
             super.update(crawlerUrlLog);
             CrawlerLog crawlerLog = crawlerUrlLog.getCrawlerLog();
@@ -104,6 +106,17 @@ public class CrawlerUrlLogServiceImpl extends BaseServiceImpl<CrawlerUrlLog, Lon
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void updateProductCategory(Long id, Long[] productCategoryId, Member member) {
+        CrawlerUrlLog crawlerUrlLog = find(id);
+        if (crawlerUrlLog!=null){
+            List<ProductCategory> productCategories = productCategoryService.findList(productCategoryId);
+            crawlerUrlLog.setPddProductCategoryNames(productCategories.stream().map(item->item.getName()).collect(Collectors.toList()));
+            crawlerUrlLog.setPddProductCategoryIds(productCategories.stream().map(item->item.getId()).collect(Collectors.toList()));
+            super.update(crawlerUrlLog);
         }
     }
 }
