@@ -1,5 +1,6 @@
 package com.bootx.pdd.service;
 
+import com.bootx.common.Pageable;
 import com.bootx.entity.Product;
 import com.pdd.pop.sdk.http.api.pop.response.*;
 
@@ -36,6 +37,9 @@ public interface GoodsService {
     PddGoodsAddResponse pddGoodsAdd(Product product, String accessToken) throws Exception;
 
 
+    PddGoodsEditGoodsCommitResponse pddGoodsEditGoodsCommit(Product product, String accessToken) throws Exception;
+
+
     PddGoodsAuthorizationCatsResponse pddGoodsAuthorizationCats(String accessToken) throws Exception;
 
     /**
@@ -49,7 +53,7 @@ public interface GoodsService {
 
     PddGoodsCatsGetResponse pddGoodsCatsGet(String accessToken,Long catId) throws Exception;
 
-    void e(String accessToken) throws Exception;
+    void commitListGet(String accessToken, Integer checkStatus, Long goodsId, Pageable pageable) throws Exception;
 
     void f(String accessToken) throws Exception;
 

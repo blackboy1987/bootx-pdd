@@ -42,7 +42,7 @@ public class AccessTokenServiceImpl extends BaseServiceImpl<AccessToken,Long> im
         Store store = storeService.findByMallId(Long.valueOf(accessToken.getOwnerId()));
         if(store==null){
             try {
-                storeService.create(response.getOwnerId(),response.getOwnerName());
+                storeService.create(response);
             }catch (Exception e){
                 e.printStackTrace();
             }

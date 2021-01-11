@@ -14,6 +14,15 @@ public class ProductStore implements Serializable {
     @JsonView({BaseEntity.EditView.class})
     private String name;
 
+    public ProductStore() {
+    }
+
+    public ProductStore(String id, String url, String name) {
+        this.id = id;
+        this.url = url;
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }

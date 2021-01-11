@@ -1,8 +1,4 @@
-/*
- * Copyright 2005-2017 shopxx.net. All rights reserved.
- * Support: http://www.shopxx.net
- * License: http://www.shopxx.net/license
- */
+
 package com.bootx.plugin.craw;
 import com.bootx.entity.*;
 import com.bootx.plugin.CrawlerPlugin;

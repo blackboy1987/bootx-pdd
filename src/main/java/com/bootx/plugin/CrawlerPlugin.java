@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -227,6 +228,7 @@ public abstract class CrawlerPlugin implements Comparable<CrawlerPlugin> {
 //设置一个运行JavaScript的时间
 			webClient.waitForBackgroundJavaScript(5000);
 			String html = rootPage.asXml();
+			html = new String(html.getBytes(), Charset.forName("gbk"));
 			return html;
 		}catch (Exception e){
 			e.printStackTrace();

@@ -2,10 +2,11 @@
 package com.bootx.service.impl;
 
 import com.bootx.dao.StoreDao;
+import com.bootx.entity.Member;
 import com.bootx.entity.Store;
-import com.bootx.pdd.entity.AccessToken;
 import com.bootx.pdd.service.PddService;
 import com.bootx.service.StoreService;
+import com.bootx.util.DateUtils;
 import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
 import com.pdd.pop.sdk.http.token.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Service - 审计日志
@@ -75,18 +77,32 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements St
 	}
 
 	@Override
-	public Store create(String ownerId,String ownerName){
-		Store store = findByMallId(Long.valueOf(ownerId));
+	public Store create(AccessTokenResponse accessTokenResponse){
+		Store store = findByMallId(Long.valueOf(accessTokenResponse.getOwnerId()));
 		if(store==null){
 			try {
 				store = new Store();
-				store.setMallName(ownerName);
-				store.setMallId(Long.valueOf(ownerId));
+				store.setMallName(accessTokenResponse.getOwnerName());
+				store.setMallId(Long.valueOf(accessTokenResponse.getOwnerId()));
+				store.setAccessToken(accessTokenResponse.getAccessToken());
+				store.setExpireDate(DateUtils.getNextSecond(accessTokenResponse.getExpiresIn()));
 				return super.save(store);
 			}catch (Exception e){
 				e.printStackTrace();
 			}
 		}
-		return store;
+		store.setAccessToken(accessTokenResponse.getAccessToken());
+		store.setExpireDate(DateUtils.getNextSecond(accessTokenResponse.getExpiresIn()));
+		return super.update(store);
+	}
+
+	@Override
+	public List<Store> findList(Member member) {
+		return storeDao.findList(member);
+	}
+
+	@Override
+	public void flushAccessToken(Store store) {
+
 	}
 }

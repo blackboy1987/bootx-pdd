@@ -1,14 +1,15 @@
 package com.bootx.pdd.service.impl;
 
+import com.bootx.common.Pageable;
 import com.bootx.constants.PddConfig;
 import com.bootx.entity.Product;
-import com.bootx.entity.ProductImage;
 import com.bootx.pdd.entity.PddGoodsAdd;
 import com.bootx.pdd.service.GoodsService;
 import com.bootx.util.ImageUtils;
 import com.pdd.pop.sdk.common.util.JsonUtil;
 import com.pdd.pop.sdk.http.api.pop.request.*;
 import com.pdd.pop.sdk.http.api.pop.response.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -43,9 +44,27 @@ public class GoodsServiceImpl extends PddBaseServiceImpl implements GoodsService
     @Override
     public PddGoodsAddResponse pddGoodsAdd(Product product, String accessToken) throws Exception {
         // 处理掉product中的图片
-        parseImage(product,accessToken);
-        PddGoodsAddRequest request = PddGoodsAdd.build(product);
+        PddGoodsAdd pddGoodsAdd = new PddGoodsAdd();
+        pddGoodsAdd.setCarouselGallerys(parseImage(product,accessToken));
+        pddGoodsAdd.setDetailGallerys(parseDetailImage(product,accessToken));
+
+
+        PddGoodsAddRequest request = pddGoodsAdd.build(product);
         PddGoodsAddResponse response = POPHTTPCLIENT.syncInvoke(request, PddConfig.accessToken);
+        System.out.println(JsonUtil.transferToJson(response));
+        return response;
+    }
+
+    @Override
+    public PddGoodsEditGoodsCommitResponse pddGoodsEditGoodsCommit(Product product, String accessToken) throws Exception {
+        // 处理掉product中的图片
+        PddGoodsAdd pddGoodsAdd = new PddGoodsAdd();
+        pddGoodsAdd.setCarouselGallerys(parseImage(product,accessToken));
+        pddGoodsAdd.setDetailGallerys(parseDetailImage(product,accessToken));
+
+
+        PddGoodsEditGoodsCommitRequest request = pddGoodsAdd.build1(product);
+        PddGoodsEditGoodsCommitResponse response = POPHTTPCLIENT.syncInvoke(request, PddConfig.accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
@@ -89,8 +108,21 @@ public class GoodsServiceImpl extends PddBaseServiceImpl implements GoodsService
     }
 
     @Override
-    public void e(String accessToken) throws Exception {
+    public void commitListGet(String accessToken, Integer checkStatus, Long goodsId, Pageable pageable) throws Exception {
+        PddGoodsCommitListGetRequest request = new PddGoodsCommitListGetRequest();
+        if(checkStatus==null){
+            request.setCheckStatus(0);
+        }else{
+            request.setCheckStatus(checkStatus);
+        }
 
+        if(goodsId!=null){
+            request.setGoodsId(goodsId);
+        }
+        request.setPage(pageable.getPageNumber());
+        request.setPageSize(pageable.getPageSize());
+        PddGoodsCommitListGetResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        System.out.println(JsonUtil.transferToJson(response));
     }
 
     @Override
@@ -103,23 +135,42 @@ public class GoodsServiceImpl extends PddBaseServiceImpl implements GoodsService
 
     }
 
-    private void parseImage(Product product, String accessToken) {
+    private List<String> parseImage(Product product, String accessToken) {
         // productImages
-        product.setProductImages(product.getProductImages().stream().map(item->{
-            ProductImage productImage = new ProductImage();
-            try {
-                PddGoodsImageUploadResponse pddGoodsImageUploadResponse = uploadImage(ImageUtils.url2Base64(productImage.getSource()), accessToken);
-                String imageUrl = pddGoodsImageUploadResponse.getGoodsImageUploadResponse().getImageUrl();
-                productImage.setOrder(item.getOrder());
-                productImage.setLarge(imageUrl);
-                productImage.setMedium(imageUrl);
-                productImage.setSource(imageUrl);
-                productImage.setThumbnail(imageUrl);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
+        return product.getProductImages().stream().map(item->{
+           if(StringUtils.isNotBlank(item.getSource())){
+               try {
+                   PddGoodsImageUploadResponse pddGoodsImageUploadResponse = uploadImage(ImageUtils.url2Base64(item.getSource()), accessToken);
+                   if(pddGoodsImageUploadResponse.getErrorResponse()==null){
+                       return pddGoodsImageUploadResponse.getGoodsImageUploadResponse().getImageUrl();
+                   }
+                   return null;
 
-            return productImage;
-        }).collect(Collectors.toList()));
+               } catch (Exception exception) {
+                   exception.printStackTrace();
+               }
+           }
+            return null;
+        }).filter(StringUtils::isNotBlank).collect(Collectors.toList());
+    }
+
+    private List<String> parseDetailImage(Product product, String accessToken) {
+        // productImages
+        List<String> images = product.getProductIntroductionImage().getImages().stream().map(item->{
+            if(StringUtils.isNotBlank(item)){
+                try {
+                    PddGoodsImageUploadResponse pddGoodsImageUploadResponse = uploadImage(ImageUtils.url2Base64(item), accessToken);
+                    if(pddGoodsImageUploadResponse.getErrorResponse()==null){
+                        return pddGoodsImageUploadResponse.getGoodsImageUploadResponse().getImageUrl();
+                    }
+                    return null;
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+            return null;
+        }).filter(StringUtils::isNotBlank).collect(Collectors.toList());
+
+        return images;
     }
 }

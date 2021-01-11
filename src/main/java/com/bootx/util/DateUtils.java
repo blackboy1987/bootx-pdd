@@ -2,6 +2,7 @@ package com.bootx.util;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -106,6 +107,11 @@ public class DateUtils {
         return convertLocalDateTimeToDate(convertLocalDateToLocalDateTime(localDate));
     }
 
+    public static Date getNextSecond(Integer seconds) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        localDateTime = localDateTime.plus(seconds, ChronoUnit.SECONDS);
+        return convertLocalDateTimeToDate(localDateTime);
+    }
 
     //计算2个时间的插值（秒）
     public Long getIntervalSecond(Date startDate, Date endDate) {

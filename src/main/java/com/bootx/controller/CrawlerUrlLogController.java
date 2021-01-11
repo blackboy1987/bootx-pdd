@@ -42,9 +42,8 @@ public class CrawlerUrlLogController extends BaseController {
 
     @PostMapping("/upload")
     @JsonView(BaseEntity.PageView.class)
-    public Result upload(Long id, @CurrentUser Member member) throws Exception {
-        crawlerUrlLogService.upload(id);
-
+    public Result upload(Long[] ids,Long[] storeIds,Integer type, @CurrentUser Member member) throws Exception {
+        crawlerUrlLogService.upload(ids,storeIds,type);
         return Result.success("ok");
     }
 }

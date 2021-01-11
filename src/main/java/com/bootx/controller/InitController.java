@@ -6,6 +6,7 @@ import com.bootx.entity.Product;
 import com.bootx.entity.ProductCategory;
 import com.bootx.pdd.service.PddService;
 import com.bootx.plugin.CrawlerPlugin;
+import com.bootx.service.MemberService;
 import com.bootx.service.PlatformService;
 import com.bootx.service.PluginService;
 import com.bootx.service.ProductCategoryService;
@@ -33,6 +34,8 @@ public class InitController extends BaseController {
     private ProductCategoryService productCategoryService;
     @Resource
     private PddService pddService;
+    @Resource
+    private MemberService memberService;
 
     @GetMapping("/index")
     public String init(){
@@ -159,5 +162,16 @@ public class InitController extends BaseController {
 
 
         return pddGoodsCatsGetResponse;
+    }
+
+
+
+
+    @GetMapping("/taobao")
+    public String taobao(){
+        String url="https://item.taobao.com/item.htm?spm=a230r.1.14.24.5ef972cd4cLAvC&id=632090563436&ns=1&abbucket=10#detail";
+        CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin("taoBaoPlugin");
+        Product product = crawlerPlugin.product(memberService.findAll().get(0),url);
+        return "ok";
     }
 }

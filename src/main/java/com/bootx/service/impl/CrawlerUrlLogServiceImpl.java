@@ -13,6 +13,7 @@ import com.bootx.service.StoreService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Service - 审计日志
@@ -89,10 +90,20 @@ public class CrawlerUrlLogServiceImpl extends BaseServiceImpl<CrawlerUrlLog, Lon
     }
 
     @Override
-    public void upload(Long id) throws Exception {
-        CrawlerUrlLog crawlerUrlLog = find(id);
-        Store store = storeService.find(4L);
-        Product product = productService.find(crawlerUrlLog.getProductId());
-        goodsService.pddGoodsAdd(product,store.getAccessToken());
+    public void upload(Long[] ids,Long[] storeIds,Integer type) throws Exception {
+        List<CrawlerUrlLog> crawlerUrlLogs = findList(ids);
+        List<Store> stores =storeService.findList(storeIds);
+        for (CrawlerUrlLog crawlerUrlLog:crawlerUrlLogs) {
+            Product product = productService.find(crawlerUrlLog.getProductId());
+            if(product!=null){
+                for (Store store:stores){
+                    if(type==0){
+                        goodsService.pddGoodsAdd(product,store.getAccessToken());
+                    }else {
+                        goodsService.pddGoodsEditGoodsCommit(product,store.getAccessToken());
+                    }
+                }
+            }
+        }
     }
 }

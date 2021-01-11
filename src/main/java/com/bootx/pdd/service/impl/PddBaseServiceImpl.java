@@ -24,7 +24,7 @@ public abstract class PddBaseServiceImpl implements PddBaseService {
     public PddGoodsImageUploadResponse uploadImage(String imageBase64, String accessToken) throws Exception {
 
         PddGoodsImageUploadRequest request = new PddGoodsImageUploadRequest();
-        request.setImage(imageBase64);
+        request.setImage("data:image/png;base64,"+imageBase64);
         PddGoodsImageUploadResponse response = POPHTTPCLIENT.syncInvoke(request, PddConfig.accessToken);
         return response;
     }

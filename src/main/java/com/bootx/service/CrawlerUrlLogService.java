@@ -24,5 +24,5 @@ public interface CrawlerUrlLogService extends BaseService<CrawlerUrlLog, Long> {
 
     Page<CrawlerUrlLog> findPage(Pageable pageable, Member member, Integer status);
 
-    void upload(Long id) throws Exception;
+    void upload(Long[] ids,Long[] storeIds,Integer type) throws Exception;
 }

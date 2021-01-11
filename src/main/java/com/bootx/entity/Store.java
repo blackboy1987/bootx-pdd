@@ -1,11 +1,11 @@
 package com.bootx.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
 public class Store extends BaseEntity<Long>{
@@ -24,12 +24,18 @@ public class Store extends BaseEntity<Long>{
 
     @NotEmpty
     @Column(nullable = false)
+    @JsonView({ListView.class})
     private String mallName;
 
     @Column(updatable = false)
     private Integer merchantType;
 
     private String accessToken;
+
+    /**
+     * accessToken 的过期时间
+     */
+    private Date expireDate;
 
     public Member getMember() {
         return member;
@@ -85,5 +91,22 @@ public class Store extends BaseEntity<Long>{
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
+    }
+
+    @Transient
+    @JsonView({ListView.class})
+    public boolean isExpired(){
+        if(expireDate==null){
+            return true;
+        }
+        return expireDate.compareTo(new Date())<=0;
     }
 }

@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.im4java.core.*;
 import org.springframework.util.Assert;
+import sun.misc.BASE64Encoder;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -17,8 +18,12 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Utils - 图片处理(支持JDK、GraphicsMagick、ImageMagick)
@@ -432,7 +437,7 @@ public final class ImageUtils {
 	}
 
 	public static String url2Base64(String imgUrl) {
-		/*ByteArrayOutputStream data = new ByteArrayOutputStream();
+		ByteArrayOutputStream data = new ByteArrayOutputStream();
 		InputStream is = null;
 		try {
 			URL url = new URL(imgUrl);
@@ -458,8 +463,7 @@ public final class ImageUtils {
 			}
 		}
 		BASE64Encoder encoder = new BASE64Encoder();
-		return encoder.encode(data.toByteArray());*/
-		return imgUrl;
+		return encoder.encode(data.toByteArray());
 	}
 
 }

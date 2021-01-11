@@ -1,9 +1,12 @@
 
 package com.bootx.service;
 
+import com.bootx.entity.Member;
 import com.bootx.entity.Store;
 import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
 import com.pdd.pop.sdk.http.token.AccessTokenResponse;
+
+import java.util.List;
 
 /**
  * Service - 审计日志
@@ -14,11 +17,16 @@ import com.pdd.pop.sdk.http.token.AccessTokenResponse;
 public interface StoreService extends BaseService<Store, Long> {
 
 	Store findByMallId(Long mallId);
+
 	Store findByMallName(String mallName);
 
 	void updateAccessToken(AccessTokenResponse response);
 
 	Store update(PddMallInfoGetResponse response);
 
-	Store create(String ownerId,String ownerName);
+	Store create(AccessTokenResponse accessTokenResponse);
+
+	List<Store> findList(Member member);
+
+	void flushAccessToken(Store store);
 }

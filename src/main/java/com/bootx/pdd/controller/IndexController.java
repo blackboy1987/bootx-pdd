@@ -3,7 +3,6 @@ package com.bootx.pdd.controller;
 import com.bootx.constants.PddConfig;
 import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.Member;
-import com.bootx.entity.Store;
 import com.bootx.pdd.service.PddService;
 import com.bootx.security.UserAuthenticationToken;
 import com.bootx.service.MemberService;
@@ -42,12 +41,7 @@ public class IndexController extends BaseController {
     public AccessTokenResponse index(String code) throws Exception {
         AccessTokenResponse accessTokenResponse = pddService.token(code);
         if(accessTokenResponse!=null){
-            Store store = storeService.findByMallId(Long.valueOf(accessTokenResponse.getOwnerId()));
-            if(store==null){
-                store = storeService.create(accessTokenResponse.getOwnerId(),accessTokenResponse.getOwnerName());
-            }
-            store.setAccessToken(accessTokenResponse.getAccessToken());
-            Member member = store.getMember();
+            Member member = storeService.create(accessTokenResponse).getMember();
             if(member!=null){
                 userService.login(new UserAuthenticationToken(Member.class, member.getUsername(), "12345678", false, "0:0:0:0"));
             }
