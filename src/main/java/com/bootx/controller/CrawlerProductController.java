@@ -5,9 +5,8 @@ import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.BaseEntity;
 import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
-import com.bootx.service.CrawlerLogService;
+import com.bootx.service.CrawlerProductService;
 import com.bootx.service.MemberService;
-import com.bootx.service.ProductService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,13 +19,11 @@ import javax.servlet.http.HttpServletRequest;
  * @author black
  */
 @RestController("pddProductController")
-@RequestMapping("/pdd/product")
-public class ProductController extends BaseController {
+@RequestMapping("/pdd/crawler_product")
+public class CrawlerProductController extends BaseController {
 
     @Resource
-    private ProductService productService;
-    @Resource
-    private CrawlerLogService crawlerLogService;
+    private CrawlerProductService crawlerProductService;
     @Resource
     private MemberService memberService;
 
@@ -35,13 +32,13 @@ public class ProductController extends BaseController {
         if(member==null){
             member = memberService.getCurrent(request);
         }
-        productService.crawler(crawlerLogService.save(member,urls, type),urls,type);
+        crawlerProductService.crawler(member,urls,type);
         return Result.success("success");
     }
 
     @PostMapping("/detail")
     @JsonView(BaseEntity.EditView.class)
     public Result detail(Long[] productIds, @CurrentUser Member member, HttpServletRequest request){
-        return Result.success(productService.findList(productIds));
+        return Result.success(crawlerProductService.findList(productIds));
     }
 }

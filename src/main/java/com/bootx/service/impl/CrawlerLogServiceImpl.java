@@ -2,7 +2,7 @@
 package com.bootx.service.impl;
 
 import com.bootx.entity.CrawlerLog;
-import com.bootx.entity.CrawlerUrlLog;
+import com.bootx.entity.CrawlerProduct;
 import com.bootx.entity.Member;
 import com.bootx.service.CrawlerLogService;
 import com.bootx.util.CrawlerUtils;
@@ -30,19 +30,14 @@ public class CrawlerLogServiceImpl extends BaseServiceImpl<CrawlerLog, Long> imp
         crawlerLog.setMember(member);
         crawlerLog.setType(type);
         crawlerLog.setStatus(0);
-        crawlerLog.setCrawlerUrlLogs(new HashSet<>());
+        crawlerLog.setCrawlerProducts(new HashSet<>());
         for (String url:urls) {
-            CrawlerUrlLog crawlerUrlLog = new CrawlerUrlLog();
-            crawlerUrlLog.setCrawlerLog(crawlerLog);
-            crawlerUrlLog.setUrl(url);
-            crawlerUrlLog.setType(type);
-            crawlerUrlLog.setStatus(0);
-            crawlerUrlLog.setMemo("采集中");
-            crawlerUrlLog.setMember(member);
-            crawlerUrlLog.setCrawlerLogSn(crawlerLog.getSn());
-            crawlerLog.getCrawlerUrlLogs().add(crawlerUrlLog);
+            CrawlerProduct crawlerProduct = new CrawlerProduct();
+            crawlerProduct.init();
+            crawlerProduct.setCrawlerLog(crawlerLog);
             if(StringUtils.isNotBlank(CrawlerUtils.getPlugInId(url)) &&!crawlerLog.getPluginIds().contains(CrawlerUtils.getPlugInId(url))){
                 crawlerLog.getPluginIds().add(CrawlerUtils.getPlugInId(url));
+                crawlerProduct.setPluginId(CrawlerUtils.getPlugInId(url));
             }
             crawlerLog.setTotal(urls.length);
             crawlerLog.setSuccess(0);

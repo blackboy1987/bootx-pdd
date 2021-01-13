@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,13 +19,8 @@ public class CrawlerLog extends BaseEntity<Long>{
     @JoinColumn(nullable = false,updatable = false)
     private Member member;
 
-    @NotEmpty
-    @Column(nullable = false,updatable = false,unique = true)
-    @JsonView({PageView.class})
-    private String sn;
-
     @OneToMany(mappedBy = "crawlerLog",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private Set<CrawlerUrlLog> crawlerUrlLogs = new HashSet<>();
+    private Set<CrawlerProduct> crawlerProducts = new HashSet<>();
 
     @Column(length = 500)
     @Convert(converter = PluginIdConverter.class)
@@ -71,20 +65,12 @@ public class CrawlerLog extends BaseEntity<Long>{
         this.member = member;
     }
 
-    public String getSn() {
-        return sn;
+    public Set<CrawlerProduct> getCrawlerProducts() {
+        return crawlerProducts;
     }
 
-    public void setSn(String sn) {
-        this.sn = sn;
-    }
-
-    public Set<CrawlerUrlLog> getCrawlerUrlLogs() {
-        return crawlerUrlLogs;
-    }
-
-    public void setCrawlerUrlLogs(Set<CrawlerUrlLog> crawlerUrlLogs) {
-        this.crawlerUrlLogs = crawlerUrlLogs;
+    public void setCrawlerProducts(Set<CrawlerProduct> crawlerProducts) {
+        this.crawlerProducts = crawlerProducts;
     }
 
     public Integer getType() {
