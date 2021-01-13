@@ -37,11 +37,20 @@ public class IndexController extends BaseController {
     @Resource
     private UserService userService;
 
+    /**
+     *
+     * @param code
+     *      用来获取accessToken的code码
+     * @param state
+     *      用户的token
+     * @return
+     * @throws Exception
+     */
     @GetMapping
-    public AccessTokenResponse index(String code) throws Exception {
+    public AccessTokenResponse index(String code,String state) throws Exception {
         AccessTokenResponse accessTokenResponse = pddService.token(code);
         if(accessTokenResponse!=null){
-            Member member = storeService.create(accessTokenResponse).getMember();
+            Member member = storeService.create(accessTokenResponse,memberService.getCurrent(state)).getMember();
             if(member!=null){
                 userService.login(new UserAuthenticationToken(Member.class, member.getUsername(), "12345678", false, "0:0:0:0"));
             }

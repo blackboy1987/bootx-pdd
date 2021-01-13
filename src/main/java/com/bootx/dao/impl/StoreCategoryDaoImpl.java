@@ -3,9 +3,9 @@ package com.bootx.dao.impl;
 
 import com.bootx.common.Page;
 import com.bootx.common.Pageable;
-import com.bootx.dao.StoreDao;
+import com.bootx.dao.StoreCategoryDao;
 import com.bootx.entity.Member;
-import com.bootx.entity.Store;
+import com.bootx.entity.StoreCategory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -22,16 +22,16 @@ import java.util.List;
  * @version 6.1
  */
 @Repository
-public class StoreDaoImpl extends BaseDaoImpl<Store, Long> implements StoreDao {
+public class StoreCategoryDaoImpl extends BaseDaoImpl<StoreCategory, Long> implements StoreCategoryDao {
 
     @Override
-    public List<Store> findList(Member member) {
+    public List<StoreCategory> findList(Member member) {
         if (member==null) {
             return Collections.emptyList();
         }
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Store> criteriaQuery = criteriaBuilder.createQuery(Store.class);
-        Root<Store> root = criteriaQuery.from(Store.class);
+        CriteriaQuery<StoreCategory> criteriaQuery = criteriaBuilder.createQuery(StoreCategory.class);
+        Root<StoreCategory> root = criteriaQuery.from(StoreCategory.class);
         criteriaQuery.select(root);
         Predicate restrictions = criteriaBuilder.conjunction();
         restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("member"),member));
@@ -40,13 +40,13 @@ public class StoreDaoImpl extends BaseDaoImpl<Store, Long> implements StoreDao {
     }
 
     @Override
-    public Page<Store> findPage(Pageable pageable, Member member) {
+    public Page<StoreCategory> findPage (Pageable pageable, Member member) {
         if (member==null) {
-            return new Page(Collections.emptyList(),0L,pageable);
+            return new Page<>(Collections.emptyList(),0L,pageable);
         }
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Store> criteriaQuery = criteriaBuilder.createQuery(Store.class);
-        Root<Store> root = criteriaQuery.from(Store.class);
+        CriteriaQuery<StoreCategory> criteriaQuery = criteriaBuilder.createQuery(StoreCategory.class);
+        Root<StoreCategory> root = criteriaQuery.from(StoreCategory.class);
         criteriaQuery.select(root);
         Predicate restrictions = criteriaBuilder.conjunction();
         restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("member"),member));

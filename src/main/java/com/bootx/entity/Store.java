@@ -20,6 +20,7 @@ public class Store extends BaseEntity<Long>{
 
     @NotNull
     @Column(nullable = false,updatable = false,unique = true)
+    @JsonView({ListView.class})
     private Long mallId;
 
     @NotEmpty
@@ -27,10 +28,23 @@ public class Store extends BaseEntity<Long>{
     @JsonView({ListView.class})
     private String mallName;
 
+    /**
+     * 店铺类型,
+     * 1:个人
+     * 2:企业
+     * 3:旗舰店
+     * 4:专卖店
+     * 5:专营店
+     * 6:普通店
+     */
     @Column(updatable = false)
+    @JsonView({ListView.class})
     private Integer merchantType;
 
     private String accessToken;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private StoreCategory storeCategory;
 
     /**
      * accessToken 的过期时间
@@ -101,12 +115,28 @@ public class Store extends BaseEntity<Long>{
         this.expireDate = expireDate;
     }
 
+    public StoreCategory getStoreCategory() {
+        return storeCategory;
+    }
+
+    public void setStoreCategory(StoreCategory storeCategory) {
+        this.storeCategory = storeCategory;
+    }
+
     @Transient
-    @JsonView({ListView.class})
     public boolean isExpired(){
         if(expireDate==null){
             return true;
         }
         return expireDate.compareTo(new Date())<=0;
+    }
+
+    @Transient
+    @JsonView({ListView.class})
+    public String getStoreCategoryName(){
+        if(getStoreCategory()==null){
+            return null;
+        }
+        return getStoreCategory().getName();
     }
 }

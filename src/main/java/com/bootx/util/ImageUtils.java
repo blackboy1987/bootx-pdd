@@ -2,6 +2,7 @@
 package com.bootx.util;
 
 import com.bootx.common.Setting;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -9,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.im4java.core.*;
 import org.springframework.util.Assert;
-import sun.misc.BASE64Encoder;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -250,6 +250,48 @@ public final class ImageUtils {
 		}
 	}
 
+	public static void zoom(File srcFile, File destFile) {
+		Assert.notNull(srcFile, "[Assertion failed] - srcFile is required; it must not be null");
+		Assert.state(srcFile.exists(), "[Assertion failed] - srcFile must exists");
+		Assert.state(srcFile.isFile(), "[Assertion failed] - srcFile must be file");
+		Assert.notNull(destFile, "[Assertion failed] - destFile is required; it must not be null");
+
+		Graphics2D graphics2D = null;
+		ImageOutputStream imageOutputStream = null;
+		ImageWriter imageWriter = null;
+		try {
+			BufferedImage srcBufferedImage = ImageIO.read(srcFile);
+			int srcWidth = srcBufferedImage.getWidth();
+			int srcHeight = srcBufferedImage.getHeight();
+			int width = srcWidth;
+			int height = srcHeight;
+			BufferedImage destBufferedImage = new BufferedImage(srcWidth, srcHeight, BufferedImage.TYPE_INT_RGB);
+			graphics2D = destBufferedImage.createGraphics();
+			graphics2D.setBackground(BACKGROUND_COLOR);
+			graphics2D.clearRect(0, 0, srcWidth, srcHeight);
+			graphics2D.drawImage(srcBufferedImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), (srcWidth / 2) - (width / 2), (srcHeight / 2) - (height / 2), null);
+
+			imageOutputStream = ImageIO.createImageOutputStream(destFile);
+			imageWriter = ImageIO.getImageWritersByFormatName(FilenameUtils.getExtension(destFile.getName())).next();
+			imageWriter.setOutput(imageOutputStream);
+			ImageWriteParam imageWriteParam = imageWriter.getDefaultWriteParam();
+			imageWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			imageWriteParam.setCompressionQuality((float) (DEST_QUALITY / 100.0));
+			imageWriter.write(null, new IIOImage(destBufferedImage, null, null), imageWriteParam);
+			imageOutputStream.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		} finally {
+			if (graphics2D != null) {
+				graphics2D.dispose();
+			}
+			if (imageWriter != null) {
+				imageWriter.dispose();
+			}
+			IOUtils.closeQuietly(imageOutputStream);
+		}
+	}
+
 	/**
 	 * 添加水印
 	 * 
@@ -462,8 +504,7 @@ public final class ImageUtils {
 				e.printStackTrace();
 			}
 		}
-		BASE64Encoder encoder = new BASE64Encoder();
-		return encoder.encode(data.toByteArray());
+		return Base64.encodeBase64String(data.toByteArray());
 	}
 
 }

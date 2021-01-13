@@ -320,4 +320,14 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 		member.setMemberRank(memberRankService.findDefault());
 	    return super.save(member);
 	}
+
+    @Override
+    public Member getCurrent(String token) {
+		try{
+			return find(Long.valueOf(JWTUtils.parseToken(token).getId()));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+    }
 }

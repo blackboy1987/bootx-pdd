@@ -18,7 +18,7 @@ import java.util.Map;
  * @version 1.0
  */
 @RestController("memberLogoutController")
-@RequestMapping("/api/logout")
+@RequestMapping("/pdd/logout")
 public class LogoutController extends BaseController {
 
 	@Autowired
@@ -31,7 +31,6 @@ public class LogoutController extends BaseController {
 	public Map<String,Object> index() {
 		Map<String,Object> data = new HashMap<>();
 		userService.logout();
-
 		data.put("status","ok");
 		data.put("content","退出成功");
 		return data;

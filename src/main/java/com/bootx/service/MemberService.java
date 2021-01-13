@@ -193,4 +193,11 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	Page<Member> findPage(Pageable pageable, String username, String name, Date beginDate, Date endDate);
 
 	Member create(Store store);
+
+	/**
+	 * 根据token来获取用户
+	 * @param token
+	 * @return
+	 */
+    Member getCurrent(String token);
 }

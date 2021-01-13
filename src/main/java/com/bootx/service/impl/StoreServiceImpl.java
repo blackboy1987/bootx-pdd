@@ -1,10 +1,12 @@
 
 package com.bootx.service.impl;
 
+import com.bootx.common.Message;
+import com.bootx.common.Page;
+import com.bootx.common.Pageable;
 import com.bootx.dao.StoreDao;
 import com.bootx.entity.Member;
 import com.bootx.entity.Store;
-import com.bootx.pdd.service.PddService;
 import com.bootx.service.StoreService;
 import com.bootx.util.DateUtils;
 import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -27,8 +28,6 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements St
 
 	@Autowired
 	private StoreDao storeDao;
-	@Resource
-	private PddService pddService;
 
 	@Override
 	public Store findByMallId(Long mallId) {
@@ -77,11 +76,14 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements St
 	}
 
 	@Override
-	public Store create(AccessTokenResponse accessTokenResponse){
+	public Store create(AccessTokenResponse accessTokenResponse,Member member){
 		Store store = findByMallId(Long.valueOf(accessTokenResponse.getOwnerId()));
 		if(store==null){
 			try {
 				store = new Store();
+				if(member!=null){
+					store.setMember(member);
+				}
 				store.setMallName(accessTokenResponse.getOwnerName());
 				store.setMallId(Long.valueOf(accessTokenResponse.getOwnerId()));
 				store.setAccessToken(accessTokenResponse.getAccessToken());
@@ -90,6 +92,9 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements St
 			}catch (Exception e){
 				e.printStackTrace();
 			}
+		}
+		if(member!=null){
+			store.setMember(member);
 		}
 		store.setAccessToken(accessTokenResponse.getAccessToken());
 		store.setExpireDate(DateUtils.getNextSecond(accessTokenResponse.getExpiresIn()));
@@ -104,5 +109,15 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements St
 	@Override
 	public void flushAccessToken(Store store) {
 
+	}
+
+    @Override
+    public Page<Store> findPage(Pageable pageable, Member member) {
+		return storeDao.findPage(pageable,member);
+    }
+
+	@Override
+	public Message unbind(Store store) {
+		return Message.success("解绑成功");
 	}
 }

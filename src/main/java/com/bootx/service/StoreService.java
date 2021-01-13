@@ -1,6 +1,9 @@
 
 package com.bootx.service;
 
+import com.bootx.common.Message;
+import com.bootx.common.Page;
+import com.bootx.common.Pageable;
 import com.bootx.entity.Member;
 import com.bootx.entity.Store;
 import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
@@ -24,9 +27,13 @@ public interface StoreService extends BaseService<Store, Long> {
 
 	Store update(PddMallInfoGetResponse response);
 
-	Store create(AccessTokenResponse accessTokenResponse);
+	Store create(AccessTokenResponse accessTokenResponse,Member member);
 
 	List<Store> findList(Member member);
 
 	void flushAccessToken(Store store);
+
+    Page<Store> findPage(Pageable pageable, Member member);
+
+	Message unbind(Store store);
 }

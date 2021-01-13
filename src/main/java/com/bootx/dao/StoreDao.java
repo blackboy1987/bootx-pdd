@@ -1,6 +1,8 @@
 
 package com.bootx.dao;
 
+import com.bootx.common.Page;
+import com.bootx.common.Pageable;
 import com.bootx.entity.Member;
 import com.bootx.entity.Store;
 
@@ -16,4 +18,5 @@ public interface StoreDao extends BaseDao<Store, Long> {
 
     List<Store> findList(Member member);
 
+    Page<Store> findPage(Pageable pageable, Member member);
 }

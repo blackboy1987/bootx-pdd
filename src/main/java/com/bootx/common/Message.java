@@ -120,8 +120,6 @@ public class Message {
 	 * 
 	 * @param content
 	 *            内容
-	 * @param args
-	 *            参数
 	 * @return 错误消息
 	 */
 	public static Message error(String content) {
@@ -156,8 +154,6 @@ public class Message {
 	 *
 	 * @param content
 	 *            内容
-	 * @param args
-	 *            参数
 	 * @return 错误消息
 	 */
 	public static Message error1(String content, Object data) {
@@ -210,7 +206,7 @@ public class Message {
 	 */
 	@Override
 	public String toString() {
-		return SpringUtils.getMessage(content);
+		return content;
 	}
 
 	public Object getData() {
