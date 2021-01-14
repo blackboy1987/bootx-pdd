@@ -50,21 +50,24 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
 
         for (CrawlerProduct crawlerProduct:crawlerProducts) {
             if(crawlerProduct.getStatus()==1){
+                pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
                 continue;
             }
-            String pluginId = CrawlerUtils.getPlugInId(crawlerProduct.getUrl());
-            CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);
-            if(crawlerPlugin!=null){
-                crawlerPlugin.product(member,crawlerProduct);
-                if(crawlerProduct.getProductCategoryIds().size()>0){
-                    crawlerProduct.setProductCategory(productCategoryService.findByOtherId(pluginId+"_"+crawlerProduct.getProductCategoryIds().get(crawlerProduct.getProductCategoryIds().size()-1)));
+            new Thread(()->{
+                String pluginId = CrawlerUtils.getPlugInId(crawlerProduct.getUrl());
+                CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);
+                if(crawlerPlugin!=null){
+                    crawlerPlugin.product(member,crawlerProduct);
+                    if(crawlerProduct.getProductCategoryIds().size()>0){
+                        crawlerProduct.setProductCategory(productCategoryService.findByOtherId(pluginId+"_"+crawlerProduct.getProductCategoryIds().get(crawlerProduct.getProductCategoryIds().size()-1)));
+                    }
+                    crawlerProduct.setStatus(1);
+                }else{
+                    crawlerProduct.setStatus(2);
                 }
-                crawlerProduct.setStatus(1);
-            }else{
-                crawlerProduct.setStatus(2);
-            }
-            update(crawlerProduct);
-            pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
+                update(crawlerProduct);
+                pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
+            }).start();
         }
         return crawlerProducts;
     }
