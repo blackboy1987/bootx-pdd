@@ -64,7 +64,7 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
                 crawlerProduct.setStatus(2);
             }
             update(crawlerProduct);
-          //  pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
+            pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
         }
         return crawlerProducts;
     }
