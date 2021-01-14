@@ -76,19 +76,21 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
         crawlerLog.setFail(0);
         crawlerLogService.save(crawlerLog);
         for (String url:urls) {
-            CrawlerProduct crawlerProduct = findByUrl(url);
-            if(crawlerProduct==null){
-                crawlerProduct = new CrawlerProduct();
-                crawlerProduct.setUrl(url);
-                crawlerProduct.setMd5(DigestUtils.md5Hex(url));
-                crawlerProduct.getCrawlerLogs().add(crawlerLog);
-                if(StringUtils.isNotBlank(CrawlerUtils.getPlugInId(url)) &&!crawlerLog.getPluginIds().contains(CrawlerUtils.getPlugInId(url))){
-                    crawlerLog.getPluginIds().add(CrawlerUtils.getPlugInId(url));
-                    crawlerProduct.setPluginId(CrawlerUtils.getPlugInId(url));
+            if(StringUtils.isNotBlank(url)){
+                CrawlerProduct crawlerProduct = findByUrl(url);
+                if(crawlerProduct==null){
+                    crawlerProduct = new CrawlerProduct();
+                    crawlerProduct.setUrl(url);
+                    crawlerProduct.setMd5(DigestUtils.md5Hex(url));
+                    crawlerProduct.getCrawlerLogs().add(crawlerLog);
+                    if(StringUtils.isNotBlank(CrawlerUtils.getPlugInId(url)) &&!crawlerLog.getPluginIds().contains(CrawlerUtils.getPlugInId(url))){
+                        crawlerLog.getPluginIds().add(CrawlerUtils.getPlugInId(url));
+                        crawlerProduct.setPluginId(CrawlerUtils.getPlugInId(url));
+                    }
+                    crawlerProducts.add(super.save(crawlerProduct));
+                }else{
+                    crawlerLog.setSuccess(crawlerLog.getSuccess()+1);
                 }
-                crawlerProducts.add(super.save(crawlerProduct));
-            }else{
-                crawlerLog.setSuccess(crawlerLog.getSuccess()+1);
             }
         }
         crawlerLogService.update(crawlerLog);

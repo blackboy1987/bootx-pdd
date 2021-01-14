@@ -25,6 +25,7 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	private static final long serialVersionUID = -6977025562650112419L;
 
 	@JsonView({PageView.class,EditView.class})
+	@Column(updatable = false)
 	private String sn;
 
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -84,7 +85,6 @@ public class CrawlerProduct extends BaseEntity<Long> {
 
 	@Column(length = 300)
 	@Convert(converter = CrawlerProductCategoryNamesConverter.class)
-	@JsonView({PageView.class})
 	private List<String> productCategoryNames = new ArrayList<>();
 
 
@@ -92,11 +92,11 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	private Long stock;
 
 	@JsonView({PageView.class})
+	@Column(updatable = false)
 	private String pluginId;
 
 	@NotEmpty
-	@Column(nullable = false,updatable = false,unique = true)
-	@JsonView({PageView.class})
+	@Column(length = 1000,nullable = false,updatable = false,unique = true)
 	private String url;
 
 	/**
@@ -116,6 +116,7 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	 * 1：采集完成
 	 * 2：采集失败
 	 */
+	@JsonView(PageView.class)
 	private Integer status;
 
 	public CrawlerProduct() {
@@ -292,6 +293,18 @@ public class CrawlerProduct extends BaseEntity<Long> {
 		setStock(0L);
 		setCrawlerProductStore(new CrawlerProductStore());
 	}
+
+	@Transient
+	@JsonView({PageView.class})
+	public String getImage(){
+		try {
+			return getCrawlerProductImage().getImages().get(0);
+		}catch (Exception e){
+			return null;
+		}
+	}
+
+
 
 	@Converter
 	public static class CrawlerProductCategoryIdConverter extends BaseAttributeConverter<List<Long>> {
