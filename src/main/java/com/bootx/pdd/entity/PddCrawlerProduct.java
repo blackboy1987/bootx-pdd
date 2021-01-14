@@ -2,7 +2,10 @@
 package com.bootx.pdd.entity;
 
 import com.bootx.common.BaseAttributeConverter;
-import com.bootx.entity.*;
+import com.bootx.entity.BaseEntity;
+import com.bootx.entity.CrawlerProduct;
+import com.bootx.entity.Member;
+import com.bootx.entity.ProductCategory;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -12,9 +15,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Entity - 商品
@@ -33,7 +34,6 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 	private CrawlerProduct crawlerProduct;
 
 	@JsonView({PageView.class,EditView.class})
-	@Column(updatable = false)
 	private String sn;
 
 	/**
@@ -90,6 +90,7 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 
 	@Column(length = 300)
 	@Convert(converter = CrawlerProductCategoryNamesConverter.class)
+	@JsonView({PageView.class})
 	private List<String> productCategoryNames = new ArrayList<>();
 
 

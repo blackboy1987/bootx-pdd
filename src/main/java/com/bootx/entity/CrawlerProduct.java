@@ -26,7 +26,6 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	private static final long serialVersionUID = -6977025562650112419L;
 
 	@JsonView({PageView.class,EditView.class})
-	@Column(updatable = false)
 	private String sn;
 
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -86,6 +85,7 @@ public class CrawlerProduct extends BaseEntity<Long> {
 
 	@Column(length = 300)
 	@Convert(converter = CrawlerProductCategoryNamesConverter.class)
+	@JsonView({PageView.class})
 	private List<String> productCategoryNames = new ArrayList<>();
 
 
