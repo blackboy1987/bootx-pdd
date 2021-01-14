@@ -4,10 +4,7 @@ import com.bootx.entity.*;
 import com.bootx.plugin.CrawlerPlugin;
 import com.bootx.plugin.craw.pojo.taobao.ProductRootBean;
 import com.bootx.plugin.craw.pojo.taobao.SkuItem;
-import com.bootx.util.DateUtils;
-import com.bootx.util.JsonUtils;
-import com.bootx.util.UploadUtils;
-import com.bootx.util.WebUtils;
+import com.bootx.util.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,9 +16,11 @@ import org.springframework.stereotype.Component;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 @Component("taoBaoPlugin")
 public class TaoBaoPlugin extends CrawlerPlugin {
@@ -63,48 +62,134 @@ public class TaoBaoPlugin extends CrawlerPlugin {
 
     @Override
     public List<ProductCategory> productCategory() {
-        return null;
+        PluginConfig pluginConfig = getPluginConfig();
+        List<ProductCategory> productCategories = new ArrayList<>();
+        if (pluginConfig != null) {
+            String url = pluginConfig.getAttribute("category");
+            try {
+                Document root = Jsoup.parse(new URL(url), 5000);
+                Elements homeCategoryList = root.getElementsByClass("home-category-list");
+                if (homeCategoryList != null) {
+                    for (Element child : homeCategoryList) {
+                        Elements moduleWrap = child.getElementsByClass("module-wrap");
+                        if (moduleWrap != null) {
+                            Element first = moduleWrap.first();
+                            Elements a = first.getElementsByTag("a");
+                            ProductCategory firstProductCategory = new ProductCategory();
+                            firstProductCategory.setPluginId(pluginConfig.getPluginId());
+                            firstProductCategory.setParent(null);
+                            firstProductCategory.setChildren(new HashSet<>());
+                            if (a != null) {
+                                Element firstCategory = a.first();
+                                if (firstCategory != null) {
+                                    firstProductCategory.setOtherUrl(firstCategory.attr("href"));
+                                    firstProductCategory.setName(firstCategory.text());
+                                }
+
+                            }
+                            // 二级分类
+                            Elements categoryList = first.getElementsByClass("category-list");
+                            if (categoryList != null) {
+                                Element categoryListFirst = categoryList.first();
+                                Elements categoryListItem = categoryListFirst.getElementsByClass("category-list-item");
+                                for (Element categoryListItemSecond : categoryListItem) {
+                                    ProductCategory secondProductCategory = new ProductCategory();
+                                    secondProductCategory.setPluginId(pluginConfig.getPluginId());
+                                    secondProductCategory.setParent(firstProductCategory);
+                                    secondProductCategory.setChildren(new HashSet<>());
+                                    Elements secondA = categoryListItemSecond.getElementsByTag("a");
+                                    if (secondA != null) {
+                                        secondProductCategory.setName(secondA.first().text());
+                                        secondProductCategory.setOtherUrl(secondA.first().attr("href"));
+
+                                    // 三级分类
+                                    Elements thirdCategoryItems = categoryListItemSecond.getElementsByClass("category-items");
+                                    if (thirdCategoryItems != null) {
+                                        Element thirdCategoryItemsFirst = thirdCategoryItems.first();
+                                        Elements elementsByClass = thirdCategoryItemsFirst.getElementsByClass("category-name");
+                                        if(StringUtils.equals("其他配件",secondProductCategory.getName())){
+                                            System.out.println(thirdCategoryItems);
+                                        }
+                                        for (Element thirdCategoryItemsFirstElement : elementsByClass) {
+                                            if(StringUtils.isNotBlank(thirdCategoryItemsFirstElement.text())){
+                                                ProductCategory thirdProductCategory = new ProductCategory();
+                                                thirdProductCategory.setPluginId(pluginConfig.getPluginId());
+                                                thirdProductCategory.setParent(firstProductCategory);
+                                                thirdProductCategory.setChildren(new HashSet<>());
+                                                thirdProductCategory.setName(thirdCategoryItemsFirstElement.text());
+                                                thirdProductCategory.setOtherUrl(thirdCategoryItemsFirstElement.attr("href"));
+
+                                                String cat = CrawlerUtils.getParams(thirdProductCategory.getOtherUrl()).get("cat");
+                                                if(StringUtils.isNotBlank(cat)){
+                                                    thirdProductCategory.setOtherId(pluginConfig.getPluginId()+"_"+cat);
+                                                }
+                                                secondProductCategory.getChildren().add(thirdProductCategory);
+                                            }
+
+                                        }
+                                    }
+                                    }
+                                    firstProductCategory.getChildren().add(secondProductCategory);
+                                }
+                            }
+                            productCategories.add(firstProductCategory);
+                        }
+                    }
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return productCategories;
     }
 
     @Override
-    public Product product(Member member,String url) {
-        String html = WebUtils.get(url,null);
+    public CrawlerProduct product(Member member,CrawlerProduct crawlerProduct) {
+        String html = WebUtils.get(crawlerProduct.getUrl(),null);
         if(StringUtils.isBlank(html)){
             return null;
         }
-        Product product = new Product();
        try{
            Document root = Jsoup.parse(html);
-           title(root,product);
-           product.getProductParameterValue().setParameterValues(parameterValues(root,product));
-           product.setSpecifications(specifications(member,root,product));
-           productInfo(member,root,product);
-           product.getProductSku().setSkus(skus(member,root,product));
+           title(root,crawlerProduct);
+           price(root,crawlerProduct);
+           crawlerProduct.getCrawlerProductParameterValue().setParameterValues(parameterValues(root,crawlerProduct));
+           crawlerProduct.setCrawlerProductSpecification(specifications(member,root,crawlerProduct));
+           productInfo(member,root,crawlerProduct);
+           crawlerProduct.setCrawlerProductSku(skus(member,root,crawlerProduct));
        }catch (Exception e){
            e.printStackTrace();
        }
-        return product;
+        return crawlerProduct;
     }
 
-    private List<Specification> specifications(Member member,Document root,Product product) {
+    private void price(Document root, CrawlerProduct crawlerProduct) {
+        Elements tbRmbNum = root.getElementsByClass("tb-rmb-num");
+        if(tbRmbNum!=null){
+            crawlerProduct.setPrice(tbRmbNum.first().text());
+        }
+    }
+
+    private CrawlerProductSpecification specifications(Member member,Document root,CrawlerProduct crawlerProduct) {
         Element chooseAttrs = root.getElementById("J_isku");
-        List<Specification> specifications = new ArrayList<>();
         if(chooseAttrs!=null){
             Elements pChooses = chooseAttrs.getElementsByClass("J_Prop");
             for (Element pChoose:pChooses){
                 Elements dt = pChoose.getElementsByTag("dt");
                 Elements lis = pChoose.getElementsByTag("li");
                 if(dt!=null&&dt.size()>0&&lis!=null&&lis.size()>0){
-                    Specification specification = new Specification();
-                    specification.setName(dt.first().text());
-                    specification.setEntries(new ArrayList<>());
-                    specification.setOptions(new ArrayList());
+                    CrawlerSpecification crawlerSpecification = new CrawlerSpecification();
+                    crawlerSpecification.setName(dt.first().text());
+                    crawlerSpecification.setEntries(new ArrayList<>());
+                    crawlerSpecification.setOptions(new ArrayList());
                     Integer order1 = 0;
                     for (Element item:lis) {
                         Elements as = item.getElementsByTag("a");
                         if(as!=null&&as.size()>0){
                             Element a = as.first();
-                            specification.getOptions().add(a.text());
+                            crawlerSpecification.getOptions().add(a.text());
                             String style = a.attr("style");
                             if(StringUtils.isNotBlank(style)&&style.length()>"background:url(".length()){
                                 style = style.substring("background:url(".length());
@@ -115,26 +200,26 @@ public class TaoBaoPlugin extends CrawlerPlugin {
                                         String path = member.getUsername()+"/image/"+ DateUtils.formatDateToString(new Date(),"yyyy/MM/dd")+"/"+UUID.randomUUID().toString().replace("-","")+"."+extension;
                                         UploadUtils.upload(style,path);
                                         String url = UploadUtils.getUrl(path);
-                                        specification.getEntries().add(new Specification.Entry(a.text(),item.attr("data-value"),url));
+                                        crawlerSpecification.getEntries().add(new CrawlerSpecification.Entry(a.text(),item.attr("data-value"),url));
                                     }else{
-                                        specification.getEntries().add(new Specification.Entry(a.text(),item.attr("data-value"),null));
+                                        crawlerSpecification.getEntries().add(new CrawlerSpecification.Entry(a.text(),item.attr("data-value"),null));
                                     }
                                 }else{
-                                    specification.getEntries().add(new Specification.Entry(a.text(),item.attr("data-value"),null));
+                                    crawlerSpecification.getEntries().add(new CrawlerSpecification.Entry(a.text(),item.attr("data-value"),null));
                                 }
                             }else{
-                                specification.getEntries().add(new Specification.Entry(a.text(),item.attr("data-value"),null));
+                                crawlerSpecification.getEntries().add(new CrawlerSpecification.Entry(a.text(),item.attr("data-value"),null));
                             }
                         }
                     }
-                    specifications.add(specification);
+                    crawlerProduct.getCrawlerProductSpecification().getCrawlerSpecifications().add(crawlerSpecification);
                 }
             }
         }
-        return specifications;
+        return crawlerProduct.getCrawlerProductSpecification();
     }
 
-    private List<ParameterValue> parameterValues(Document root, Product product) {
+    private List<ParameterValue> parameterValues(Document root, CrawlerProduct crawlerProduct) {
         List<ParameterValue> parameterValues = new ArrayList<>();
         Elements elements = root.getElementsByClass("attributes-list");
         if(elements!=null){
@@ -164,7 +249,7 @@ public class TaoBaoPlugin extends CrawlerPlugin {
     }
 
 
-    private void productInfo(Member member,Document root, Product product) {
+    private void productInfo(Member member,Document root, CrawlerProduct crawlerProduct) {
         Elements elements = root.select("script");
         for (Element script:elements) {
             String data = script.data();
@@ -177,15 +262,13 @@ public class TaoBaoPlugin extends CrawlerPlugin {
                     engine.eval("var location={protocol: 'http'};");
                     Object eval = engine.eval("JSON.stringify(" + data + ")");
                     ProductRootBean productRootBean = JsonUtils.toObject(eval.toString(),ProductRootBean.class);
-                    product.setSn(productRootBean.getItemId());
-                    if(StringUtils.isBlank(product.getName())){
-                        product.setName(productRootBean.getIdata().getItem().getTitle());
+                    crawlerProduct.setSn(productRootBean.getItemId());
+                    if(StringUtils.isBlank(crawlerProduct.getName())){
+                        crawlerProduct.setName(productRootBean.getIdata().getItem().getTitle());
                     }
-                    product.setProductStore(new ProductStore(productRootBean.getShopId(),productRootBean.getShopName(),productRootBean.getIdata().getShop().getUrl()));
-                    productImages(member,productRootBean,product);
-                    product.getProductIntroduction().setContent(introduction(member,productRootBean,product));
-
-
+                    crawlerProduct.setCrawlerProductStore(new CrawlerProductStore(productRootBean.getShopId(),productRootBean.getShopName(),productRootBean.getIdata().getShop().getUrl()));
+                    productImages(member,productRootBean,crawlerProduct);
+                    crawlerProduct.getCrawlerProductIntroduction().setContent(introduction(member,productRootBean,crawlerProduct));
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -194,15 +277,11 @@ public class TaoBaoPlugin extends CrawlerPlugin {
 
     }
 
-    private List<Sku> skus(Member member, Document root, Product product) {
+    private CrawlerProductSku skus(Member member, Document root, CrawlerProduct crawlerProduct) {
         Map<String,String> map = new HashMap<>();
-
-        product.getSpecifications().stream().forEach(item->{
+        crawlerProduct.getCrawlerProductSpecification().getCrawlerSpecifications().stream().forEach(item->{
             item.getEntries().stream().forEach(item1->map.put(item1.getValue(),item.getName()));
         });
-
-
-        List<Sku> skus = new ArrayList<>();
         Elements elements = root.select("script");
         for (Element script:elements) {
             String data = script.data();
@@ -234,7 +313,7 @@ public class TaoBaoPlugin extends CrawlerPlugin {
                                 sku.getSpecificationValues().add(specificationValue);
                             }
                         }
-                        skus.add(sku);
+                        crawlerProduct.getCrawlerProductSku().getSkus().add(sku);
                     }
 
                 }catch (Exception e){
@@ -242,12 +321,10 @@ public class TaoBaoPlugin extends CrawlerPlugin {
                 }
             }
         }
-        return skus;
+        return crawlerProduct.getCrawlerProductSku();
     }
 
-    private String introduction(Member member,ProductRootBean root, Product product) {
-        ProductIntroductionImage productIntroductionImage = new ProductIntroductionImage();
-        productIntroductionImage.setImages(new ArrayList<>());
+    private String introduction(Member member,ProductRootBean root, CrawlerProduct crawlerProduct) {
         String desc = root.getDescUrl();
         String html = url(StringUtils.startsWith(desc,"http")?desc:"http:"+desc);
         html = html.substring(10,html.length()-1);
@@ -259,55 +336,48 @@ public class TaoBaoPlugin extends CrawlerPlugin {
                 String path = member.getUsername()+"/image/"+ DateUtils.formatDateToString(new Date(),"yyyy/MM/dd")+"/"+UUID.randomUUID().toString().replace("-","")+"."+extension;
                 UploadUtils.upload(url,path);
                 url = UploadUtils.getUrl(path);
-                productIntroductionImage.getImages().add(url);
+                crawlerProduct.getCrawlerProductIntroductionImage().getImages().add(url);
             });
         }
-        productIntroductionImage.setProduct(product);
-        product.setProductIntroductionImage(productIntroductionImage);
+        ;
         return html;
 
     }
 
 
-    private void productImages(Member member, ProductRootBean productRootBean, Product product) {
-        AtomicReference<Integer> order = new AtomicReference<>(0);
-        product.setProductImages(productRootBean.getIdata().getItem().getAuctionImages().stream().map(img->{
-            ProductImage productImage = new ProductImage();
+    private void productImages(Member member, ProductRootBean productRootBean, CrawlerProduct crawlerProduct) {
 
-            String url = getAttribute("largeImageUrlPrefix")+img;
+        List<String> images = productRootBean.getIdata().getItem().getAuctionImages();
+
+        for (String image:images) {
+            String url = getAttribute("largeImageUrlPrefix")+image;
             String extension = FilenameUtils.getExtension(url);
             String path = member.getUsername()+"/image/"+ DateUtils.formatDateToString(new Date(),"yyyy/MM/dd")+"/"+UUID.randomUUID().toString().replace("-","")+"."+extension;
             UploadUtils.upload(url,path);
-            url = UploadUtils.getUrl(path);
-            productImage.setLarge(url+"?x-oss-process=style/800");
-            productImage.setMedium(url+"?x-oss-process=style/480");
-            productImage.setSource(url);
-            productImage.setThumbnail(url+"?x-oss-process=style/65");
-            productImage.setOrder(order.getAndSet(order.get() + 1));
-            return productImage;
-        }).collect(Collectors.toList()));
+            crawlerProduct.getCrawlerProductImage().getImages().add(UploadUtils.getUrl(path));
+        }
     }
 
 
-    private String title(Document root, Product product) {
+    private String title(Document root, CrawlerProduct crawlerProduct) {
         Elements titleElements = root.getElementsByClass("tb-main-title");
         if(titleElements!=null&&titleElements.size()>0){
             String name = titleElements.first().text();
             System.out.println(name);
-            product.setName(name);
+            crawlerProduct.setName(name);
             return name;
         }
         return "";
     }
 
     @Override
-    public List<Product> search(String keywords) {
+    public List<CrawlerProduct> search(String keywords) {
         PluginConfig pluginConfig = getPluginConfig();
-        List<Product> products = new ArrayList<>();
+        List<CrawlerProduct> crawlerProducts = new ArrayList<>();
         if (pluginConfig != null) {
 
         }
-        return products;
+        return crawlerProducts;
     }
 
     @Override

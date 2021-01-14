@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.UUID;
 
 /**
  * Service - 审计日志
@@ -26,7 +25,6 @@ public class CrawlerLogServiceImpl extends BaseServiceImpl<CrawlerLog, Long> imp
     public CrawlerLog save(Member member,String[] urls, Integer type) {
         CrawlerLog crawlerLog = new CrawlerLog();
         crawlerLog.setPluginIds(new ArrayList<>());
-        crawlerLog.setSn(UUID.randomUUID().toString().replace("-",""));
         crawlerLog.setMember(member);
         crawlerLog.setType(type);
         crawlerLog.setStatus(0);
@@ -34,7 +32,7 @@ public class CrawlerLogServiceImpl extends BaseServiceImpl<CrawlerLog, Long> imp
         for (String url:urls) {
             CrawlerProduct crawlerProduct = new CrawlerProduct();
             crawlerProduct.init();
-            crawlerProduct.setCrawlerLog(crawlerLog);
+            crawlerProduct.getCrawlerLogs().add(crawlerLog);
             if(StringUtils.isNotBlank(CrawlerUtils.getPlugInId(url)) &&!crawlerLog.getPluginIds().contains(CrawlerUtils.getPlugInId(url))){
                 crawlerLog.getPluginIds().add(CrawlerUtils.getPlugInId(url));
                 crawlerProduct.setPluginId(CrawlerUtils.getPlugInId(url));

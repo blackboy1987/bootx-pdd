@@ -2,7 +2,6 @@ package com.bootx.controller;
 
 import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.Platform;
-import com.bootx.entity.Product;
 import com.bootx.entity.ProductCategory;
 import com.bootx.pdd.service.PddService;
 import com.bootx.plugin.CrawlerPlugin;
@@ -80,7 +79,7 @@ public class InitController extends BaseController {
         // 000000012198272129 000000012198272129
         url="https://product.suning.com/0000000000/12198272129.html#?srcpoint=shouji_phone2018_103808426459_prod04&safp=d488778a.phone2018.103808426459.4&safc=prd.0.0&safpn=10003.00006&ch=cu";
         CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);
-        Product product = crawlerPlugin.product(null,url);
+        // Product product = crawlerPlugin.product(null,url);
         return "ok";
     }
     @GetMapping("/product")
@@ -88,7 +87,7 @@ public class InitController extends BaseController {
         // 000000012198272087  000000012198272087
         url="https://detail.1688.com/offer/535699077418.html?spm=a260j.12536134.jr601u7p.3.18c776d2zN5FP4";
         CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);
-        Product product = crawlerPlugin.product(null,url);
+        // Product product = crawlerPlugin.product(null,url);
         return "ok";
     }
 
@@ -125,7 +124,7 @@ public class InitController extends BaseController {
     public String taobao(){
         String url="https://item.taobao.com/item.htm?spm=a230r.1.14.24.5ef972cd4cLAvC&id=632090563436&ns=1&abbucket=10#detail";
         CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin("taoBaoPlugin");
-        Product product = crawlerPlugin.product(memberService.findAll().get(0),url);
+        // Product product = crawlerPlugin.product(memberService.findAll().get(0),//url);
         return "ok";
     }
 }

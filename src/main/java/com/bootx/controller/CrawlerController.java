@@ -18,23 +18,29 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author black
  */
-@RestController("pddProductController")
-@RequestMapping("/pdd/crawler_product")
-public class CrawlerProductController extends BaseController {
+@RestController("pddCrawlerController")
+@RequestMapping("/pdd/crawler")
+public class CrawlerController extends BaseController {
 
     @Resource
     private CrawlerProductService crawlerProductService;
     @Resource
     private MemberService memberService;
 
-    @PostMapping("/crawler")
+    @PostMapping
     public Result crawler(String[] urls, Integer type, @CurrentUser Member member, HttpServletRequest request){
         if(member==null){
             member = memberService.getCurrent(request);
         }
+        if(member==null){
+            return Result.error("请先登录");
+        }
         crawlerProductService.crawler(member,urls,type);
         return Result.success("success");
     }
+
+
+
 
     @PostMapping("/detail")
     @JsonView(BaseEntity.EditView.class)

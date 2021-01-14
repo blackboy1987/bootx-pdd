@@ -1,10 +1,7 @@
 
 package com.bootx.plugin;
 
-import com.bootx.entity.Member;
-import com.bootx.entity.PluginConfig;
-import com.bootx.entity.Product;
-import com.bootx.entity.ProductCategory;
+import com.bootx.entity.*;
 import com.bootx.service.PluginConfigService;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -146,9 +143,9 @@ public abstract class CrawlerPlugin implements Comparable<CrawlerPlugin> {
 
 	public abstract List<ProductCategory> productCategory();
 
-	public abstract Product product(Member member,String url);
+	public abstract CrawlerProduct product(Member member, CrawlerProduct crawlerProduct);
 
-	public abstract List<Product> search(String keywords);
+	public abstract List<CrawlerProduct> search(String keywords);
 
 	/**
 	 * 获取访问URL

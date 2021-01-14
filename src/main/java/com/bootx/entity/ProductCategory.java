@@ -79,6 +79,7 @@ public class ProductCategory extends OrderedEntity<Long> {
 
 	private String otherId;
 
+	@Column(length = 1000)
 	private String otherUrl;
 
 	/**

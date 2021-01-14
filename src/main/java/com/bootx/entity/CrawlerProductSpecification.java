@@ -24,6 +24,8 @@ public class CrawlerProductSpecification extends BaseEntity<Long> {
 	private List<CrawlerSpecification> crawlerSpecifications = new ArrayList<>();
 
 	public CrawlerProductSpecification() {
+		setCrawlerSpecifications(new ArrayList<>());
+
 	}
 
 	public CrawlerProductSpecification(CrawlerProduct crawlerProduct) {

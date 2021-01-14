@@ -1,8 +1,4 @@
-/*
- * Copyright 2005-2017 shopxx.net. All rights reserved.
- * Support: http://www.shopxx.net
- * License: http://www.shopxx.net/license
- */
+
 package com.bootx.entity;
 import com.bootx.common.BaseAttributeConverter;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -13,7 +9,9 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Entity - 商品
@@ -27,19 +25,15 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	private static final long serialVersionUID = -6977025562650112419L;
 
 	@JsonView({PageView.class,EditView.class})
-	@NotEmpty
-	@Column(nullable = false,updatable = false,unique = true)
 	private String sn;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	private CrawlerLog crawlerLog;
+	@ManyToMany(fetch = FetchType.LAZY)
+	private Set<CrawlerLog> crawlerLogs = new HashSet<>();
 
 	/**
 	 * 名称
 	 */
-	@NotEmpty
 	@Length(max = 200)
-	@Column(nullable = false)
 	@JsonView({PageView.class,EditView.class})
 	private String name;
 
@@ -124,6 +118,10 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	 */
 	private Integer status;
 
+	public CrawlerProduct() {
+		init();
+	}
+
 	public String getSn() {
 		return sn;
 	}
@@ -132,12 +130,12 @@ public class CrawlerProduct extends BaseEntity<Long> {
 		this.sn = sn;
 	}
 
-	public CrawlerLog getCrawlerLog() {
-		return crawlerLog;
+	public Set<CrawlerLog> getCrawlerLogs() {
+		return crawlerLogs;
 	}
 
-	public void setCrawlerLog(CrawlerLog crawlerLog) {
-		this.crawlerLog = crawlerLog;
+	public void setCrawlerLogs(Set<CrawlerLog> crawlerLogs) {
+		this.crawlerLogs = crawlerLogs;
 	}
 
 	public String getName() {
@@ -281,18 +279,17 @@ public class CrawlerProduct extends BaseEntity<Long> {
 
 	public void init(){
 		setStatus(0);
-		setCrawlerLog(new CrawlerLog());
-		setCrawlerProductImage(new CrawlerProductImage());
-		setCrawlerProductIntroduction(new CrawlerProductIntroduction());
-		setCrawlerProductIntroductionImage(new CrawlerProductIntroductionImage());
-		setCrawlerProductParameterValue(new CrawlerProductParameterValue());
-		setCrawlerProductSku(new CrawlerProductSku());
-		setCrawlerProductSpecification(new CrawlerProductSpecification());
-		setProductCategory(new ProductCategory());
+		setCrawlerLogs(new HashSet<>());
+		setCrawlerProductImage(new CrawlerProductImage(this));
+		setCrawlerProductIntroduction(new CrawlerProductIntroduction(this));
+		setCrawlerProductIntroductionImage(new CrawlerProductIntroductionImage(this));
+		setCrawlerProductParameterValue(new CrawlerProductParameterValue(this));
+		setCrawlerProductSku(new CrawlerProductSku(this));
+		setCrawlerProductSpecification(new CrawlerProductSpecification(this));
+		setProductCategory(null);
 		setProductCategoryIds(Lists.newArrayList());
 		setProductCategoryNames(Lists.newArrayList());
 		setStock(0L);
-		setMd5(DigestUtils.md5Hex(getUrl()));
 		setCrawlerProductStore(new CrawlerProductStore());
 	}
 
@@ -303,7 +300,7 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	public static class CrawlerProductCategoryNamesConverter extends BaseAttributeConverter<List<String>> {
 	}
 	@Converter
-	public static class CrawlerProductStoreConverter extends BaseAttributeConverter<ProductStore> {
+	public static class CrawlerProductStoreConverter extends BaseAttributeConverter<CrawlerProductStore> {
 	}
 
 }

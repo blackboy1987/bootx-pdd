@@ -2,24 +2,23 @@
 package com.bootx.service.impl;
 
 import com.bootx.dao.CrawlerProductDao;
-import com.bootx.dao.ProductDao;
 import com.bootx.entity.CrawlerLog;
 import com.bootx.entity.CrawlerProduct;
 import com.bootx.entity.Member;
-import com.bootx.entity.Product;
 import com.bootx.plugin.CrawlerPlugin;
 import com.bootx.service.CrawlerLogService;
 import com.bootx.service.CrawlerProductService;
 import com.bootx.service.PluginService;
 import com.bootx.service.ProductCategoryService;
 import com.bootx.util.CrawlerUtils;
-import javafx.scene.effect.SepiaTone;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Service - 审计日志
@@ -45,27 +44,21 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
         List<CrawlerProduct> crawlerProducts = saveCrawler(member,urls,type);
 
         for (CrawlerProduct crawlerProduct:crawlerProducts) {
-            if(crawlerProduct.isNew()){
-                crawlerProducts.add(crawlerProduct);
+            if(crawlerProduct.getStatus()==1){
                 continue;
             }
             String pluginId = CrawlerUtils.getPlugInId(crawlerProduct.getUrl());
             CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);
             if(crawlerPlugin!=null){
                 crawlerPlugin.product(member,crawlerProduct);
-                if(crawlerProduct!=null){
+                if(crawlerProduct.getProductCategoryIds().size()>0){
                     crawlerProduct.setProductCategory(productCategoryService.findByOtherId(pluginId+"_"+crawlerProduct.getProductCategoryIds().get(crawlerProduct.getProductCategoryIds().size()-1)));
-                    crawlerProduct
-                    crawlerProduct.setStatus(1);
-                    update(crawlerProduct);
-                    crawlerProductService.updateInfo(url,product,crawlerLog.getSn(),"采集完成",1);
-                }else{
-                    crawlerProductService.updateInfo(url,null,crawlerLog.getSn(),"采集失败",2);
                 }
+                crawlerProduct.setStatus(1);
             }else{
-                crawlerProductService.updateInfo(url,crawlerLog.getSn(),"不支持该地址",2);
+                crawlerProduct.setStatus(2);
             }
-
+            update(crawlerProduct);
         }
         return crawlerProducts;
     }
@@ -85,14 +78,17 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
         for (String url:urls) {
             CrawlerProduct crawlerProduct = findByUrl(url);
             if(crawlerProduct==null){
-                crawlerProduct.init();
-                crawlerProduct.setCrawlerLog(crawlerLog);
+                crawlerProduct = new CrawlerProduct();
+                crawlerProduct.setUrl(url);
+                crawlerProduct.setMd5(DigestUtils.md5Hex(url));
+                crawlerProduct.getCrawlerLogs().add(crawlerLog);
                 if(StringUtils.isNotBlank(CrawlerUtils.getPlugInId(url)) &&!crawlerLog.getPluginIds().contains(CrawlerUtils.getPlugInId(url))){
                     crawlerLog.getPluginIds().add(CrawlerUtils.getPlugInId(url));
                     crawlerProduct.setPluginId(CrawlerUtils.getPlugInId(url));
                 }
                 crawlerProducts.add(super.save(crawlerProduct));
-
+            }else{
+                crawlerLog.setSuccess(crawlerLog.getSuccess()+1);
             }
         }
         crawlerLogService.update(crawlerLog);

@@ -19,7 +19,7 @@ public class CrawlerLog extends BaseEntity<Long>{
     @JoinColumn(nullable = false,updatable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "crawlerLog",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "crawlerLogs",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Set<CrawlerProduct> crawlerProducts = new HashSet<>();
 
     @Column(length = 500)
