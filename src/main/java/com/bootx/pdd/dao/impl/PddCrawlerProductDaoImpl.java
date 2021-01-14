@@ -3,7 +3,7 @@ package com.bootx.pdd.dao.impl;
 
 import com.bootx.dao.impl.BaseDaoImpl;
 import com.bootx.pdd.dao.PddCrawlerProductDao;
-import com.bootx.pdd.entity.CrawlerProduct;
+import com.bootx.pdd.entity.PddCrawlerProduct;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * @version 6.1
  */
 @Repository
-public class PddCrawlerProductDaoImpl extends BaseDaoImpl<CrawlerProduct, Long> implements PddCrawlerProductDao {
+public class PddCrawlerProductDaoImpl extends BaseDaoImpl<PddCrawlerProduct, Long> implements PddCrawlerProductDao {
 
 }

@@ -12,26 +12,26 @@ import javax.persistence.*;
  * @version 6.1
  */
 @Entity(name = "pdd_CrawlerProductIntroduction")
-public class CrawlerProductIntroduction extends BaseEntity<Long> {
+public class PddCrawlerProductIntroduction extends BaseEntity<Long> {
 
 	@OneToOne(fetch = FetchType.LAZY)
-	private CrawlerProduct crawlerProduct;
+	private PddCrawlerProduct crawlerProduct;
 
 	@Lob
 	private String content;
 
-	public CrawlerProductIntroduction() {
+	public PddCrawlerProductIntroduction() {
 	}
 
-	public CrawlerProductIntroduction(CrawlerProduct crawlerProduct) {
-		this.crawlerProduct = crawlerProduct;
+	public PddCrawlerProductIntroduction(PddCrawlerProduct pddCrawlerProduct) {
+		this.crawlerProduct = pddCrawlerProduct;
 	}
 
-	public CrawlerProduct getCrawlerProduct() {
+	public PddCrawlerProduct getCrawlerProduct() {
 		return crawlerProduct;
 	}
 
-	public void setCrawlerProduct(CrawlerProduct crawlerProduct) {
+	public void setCrawlerProduct(PddCrawlerProduct crawlerProduct) {
 		this.crawlerProduct = crawlerProduct;
 	}
 

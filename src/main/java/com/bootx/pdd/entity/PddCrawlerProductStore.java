@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import java.io.Serializable;
 
-public class CrawlerProductStore implements Serializable {
+public class PddCrawlerProductStore implements Serializable {
 
     private String id;
 
@@ -15,10 +15,10 @@ public class CrawlerProductStore implements Serializable {
     @JsonView({BaseEntity.EditView.class})
     private String name;
 
-    public CrawlerProductStore() {
+    public PddCrawlerProductStore() {
     }
 
-    public CrawlerProductStore(String id, String url, String name) {
+    public PddCrawlerProductStore(String id, String url, String name) {
         this.id = id;
         this.url = url;
         this.name = name;

@@ -10,34 +10,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Entity - 会员注册项
+ * Entity - 商品图片
  * 
- * @author 好源++ Team
- * @version 6.1
+ * @author IGOMALL  Team
+ * @version 1.0
  */
-@Entity(name = "pdd_CrawlerProductIntroductionImage")
-public class CrawlerProductIntroductionImage extends BaseEntity<Long> {
+@Entity(name = "pdd_CrawlerProductImage")
+public class PddCrawlerProductImage extends BaseEntity<Long> {
 
 	@OneToOne(fetch = FetchType.LAZY)
-	private CrawlerProduct crawlerProduct;
+	private PddCrawlerProduct crawlerProduct;
 
 	@Lob
-	@Convert(converter =ImagesConverter.class)
+	@Convert(converter = PddCrawlerProductIntroductionImage.ImagesConverter.class)
 	@JsonView({EditView.class})
 	private List<String> images = new ArrayList<>();
 
-	public CrawlerProductIntroductionImage() {
+	public PddCrawlerProductImage() {
 	}
 
-	public CrawlerProductIntroductionImage(CrawlerProduct crawlerProduct) {
+	public PddCrawlerProductImage(PddCrawlerProduct crawlerProduct) {
 		this.crawlerProduct = crawlerProduct;
 	}
 
-	public CrawlerProduct getCrawlerProduct() {
+	public PddCrawlerProduct getCrawlerProduct() {
 		return crawlerProduct;
 	}
 
-	public void setCrawlerProduct(CrawlerProduct crawlerProduct) {
+	public void setCrawlerProduct(PddCrawlerProduct pddCrawlerProduct) {
 		this.crawlerProduct = crawlerProduct;
 	}
 
@@ -52,4 +52,5 @@ public class CrawlerProductIntroductionImage extends BaseEntity<Long> {
 	@Converter
 	public static class ImagesConverter extends BaseAttributeConverter<List<String>> {
 	}
+
 }

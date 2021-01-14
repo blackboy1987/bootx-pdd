@@ -5,6 +5,8 @@ import com.bootx.dao.CrawlerProductDao;
 import com.bootx.entity.CrawlerLog;
 import com.bootx.entity.CrawlerProduct;
 import com.bootx.entity.Member;
+import com.bootx.pdd.entity.PddCrawlerProduct;
+import com.bootx.pdd.service.PddCrawlerProductService;
 import com.bootx.plugin.CrawlerPlugin;
 import com.bootx.service.CrawlerLogService;
 import com.bootx.service.CrawlerProductService;
@@ -13,6 +15,7 @@ import com.bootx.service.ProductCategoryService;
 import com.bootx.util.CrawlerUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -37,6 +40,8 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
     private CrawlerLogService crawlerLogService;
     @Resource
     private ProductCategoryService productCategoryService;
+    @Resource
+    private PddCrawlerProductService pddCrawlerProductService;
 
     @Override
     public List<CrawlerProduct> crawler(Member member, String[] urls, Integer type) {
@@ -59,6 +64,7 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
                 crawlerProduct.setStatus(2);
             }
             update(crawlerProduct);
+            pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
         }
         return crawlerProducts;
     }
@@ -94,6 +100,16 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
             }
         }
         crawlerLogService.update(crawlerLog);
+
+        for (CrawlerProduct crawlerProduct:crawlerProducts) {
+            PddCrawlerProduct pddCrawlerProduct = new PddCrawlerProduct();
+            BeanUtils.copyProperties(crawlerProduct,pddCrawlerProduct,"id");
+            pddCrawlerProduct.setMember(member);
+            pddCrawlerProduct.setCrawlerProduct(crawlerProduct);
+            pddCrawlerProductService.save(pddCrawlerProduct);
+            crawlerProduct.setPddCrawlerProduct(pddCrawlerProduct);
+        }
+
         return crawlerProducts;
     }
 

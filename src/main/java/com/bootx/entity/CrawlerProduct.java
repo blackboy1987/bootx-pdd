@@ -1,6 +1,7 @@
 
 package com.bootx.entity;
 import com.bootx.common.BaseAttributeConverter;
+import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -118,6 +119,10 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	 */
 	@JsonView(PageView.class)
 	private Integer status;
+
+	@Transient
+	private PddCrawlerProduct pddCrawlerProduct;
+
 
 	public CrawlerProduct() {
 		init();
@@ -276,6 +281,14 @@ public class CrawlerProduct extends BaseEntity<Long> {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public PddCrawlerProduct getPddCrawlerProduct() {
+		return pddCrawlerProduct;
+	}
+
+	public void setPddCrawlerProduct(PddCrawlerProduct pddCrawlerProduct) {
+		this.pddCrawlerProduct = pddCrawlerProduct;
 	}
 
 	public void init(){

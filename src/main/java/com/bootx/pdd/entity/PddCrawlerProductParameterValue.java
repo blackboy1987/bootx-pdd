@@ -17,28 +17,28 @@ import java.util.List;
  * @version 6.1
  */
 @Entity(name = "pdd_CrawlerProductParameterValue")
-public class CrawlerProductParameterValue extends BaseEntity<Long> {
+public class PddCrawlerProductParameterValue extends BaseEntity<Long> {
 
 	@OneToOne(fetch = FetchType.LAZY)
-	private CrawlerProduct crawlerProduct;
+	private PddCrawlerProduct crawlerProduct;
 
 	@Lob
 	@Convert(converter =ParameterValueConverter.class)
 	@JsonView({EditView.class})
 	private List<ParameterValue> parameterValues = new ArrayList<>();
 
-	public CrawlerProductParameterValue() {
+	public PddCrawlerProductParameterValue() {
 	}
 
-	public CrawlerProductParameterValue(CrawlerProduct crawlerProduct) {
+	public PddCrawlerProductParameterValue(PddCrawlerProduct crawlerProduct) {
 		this.crawlerProduct = crawlerProduct;
 	}
 
-	public CrawlerProduct getCrawlerProduct() {
+	public PddCrawlerProduct getCrawlerProduct() {
 		return crawlerProduct;
 	}
 
-	public void setCrawlerProduct(CrawlerProduct crawlerProduct) {
+	public void setCrawlerProduct(PddCrawlerProduct crawlerProduct) {
 		this.crawlerProduct = crawlerProduct;
 	}
 

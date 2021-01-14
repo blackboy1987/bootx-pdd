@@ -21,7 +21,7 @@ import java.util.List;
  * @author IGOMALL  Team
  * @version 1.0
  */
-public class CrawlerSpecification implements Serializable {
+public class PddCrawlerSpecification implements Serializable {
 
 	/**
 	 * 名称

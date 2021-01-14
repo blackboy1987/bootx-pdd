@@ -30,6 +30,7 @@ public final class UploadUtils {
         }
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         try {
+            System.out.println(url);
             InputStream inputStream = new URL(url).openStream();
             ossClient.putObject(bucketName, path, inputStream);
         }catch (Exception e){

@@ -2,9 +2,7 @@
 package com.bootx.pdd.entity;
 
 import com.bootx.common.BaseAttributeConverter;
-import com.bootx.entity.BaseEntity;
-import com.bootx.entity.CrawlerLog;
-import com.bootx.entity.ProductCategory;
+import com.bootx.entity.*;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -12,6 +10,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,16 +23,18 @@ import java.util.Set;
  * @version 1.0
  */
 @Entity(name = "pdd_CrawlerProduct")
-public class CrawlerProduct extends BaseEntity<Long> {
+public class PddCrawlerProduct extends BaseEntity<Long> {
 
 	private static final long serialVersionUID = -6977025562650112419L;
+
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(nullable = false,updatable = false)
+	private CrawlerProduct crawlerProduct;
 
 	@JsonView({PageView.class,EditView.class})
 	@Column(updatable = false)
 	private String sn;
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	private Set<CrawlerLog> crawlerLogs = new HashSet<>();
 
 	/**
 	 * 名称
@@ -50,33 +51,33 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	 */
 	@OneToOne(mappedBy = "crawlerProduct",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JsonView({EditView.class})
-	private CrawlerProductImage crawlerProductImage;
+	private PddCrawlerProductImage crawlerProductImage;
 
 	/**
 	 * 介绍
 	 */
 	@OneToOne(mappedBy = "crawlerProduct",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-	private CrawlerProductIntroduction crawlerProductIntroduction;
+	private PddCrawlerProductIntroduction crawlerProductIntroduction;
 
 	@OneToOne(mappedBy = "crawlerProduct",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JsonView({EditView.class})
-	private CrawlerProductIntroductionImage crawlerProductIntroductionImage;
+	private PddCrawlerProductIntroductionImage crawlerProductIntroductionImage;
 
 
 	@OneToOne(mappedBy = "crawlerProduct",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JsonView({EditView.class})
-	private CrawlerProductParameterValue crawlerProductParameterValue;
+	private PddCrawlerProductParameterValue crawlerProductParameterValue;
 
 	@OneToOne(mappedBy = "crawlerProduct",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JsonView({EditView.class})
-	private CrawlerProductSku crawlerProductSku;
+	private PddCrawlerProductSku crawlerProductSku;
 
 	/**
 	 * 规格项
 	 */
 	@OneToOne(mappedBy = "crawlerProduct",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JsonView({EditView.class})
-	private CrawlerProductSpecification crawlerProductSpecification;
+	private PddCrawlerProductSpecification crawlerProductSpecification;
 	/**
 	 * 商品分类
 	 */
@@ -100,20 +101,33 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	private String pluginId;
 
 	@NotEmpty
-	@Column(length = 1000,nullable = false,updatable = false,unique = true)
+	@Column(length = 1000,nullable = false,updatable = false)
 	private String url;
 
 	/**
 	 * 对url进行sha1加密，方便用来比较是否已经抓取过了
 	 */
 	@NotEmpty
-	@Column(nullable = false,updatable = false,unique = true)
+	@Column(nullable = false,updatable = false)
 	private String md5;
 
 	@Column(length = 100)
 	@Convert(converter = CrawlerProductStoreConverter.class)
 	@JsonView({EditView.class})
-	private CrawlerProductStore crawlerProductStore;
+	private PddCrawlerProductStore crawlerProductStore;
+
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(nullable = false,updatable = false)
+	private Member member;
+
+	public CrawlerProduct getCrawlerProduct() {
+		return crawlerProduct;
+	}
+
+	public void setCrawlerProduct(CrawlerProduct crawlerProduct) {
+		this.crawlerProduct = crawlerProduct;
+	}
 
 	/**
 	 * 0：待采集
@@ -123,7 +137,7 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	@JsonView(PageView.class)
 	private Integer status;
 
-	public CrawlerProduct() {
+	public PddCrawlerProduct() {
 		init();
 	}
 
@@ -133,14 +147,6 @@ public class CrawlerProduct extends BaseEntity<Long> {
 
 	public void setSn(String sn) {
 		this.sn = sn;
-	}
-
-	public Set<CrawlerLog> getCrawlerLogs() {
-		return crawlerLogs;
-	}
-
-	public void setCrawlerLogs(Set<CrawlerLog> crawlerLogs) {
-		this.crawlerLogs = crawlerLogs;
 	}
 
 	public String getName() {
@@ -159,51 +165,51 @@ public class CrawlerProduct extends BaseEntity<Long> {
 		this.price = price;
 	}
 
-	public CrawlerProductImage getCrawlerProductImage() {
+	public PddCrawlerProductImage getCrawlerProductImage() {
 		return crawlerProductImage;
 	}
 
-	public void setCrawlerProductImage(CrawlerProductImage crawlerProductImage) {
+	public void setCrawlerProductImage(PddCrawlerProductImage crawlerProductImage) {
 		this.crawlerProductImage = crawlerProductImage;
 	}
 
-	public CrawlerProductIntroduction getCrawlerProductIntroduction() {
+	public PddCrawlerProductIntroduction getCrawlerProductIntroduction() {
 		return crawlerProductIntroduction;
 	}
 
-	public void setCrawlerProductIntroduction(CrawlerProductIntroduction crawlerProductIntroduction) {
+	public void setCrawlerProductIntroduction(PddCrawlerProductIntroduction crawlerProductIntroduction) {
 		this.crawlerProductIntroduction = crawlerProductIntroduction;
 	}
 
-	public CrawlerProductIntroductionImage getCrawlerProductIntroductionImage() {
+	public PddCrawlerProductIntroductionImage getCrawlerProductIntroductionImage() {
 		return crawlerProductIntroductionImage;
 	}
 
-	public void setCrawlerProductIntroductionImage(CrawlerProductIntroductionImage crawlerProductIntroductionImage) {
+	public void setCrawlerProductIntroductionImage(PddCrawlerProductIntroductionImage crawlerProductIntroductionImage) {
 		this.crawlerProductIntroductionImage = crawlerProductIntroductionImage;
 	}
 
-	public CrawlerProductParameterValue getCrawlerProductParameterValue() {
+	public PddCrawlerProductParameterValue getCrawlerProductParameterValue() {
 		return crawlerProductParameterValue;
 	}
 
-	public void setCrawlerProductParameterValue(CrawlerProductParameterValue crawlerProductParameterValue) {
+	public void setCrawlerProductParameterValue(PddCrawlerProductParameterValue crawlerProductParameterValue) {
 		this.crawlerProductParameterValue = crawlerProductParameterValue;
 	}
 
-	public CrawlerProductSku getCrawlerProductSku() {
+	public PddCrawlerProductSku getCrawlerProductSku() {
 		return crawlerProductSku;
 	}
 
-	public void setCrawlerProductSku(CrawlerProductSku crawlerProductSku) {
+	public void setCrawlerProductSku(PddCrawlerProductSku crawlerProductSku) {
 		this.crawlerProductSku = crawlerProductSku;
 	}
 
-	public CrawlerProductSpecification getCrawlerProductSpecification() {
+	public PddCrawlerProductSpecification getCrawlerProductSpecification() {
 		return crawlerProductSpecification;
 	}
 
-	public void setCrawlerProductSpecification(CrawlerProductSpecification crawlerProductSpecification) {
+	public void setCrawlerProductSpecification(PddCrawlerProductSpecification crawlerProductSpecification) {
 		this.crawlerProductSpecification = crawlerProductSpecification;
 	}
 
@@ -266,11 +272,11 @@ public class CrawlerProduct extends BaseEntity<Long> {
 		this.md5 = md5;
 	}
 
-	public CrawlerProductStore getCrawlerProductStore() {
+	public PddCrawlerProductStore getCrawlerProductStore() {
 		return crawlerProductStore;
 	}
 
-	public void setCrawlerProductStore(CrawlerProductStore crawlerProductStore) {
+	public void setCrawlerProductStore(PddCrawlerProductStore crawlerProductStore) {
 		this.crawlerProductStore = crawlerProductStore;
 	}
 
@@ -282,20 +288,27 @@ public class CrawlerProduct extends BaseEntity<Long> {
 		this.status = status;
 	}
 
+	public Member getMember() {
+		return member;
+	}
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
+
 	public void init(){
 		setStatus(0);
-		setCrawlerLogs(new HashSet<>());
-		setCrawlerProductImage(new CrawlerProductImage(this));
-		setCrawlerProductIntroduction(new CrawlerProductIntroduction(this));
-		setCrawlerProductIntroductionImage(new CrawlerProductIntroductionImage(this));
-		setCrawlerProductParameterValue(new CrawlerProductParameterValue(this));
-		setCrawlerProductSku(new CrawlerProductSku(this));
-		setCrawlerProductSpecification(new CrawlerProductSpecification(this));
+		setCrawlerProductImage(new PddCrawlerProductImage(this));
+		setCrawlerProductIntroduction(new PddCrawlerProductIntroduction(this));
+		setCrawlerProductIntroductionImage(new PddCrawlerProductIntroductionImage(this));
+		setCrawlerProductParameterValue(new PddCrawlerProductParameterValue(this));
+		setCrawlerProductSku(new PddCrawlerProductSku(this));
+		setCrawlerProductSpecification(new PddCrawlerProductSpecification(this));
 		setProductCategory(null);
 		setProductCategoryIds(Lists.newArrayList());
 		setProductCategoryNames(Lists.newArrayList());
 		setStock(0L);
-		setCrawlerProductStore(new CrawlerProductStore());
+		setCrawlerProductStore(new PddCrawlerProductStore());
 	}
 
 	@Transient
@@ -317,7 +330,7 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	public static class CrawlerProductCategoryNamesConverter extends BaseAttributeConverter<List<String>> {
 	}
 	@Converter
-	public static class CrawlerProductStoreConverter extends BaseAttributeConverter<CrawlerProductStore> {
+	public static class CrawlerProductStoreConverter extends BaseAttributeConverter<PddCrawlerProductStore> {
 	}
 
 }

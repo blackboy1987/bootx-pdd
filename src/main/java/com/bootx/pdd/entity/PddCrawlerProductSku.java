@@ -17,28 +17,28 @@ import java.util.List;
  * @version 6.1
  */
 @Entity(name = "pdd_CrawlerProductSku")
-public class CrawlerProductSku extends BaseEntity<Long> {
+public class PddCrawlerProductSku extends BaseEntity<Long> {
 
 	@OneToOne(fetch = FetchType.LAZY)
-	private CrawlerProduct crawlerProduct;
+	private PddCrawlerProduct crawlerProduct;
 
 	@Lob
 	@Convert(converter = SkuConverter.class)
 	@JsonView({EditView.class})
 	private List<Sku> skus = new ArrayList<>();
 
-	public CrawlerProductSku() {
+	public PddCrawlerProductSku() {
 	}
 
-	public CrawlerProductSku(CrawlerProduct crawlerProduct) {
+	public PddCrawlerProductSku(PddCrawlerProduct crawlerProduct) {
 		this.crawlerProduct = crawlerProduct;
 	}
 
-	public CrawlerProduct getCrawlerProduct() {
+	public PddCrawlerProduct getCrawlerProduct() {
 		return crawlerProduct;
 	}
 
-	public void setCrawlerProduct(CrawlerProduct crawlerProduct) {
+	public void setCrawlerProduct(PddCrawlerProduct crawlerProduct) {
 		this.crawlerProduct = crawlerProduct;
 	}
 
