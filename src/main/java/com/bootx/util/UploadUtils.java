@@ -30,9 +30,8 @@ public final class UploadUtils {
         }
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         try {
-            System.out.println(url);
             InputStream inputStream = new URL(url).openStream();
-            ossClient.putObject(bucketName, path, inputStream);
+            PutObjectResult putObjectResult = ossClient.putObject(bucketName, path, inputStream);
         }catch (Exception e){
             e.printStackTrace();
         }finally {
@@ -65,7 +64,6 @@ public final class UploadUtils {
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         ObjectMetadata metadata = ossClient.getObjectMetadata(bucketName, path);
         Date lastModified = metadata.getLastModified();
-        System.out.println(lastModified);
     }
 
 
@@ -76,12 +74,10 @@ public final class UploadUtils {
         ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request(bucketName);
         listObjectsV2Request.setPrefix(path);
         ListObjectsV2Result result = ossClient.listObjectsV2(listObjectsV2Request);
-        System.out.println("Objects:");
         List<String> keys = new ArrayList<>();
         for (OSSObjectSummary objectSummary : result.getObjectSummaries()) {
             ObjectMetadata metadata = ossClient.getObjectMetadata(bucketName, objectSummary.getKey());
             Date lastModified = metadata.getLastModified();
-            System.out.println(objectSummary.getKey()+":"+lastModified);
             // 超过12个小时的稿件删除
             if(now-lastModified.getTime()>=1000*60*60*12){
                 keys.add(objectSummary.getKey());

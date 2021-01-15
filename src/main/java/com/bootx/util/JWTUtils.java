@@ -26,10 +26,4 @@ public class JWTUtils {
         Claims claims = Jwts.parser().setSigningKey("wangmh").parseClaimsJws(token).getBody();
         return claims;
     }
-
-    public static void main(String[] args) {
-        Claims claims = parseToken("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI3Iiwic3ViIjoiYmxhY2tib3kiLCJpYXQiOjE2MDkyOTE1NjYsImV4cCI6MTYwOTM3Nzk2NiwiaWQiOjcsInVzZXJuYW1lIjoieGlhbGkifQ.xrBcaFwS52_qrMR5C9-Lt6yg2YnUdXnxM1Z0eCKnfWA");
-
-        System.out.println(claims);
-    }
 }

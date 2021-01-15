@@ -36,7 +36,6 @@ public final class CrawlerUtils {
                 }
             }
         }
-        System.out.println(data);
         return data;
     }
 

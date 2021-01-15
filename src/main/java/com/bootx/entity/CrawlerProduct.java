@@ -85,7 +85,6 @@ public class CrawlerProduct extends BaseEntity<Long> {
 
 	@Column(length = 300)
 	@Convert(converter = CrawlerProductCategoryNamesConverter.class)
-	@JsonView({PageView.class})
 	private List<String> productCategoryNames = new ArrayList<>();
 
 
@@ -98,6 +97,7 @@ public class CrawlerProduct extends BaseEntity<Long> {
 
 	@NotEmpty
 	@Column(length = 1000,nullable = false,updatable = false,unique = true)
+	@JsonView({PageView.class})
 	private String url;
 
 	/**
@@ -317,6 +317,14 @@ public class CrawlerProduct extends BaseEntity<Long> {
 		}
 	}
 
+	@Transient
+	@JsonView({PageView.class})
+	public String getProductCategoryName(){
+		if(productCategory!=null){
+			return productCategory.getName();
+		}
+		return null;
+	}
 
 
 	@Converter

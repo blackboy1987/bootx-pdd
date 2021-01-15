@@ -96,7 +96,6 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 	@CacheEvict(value = { "product", "productCategory" }, allEntries = true)
 	public ProductCategory save(ProductCategory productCategory) {
 		Assert.notNull(productCategory,"");
-		System.out.println(productCategory.getName()+":"+productCategory.getOtherUrl());
 		setValue(productCategory);
 		return super.save(productCategory);
 	}

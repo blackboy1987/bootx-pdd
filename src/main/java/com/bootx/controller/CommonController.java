@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.Date;
 
 @RestController
@@ -28,7 +27,7 @@ public class CommonController extends BaseController {
     private ProductImageService productImageService;
 
     @PostMapping("/upload")
-    public Result upload(MultipartFile file, @CurrentUser Member member, HttpServletRequest request,String token) throws IOException {
+    public Result upload(MultipartFile file, @CurrentUser Member member, HttpServletRequest request,String token){
         if(member==null){
             member = memberService.getCurrent(request);
         }

@@ -23,8 +23,6 @@ public class SmsUtils {
         httpArg.append("c=").append(encodeUrlString(content, "UTF-8"));
  
         String result = request(httpUrl, httpArg.toString());
-        System.out.println(result);
-        System.out.println(content);
         return result;
     }
 
@@ -38,7 +36,6 @@ public class SmsUtils {
         httpArg.append("u=").append(testUsername).append("&");
         httpArg.append("p=").append(md5(testPassword));
         String result = request(httpUrl, httpArg.toString());
-        System.out.println(result);
         return result;
     }
 

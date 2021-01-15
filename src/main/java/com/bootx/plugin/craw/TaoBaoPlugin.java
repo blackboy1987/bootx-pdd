@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Component("taoBaoPlugin")
 public class TaoBaoPlugin extends CrawlerPlugin {
@@ -107,9 +108,6 @@ public class TaoBaoPlugin extends CrawlerPlugin {
                                     if (thirdCategoryItems != null) {
                                         Element thirdCategoryItemsFirst = thirdCategoryItems.first();
                                         Elements elementsByClass = thirdCategoryItemsFirst.getElementsByClass("category-name");
-                                        if(StringUtils.equals("其他配件",secondProductCategory.getName())){
-                                            System.out.println(thirdCategoryItems);
-                                        }
                                         for (Element thirdCategoryItemsFirstElement : elementsByClass) {
                                             if(StringUtils.isNotBlank(thirdCategoryItemsFirstElement.text())){
                                                 ProductCategory thirdProductCategory = new ProductCategory();
@@ -179,6 +177,7 @@ public class TaoBaoPlugin extends CrawlerPlugin {
             for (Element pChoose:pChooses){
                 Elements dt = pChoose.getElementsByTag("dt");
                 Elements lis = pChoose.getElementsByTag("li");
+                List<CrawlerSpecification> crawlerSpecifications = new ArrayList<>();
                 if(dt!=null&&dt.size()>0&&lis!=null&&lis.size()>0){
                     CrawlerSpecification crawlerSpecification = new CrawlerSpecification();
                     crawlerSpecification.setName(dt.first().text());
@@ -196,8 +195,8 @@ public class TaoBaoPlugin extends CrawlerPlugin {
                                 if(style.length()>") center no-repeat;".length()){
                                     style = style.substring(0,style.length()-") center no-repeat;".length());
                                     if(StringUtils.isNotBlank(style)){
-                                        String extension = FilenameUtils.getExtension(style);
-                                        String path = member.getUsername()+"/image/"+ DateUtils.formatDateToString(new Date(),"yyyy/MM/dd")+"/"+UUID.randomUUID().toString().replace("-","")+"."+extension;
+                                        String extension = FilenameUtils.getName(style);
+                                        String path = member.getUsername()+"/image/"+ crawlerProduct.getSn()+"/specification/"+extension;
                                         UploadUtils.upload(style,path);
                                         String url = UploadUtils.getUrl(path);
                                         crawlerSpecification.getEntries().add(new CrawlerSpecification.Entry(a.text(),item.attr("data-value"),url));
@@ -212,8 +211,9 @@ public class TaoBaoPlugin extends CrawlerPlugin {
                             }
                         }
                     }
-                    crawlerProduct.getCrawlerProductSpecification().getCrawlerSpecifications().add(crawlerSpecification);
+                    crawlerSpecifications.add(crawlerSpecification);
                 }
+                crawlerProduct.getCrawlerProductSpecification().setCrawlerSpecifications(crawlerSpecifications);
             }
         }
         return crawlerProduct.getCrawlerProductSpecification();
@@ -256,7 +256,6 @@ public class TaoBaoPlugin extends CrawlerPlugin {
             data = data.replace(" ","").replace("\n","").replace("\r","").replace("\r\n","");
             if(StringUtils.startsWith(data,"varg_config")){
                 data = data.split("varg_config=")[1].split(";g_config")[0].replace("+newDate","123");
-                System.out.println(data);
                 ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
                 try{
                     engine.eval("var location={protocol: 'http'};");
@@ -288,7 +287,6 @@ public class TaoBaoPlugin extends CrawlerPlugin {
             data = data.replace(" ","").replace("\n","").replace("\r","").replace("\r\n","");
             if(StringUtils.startsWith(data,"Hub=")){
                 data = data.split("skuMap:")[1].split(",propertyMemoMap")[0];
-                System.out.println(data);
                 ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
                 try{
                     Object eval = engine.eval("JSON.stringify(" + data + ")");
@@ -330,32 +328,27 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         html = html.substring(10,html.length()-1);
         Elements imgs = Jsoup.parse(html).getElementsByTag("img");
         if(imgs!=null){
-            imgs.stream().forEach(img->{
+            crawlerProduct.getCrawlerProductIntroductionImage().setImages(imgs.stream().map(img->{
                 String url = img.attr("src");
-                String extension = FilenameUtils.getExtension(url);
-                String path = member.getUsername()+"/image/"+ DateUtils.formatDateToString(new Date(),"yyyy/MM/dd")+"/"+UUID.randomUUID().toString().replace("-","")+"."+extension;
+                String extension = FilenameUtils.getName(url);
+                String path = member.getUsername()+"/image/"+ crawlerProduct.getSn()+"/introduction/"+extension;
                 UploadUtils.upload(url,path);
-                url = UploadUtils.getUrl(path);
-                crawlerProduct.getCrawlerProductIntroductionImage().getImages().add(url);
-            });
+               return UploadUtils.getUrl(path);
+            }).collect(Collectors.toList()));
         }
-        ;
         return html;
-
     }
 
 
     private void productImages(Member member, ProductRootBean productRootBean, CrawlerProduct crawlerProduct) {
 
         List<String> images = productRootBean.getIdata().getItem().getAuctionImages();
-
-        for (String image:images) {
-            String url = getAttribute("largeImageUrlPrefix")+image;
-            String extension = FilenameUtils.getExtension(url);
-            String path = member.getUsername()+"/image/"+ DateUtils.formatDateToString(new Date(),"yyyy/MM/dd")+"/"+UUID.randomUUID().toString().replace("-","")+"."+extension;
-            UploadUtils.upload(url,path);
-            crawlerProduct.getCrawlerProductImage().getImages().add(UploadUtils.getUrl(path));
-        }
+        crawlerProduct.getCrawlerProductImage().setImages(images.stream().map(image->{
+            String extension = FilenameUtils.getName(image);
+            String path = member.getUsername()+"/image/"+ crawlerProduct.getSn() +"/images/" +extension;
+            UploadUtils.upload(image,path);
+            return UploadUtils.getUrl(path);
+        }).collect(Collectors.toList()));
     }
 
 
@@ -363,7 +356,6 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         Elements titleElements = root.getElementsByClass("tb-main-title");
         if(titleElements!=null&&titleElements.size()>0){
             String name = titleElements.first().text();
-            System.out.println(name);
             crawlerProduct.setName(name);
             return name;
         }

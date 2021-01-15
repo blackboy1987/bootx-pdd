@@ -53,24 +53,48 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
                 pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
                 continue;
             }
-            new Thread(()->{
-                String pluginId = CrawlerUtils.getPlugInId(crawlerProduct.getUrl());
-                CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);
-                if(crawlerPlugin!=null){
-                    crawlerPlugin.product(member,crawlerProduct);
-                    if(crawlerProduct.getProductCategoryIds().size()>0){
-                        crawlerProduct.setProductCategory(productCategoryService.findByOtherId(pluginId+"_"+crawlerProduct.getProductCategoryIds().get(crawlerProduct.getProductCategoryIds().size()-1)));
-                    }
-                    crawlerProduct.setStatus(1);
-                }else{
-                    crawlerProduct.setStatus(2);
+            String pluginId = CrawlerUtils.getPlugInId(crawlerProduct.getUrl());
+            CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);
+            if(crawlerPlugin!=null){
+                crawlerPlugin.product(member,crawlerProduct);
+                if(crawlerProduct.getProductCategoryIds().size()>0){
+                    crawlerProduct.setProductCategory(productCategoryService.findByOtherId(pluginId+"_"+crawlerProduct.getProductCategoryIds().get(crawlerProduct.getProductCategoryIds().size()-1)));
                 }
-                update(crawlerProduct);
-                pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
-            }).start();
+                crawlerProduct.setStatus(1);
+            }else{
+                crawlerProduct.setStatus(2);
+            }
+            update(crawlerProduct);
+            pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
         }
         return crawlerProducts;
     }
+
+    @Override
+    public List<CrawlerProduct> crawler(List<CrawlerProduct> crawlerProducts,Member member) {
+
+        for (CrawlerProduct crawlerProduct:crawlerProducts) {
+            if(crawlerProduct.getStatus()==1){
+                pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
+                continue;
+            }
+            String pluginId = CrawlerUtils.getPlugInId(crawlerProduct.getUrl());
+            CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);
+            if(crawlerPlugin!=null){
+                crawlerPlugin.product(member,crawlerProduct);
+                if(crawlerProduct.getProductCategoryIds().size()>0){
+                    crawlerProduct.setProductCategory(productCategoryService.findByOtherId(pluginId+"_"+crawlerProduct.getProductCategoryIds().get(crawlerProduct.getProductCategoryIds().size()-1)));
+                }
+                crawlerProduct.setStatus(1);
+            }else{
+                crawlerProduct.setStatus(2);
+            }
+            update(crawlerProduct);
+            pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
+        }
+        return crawlerProducts;
+    }
+
 
     private List<CrawlerProduct> saveCrawler(Member member, String[] urls, Integer type) {
         List<CrawlerProduct> crawlerProducts = new ArrayList<>();
@@ -109,6 +133,7 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
             BeanUtils.copyProperties(crawlerProduct,pddCrawlerProduct,"id");
             pddCrawlerProduct.setMember(member);
             pddCrawlerProduct.setCrawlerProduct(crawlerProduct);
+            pddCrawlerProduct.setIsDeleted(false);
             pddCrawlerProductService.save(pddCrawlerProduct);
             crawlerProduct.setPddCrawlerProduct(pddCrawlerProduct);
         }

@@ -90,7 +90,6 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 
 	@Column(length = 300)
 	@Convert(converter = CrawlerProductCategoryNamesConverter.class)
-	@JsonView({PageView.class})
 	private List<String> productCategoryNames = new ArrayList<>();
 
 
@@ -103,6 +102,7 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 
 	@NotEmpty
 	@Column(length = 1000,nullable = false,updatable = false)
+	@JsonView({PageView.class})
 	private String url;
 
 	/**
@@ -137,6 +137,22 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 	 */
 	@JsonView(PageView.class)
 	private Integer status;
+
+	/**
+	 * 是否删除
+	 */
+	private Boolean isDeleted;
+
+	/**
+	 * 发布状态
+	 * 10：待发布
+	 * 11：发布中
+	 * 12：发布成功
+	 * 13：发布失败
+	 * 14：草稿箱
+	 */
+	@JsonView(PageView.class)
+	private Integer publishStatus;
 
 	public PddCrawlerProduct() {
 		init();
@@ -289,6 +305,22 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 		this.status = status;
 	}
 
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	public Integer getPublishStatus() {
+		return publishStatus;
+	}
+
+	public void setPublishStatus(Integer publishStatus) {
+		this.publishStatus = publishStatus;
+	}
+
 	public Member getMember() {
 		return member;
 	}
@@ -322,7 +354,14 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 		}
 	}
 
-
+	@Transient
+	@JsonView({PageView.class})
+	public String getProductCategoryName(){
+		if(productCategory!=null){
+			return productCategory.getName();
+		}
+		return null;
+	}
 
 	@Converter
 	public static class CrawlerProductCategoryIdConverter extends BaseAttributeConverter<List<Long>> {

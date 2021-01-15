@@ -1,12 +1,18 @@
 
 package com.bootx.pdd.service.impl;
 
+import com.bootx.common.Page;
+import com.bootx.common.Pageable;
 import com.bootx.entity.*;
+import com.bootx.pdd.dao.PddCrawlerProductDao;
 import com.bootx.pdd.entity.*;
 import com.bootx.pdd.service.PddCrawlerProductService;
 import com.bootx.service.impl.BaseServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 /**
@@ -18,9 +24,17 @@ import java.util.stream.Collectors;
 @Service
 public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProduct, Long> implements PddCrawlerProductService {
 
+    @Resource
+    private PddCrawlerProductDao pddCrawlerProductDao;
+
     @Override
     public void update(CrawlerProduct crawlerProduct, PddCrawlerProduct pddCrawlerProduct) {
         if(crawlerProduct!=null&&pddCrawlerProduct!=null&&!crawlerProduct.isNew()&&!pddCrawlerProduct.isNew()){
+            if(crawlerProduct.getStatus()==1){
+                pddCrawlerProduct.setPublishStatus(0);
+            }else{
+                pddCrawlerProduct.setPublishStatus(null);
+            }
             pddCrawlerProduct.setName(crawlerProduct.getName());
             pddCrawlerProduct.setProductCategory(crawlerProduct.getProductCategory());
             pddCrawlerProduct.setStock(crawlerProduct.getStock());
@@ -40,6 +54,7 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
             super.update(pddCrawlerProduct);
         }
     }
+
 
     private PddCrawlerProductImage crawlerProductImage(PddCrawlerProduct pddCrawlerProduct, CrawlerProductImage crawlerProductImage) {
         PddCrawlerProductImage pddCrawlerProductImage = pddCrawlerProduct.getCrawlerProductImage();
@@ -92,8 +107,11 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
         });
         pddCrawlerProductSpecification.setCrawlerProduct(pddCrawlerProduct);
         return pddCrawlerProductSpecification;
-
-
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PddCrawlerProduct> findPage(Pageable pageable, String name, String sn, Integer status,Integer publishStatus,Boolean isDeleted, Date beginDate, Date endDate, Member member) {
+        return pddCrawlerProductDao.findPage(pageable,name,sn,status,publishStatus,isDeleted,beginDate,endDate,member);
+    }
 }

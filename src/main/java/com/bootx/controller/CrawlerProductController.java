@@ -29,5 +29,4 @@ public class CrawlerProductController extends BaseController {
     public Result list(Pageable pageable, @CurrentUser Member member){ ;
         return Result.success(crawlerProductService.findPage(pageable));
     }
-
 }
