@@ -1,6 +1,6 @@
 package com.bootx.pdd.service.impl;
 
-import com.bootx.pdd.service.LogisticsService;
+import com.bootx.pdd.service.PddLogisticsService;
 import com.pdd.pop.sdk.common.util.JsonUtil;
 import com.pdd.pop.sdk.http.api.pop.request.PddGoodsLogisticsTemplateGetRequest;
 import com.pdd.pop.sdk.http.api.pop.request.PddLogisticsAddressGetRequest;
@@ -10,7 +10,7 @@ import com.pdd.pop.sdk.http.api.pop.response.PddLogisticsAddressGetResponse;
 /**
  * @author black
  */
-public class LogisticsServiceImpl extends PddBaseServiceImpl implements LogisticsService {
+public class PddLogisticsServiceImpl extends PddBaseServiceImpl implements PddLogisticsService {
 
 
     @Override

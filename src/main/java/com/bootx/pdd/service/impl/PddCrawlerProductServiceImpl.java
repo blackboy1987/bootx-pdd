@@ -3,16 +3,25 @@ package com.bootx.pdd.service.impl;
 
 import com.bootx.common.Page;
 import com.bootx.common.Pageable;
+import com.bootx.elasticsearch.service.EsPddCrawlerProductService;
 import com.bootx.entity.*;
 import com.bootx.pdd.dao.PddCrawlerProductDao;
 import com.bootx.pdd.entity.*;
 import com.bootx.pdd.service.PddCrawlerProductService;
+import com.bootx.pdd.service.PddGoodsService;
+import com.bootx.pdd.service.PddLogService;
+import com.bootx.service.StoreService;
 import com.bootx.service.impl.BaseServiceImpl;
+import com.pdd.pop.sdk.http.api.pop.response.PddGoodsAddResponse;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -26,12 +35,20 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
 
     @Resource
     private PddCrawlerProductDao pddCrawlerProductDao;
+    @Resource
+    private PddGoodsService goodsService;
+    @Resource
+    private StoreService storeService;
+    @Resource
+    private PddLogService pddLogService;
+    @Resource
+    private EsPddCrawlerProductService esPddCrawlerProductService;
 
     @Override
     public void update(CrawlerProduct crawlerProduct, PddCrawlerProduct pddCrawlerProduct) {
         if(crawlerProduct!=null&&pddCrawlerProduct!=null&&!crawlerProduct.isNew()&&!pddCrawlerProduct.isNew()){
             if(crawlerProduct.getStatus()==1){
-                pddCrawlerProduct.setPublishStatus(0);
+                pddCrawlerProduct.setPublishStatus(10);
             }else{
                 pddCrawlerProduct.setPublishStatus(null);
             }
@@ -113,5 +130,60 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
     @Transactional(readOnly = true)
     public Page<PddCrawlerProduct> findPage(Pageable pageable, String name, String sn, Integer status,Integer publishStatus,Boolean isDeleted, Date beginDate, Date endDate, Member member) {
         return pddCrawlerProductDao.findPage(pageable,name,sn,status,publishStatus,isDeleted,beginDate,endDate,member);
+    }
+
+
+
+    @Override
+    @Async
+    public void publish(Long[] ids, Long[] storeIds) throws Exception {
+        Long sn = System.currentTimeMillis();
+        List<PddCrawlerProduct> pddCrawlerProducts = findList(ids);
+        List<Store> stores = storeService.findList(storeIds);
+        for (PddCrawlerProduct product:pddCrawlerProducts) {
+            for (Store store:stores) {
+                PddGoodsAddResponse pddGoodsAddResponse = goodsService.pddGoodsAdd(product, store.getAccessToken());
+                Map<String,Object> map = new HashMap<>();
+                if(pddGoodsAddResponse.getGoodsAddResponse()!=null){
+                    PddGoodsAddResponse.GoodsAddResponse goodsAddResponse = pddGoodsAddResponse.getGoodsAddResponse();
+                    map.put("goodsId",goodsAddResponse.getGoodsId());
+                    map.put("goodsCommitId",goodsAddResponse.getGoodsCommitId());
+                }
+                pddLogService.create(sn,product,store,map,pddGoodsAddResponse.getErrorResponse());
+            }
+        }
+    }
+
+    @Override
+    public PddCrawlerProduct save(PddCrawlerProduct pddCrawlerProduct) {
+        esPddCrawlerProductService.add(pddCrawlerProduct);
+        return super.save(pddCrawlerProduct);
+    }
+
+    @Override
+    public PddCrawlerProduct update(PddCrawlerProduct pddCrawlerProduct) {
+        esPddCrawlerProductService.add(pddCrawlerProduct);
+        return super.update(pddCrawlerProduct);
+    }
+
+    @Override
+    public PddCrawlerProduct update(PddCrawlerProduct pddCrawlerProduct, String... ignoreProperties) {
+        esPddCrawlerProductService.add(pddCrawlerProduct);
+        return super.update(pddCrawlerProduct, ignoreProperties);
+    }
+
+    @Override
+    public void delete(Long id) {
+        super.delete(id);
+    }
+
+    @Override
+    public void delete(Long... ids) {
+        super.delete(ids);
+    }
+
+    @Override
+    public void delete(PddCrawlerProduct pddCrawlerProduct) {
+        super.delete(pddCrawlerProduct);
     }
 }

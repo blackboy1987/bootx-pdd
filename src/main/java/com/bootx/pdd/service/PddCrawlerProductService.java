@@ -21,4 +21,6 @@ public interface PddCrawlerProductService extends BaseService<PddCrawlerProduct,
     void update(CrawlerProduct crawlerProduct, PddCrawlerProduct pddCrawlerProduct);
 
     Page<PddCrawlerProduct> findPage(Pageable pageable, String name, String sn, Integer status,Integer publishStatus,Boolean isDeleted, Date beginDate, Date endDate, Member member);
+
+    void publish(Long[] ids, Long[] storeIds) throws Exception;
 }

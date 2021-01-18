@@ -1,13 +1,13 @@
 package com.bootx.pdd.service;
 
 import com.bootx.common.Pageable;
-import com.bootx.entity.Product;
+import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.pdd.pop.sdk.http.api.pop.response.*;
 
 /**
  * @author black
  */
-public interface GoodsService {
+public interface PddGoodsService {
 
     /**
      * 删除草稿接口
@@ -34,10 +34,10 @@ public interface GoodsService {
      * @param accessToken
      *      accessToken
      */
-    PddGoodsAddResponse pddGoodsAdd(Product product, String accessToken) throws Exception;
+    PddGoodsAddResponse pddGoodsAdd(PddCrawlerProduct pddCrawlerProduct, String accessToken) throws Exception;
 
 
-    PddGoodsEditGoodsCommitResponse pddGoodsEditGoodsCommit(Product product, String accessToken) throws Exception;
+    PddGoodsEditGoodsCommitResponse pddGoodsEditGoodsCommit(PddCrawlerProduct pddCrawlerProduct, String accessToken) throws Exception;
 
 
     PddGoodsAuthorizationCatsResponse pddGoodsAuthorizationCats(String accessToken) throws Exception;

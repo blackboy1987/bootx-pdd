@@ -1,6 +1,5 @@
 package com.bootx.pdd.entity;
 
-import com.bootx.entity.Product;
 import com.pdd.pop.sdk.http.api.pop.request.PddGoodsAddRequest;
 import com.pdd.pop.sdk.http.api.pop.request.PddGoodsEditGoodsCommitRequest;
 
@@ -33,7 +32,7 @@ public final class PddGoodsAdd {
         this.detailGallerys = detailGallerys;
     }
 
-    public PddGoodsAddRequest build(Product product){
+    public PddGoodsAddRequest build(PddCrawlerProduct pddCrawlerProduct){
         PddGoodsAddRequest request = new PddGoodsAddRequest();
         // 坏果包赔
         request.setBadFruitClaim(0);
@@ -91,7 +90,7 @@ public final class PddGoodsAdd {
         // 商品描述， 字数限制：20-500，例如，新包装，保证产品的口感和新鲜度。单颗独立小包装，双重营养，1斤家庭分享装，更实惠新疆一级骏枣夹核桃仁。
         request.setGoodsDesc("新包装，保证产品的口感和新鲜度。单颗独立小包装，双重营养，1斤家庭分享装，更实惠新疆一级骏枣夹核桃仁");
         // 商品标题，例如，新疆特产 红满疆枣夹核桃500g
-        request.setGoodsName(product.getName());
+        request.setGoodsName(pddCrawlerProduct.getName());
         /*List<PddGoodsAddRequest.GoodsPropertiesItem> goodsProperties = new ArrayList<>();
         // 商品属性列表
         PddGoodsAddRequest.GoodsPropertiesItem item1 = new PddGoodsAddRequest.GoodsPropertiesItem();
@@ -199,7 +198,7 @@ public final class PddGoodsAdd {
         // request.setSizeSpecId(0L);
 
         List<PddGoodsAddRequest.SkuListItem> skuList = new ArrayList<>();
-        product.getProductSku().getSkus().stream().forEach(sku->{
+        pddCrawlerProduct.getCrawlerProductSku().getSkus().stream().forEach(sku->{
             // sku对象列表,实例：[{ "is_onsale": 1, "limit_quantity": 999, "price": "2200", "weight": 1000, "multi_price": "1900", "thumb_url": "http://t06img.yangkeduo.com/images/2018-04-15/ced035033b5d40b589140af882621c03.jpg", "out_sku_sn": "L", "quantity": 100, "spec_id_list": "[25]", "oversea_sku": { "measurement_code": "计量单位编码", "taxation": "税费", "specifications": "规格" } }]
             PddGoodsAddRequest.SkuListItem item2 = new PddGoodsAddRequest.SkuListItem();
             // sku上架状态，0-已下架，1-上架中
@@ -257,7 +256,7 @@ public final class PddGoodsAdd {
         return request;
     }
 
-    public PddGoodsEditGoodsCommitRequest build1(Product product){
+    public PddGoodsEditGoodsCommitRequest build1(PddCrawlerProduct pddCrawlerProduct){
         PddGoodsEditGoodsCommitRequest request = new PddGoodsEditGoodsCommitRequest();
         // 坏果包赔
         request.setBadFruitClaim(0);
@@ -315,7 +314,7 @@ public final class PddGoodsAdd {
         // 商品描述， 字数限制：20-500，例如，新包装，保证产品的口感和新鲜度。单颗独立小包装，双重营养，1斤家庭分享装，更实惠新疆一级骏枣夹核桃仁。
         request.setGoodsDesc("新包装，保证产品的口感和新鲜度。单颗独立小包装，双重营养，1斤家庭分享装，更实惠新疆一级骏枣夹核桃仁");
         // 商品标题，例如，新疆特产 红满疆枣夹核桃500g
-        request.setGoodsName(product.getName());
+        request.setGoodsName(pddCrawlerProduct.getName());
         /*List<PddGoodsAddRequest.GoodsPropertiesItem> goodsProperties = new ArrayList<>();
         // 商品属性列表
         PddGoodsAddRequest.GoodsPropertiesItem item1 = new PddGoodsAddRequest.GoodsPropertiesItem();
@@ -423,7 +422,7 @@ public final class PddGoodsAdd {
         // request.setSizeSpecId(0L);
 
         List<PddGoodsEditGoodsCommitRequest.SkuListItem> skuList = new ArrayList<>();
-        product.getProductSku().getSkus().stream().forEach(sku->{
+        pddCrawlerProduct.getCrawlerProductSku().getSkus().stream().forEach(sku->{
             // sku对象列表,实例：[{ "is_onsale": 1, "limit_quantity": 999, "price": "2200", "weight": 1000, "multi_price": "1900", "thumb_url": "http://t06img.yangkeduo.com/images/2018-04-15/ced035033b5d40b589140af882621c03.jpg", "out_sku_sn": "L", "quantity": 100, "spec_id_list": "[25]", "oversea_sku": { "measurement_code": "计量单位编码", "taxation": "税费", "specifications": "规格" } }]
             PddGoodsAddRequest.SkuListItem item2 = new PddGoodsAddRequest.SkuListItem();
             // sku上架状态，0-已下架，1-上架中

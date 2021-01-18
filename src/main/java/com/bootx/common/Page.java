@@ -2,6 +2,7 @@
 package com.bootx.common;
 
 import com.bootx.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -36,6 +37,7 @@ public class Page<T> implements Serializable {
 	/**
 	 * 分页信息
 	 */
+	@JsonIgnore
 	private final Pageable pageable;
 
 	/**
@@ -87,6 +89,7 @@ public class Page<T> implements Serializable {
 	 * 
 	 * @return 搜索属性
 	 */
+	@JsonIgnore
 	public String getSearchProperty() {
 		return pageable.getSearchProperty();
 	}
@@ -96,6 +99,7 @@ public class Page<T> implements Serializable {
 	 * 
 	 * @return 搜索值
 	 */
+	@JsonIgnore
 	public String getSearchValue() {
 		return pageable.getSearchValue();
 	}
@@ -105,6 +109,7 @@ public class Page<T> implements Serializable {
 	 * 
 	 * @return 排序属性
 	 */
+	@JsonIgnore
 	public String getOrderProperty() {
 		return pageable.getOrderProperty();
 	}
@@ -114,6 +119,7 @@ public class Page<T> implements Serializable {
 	 * 
 	 * @return 排序方向
 	 */
+	@JsonIgnore
 	public Order.Direction getOrderDirection() {
 		return pageable.getOrderDirection();
 	}
@@ -123,6 +129,7 @@ public class Page<T> implements Serializable {
 	 * 
 	 * @return 排序
 	 */
+	@JsonIgnore
 	public List<Order> getOrders() {
 		return pageable.getOrders();
 	}
@@ -132,6 +139,7 @@ public class Page<T> implements Serializable {
 	 * 
 	 * @return 筛选
 	 */
+	@JsonIgnore
 	public List<Filter> getFilters() {
 		return pageable.getFilters();
 	}
@@ -141,6 +149,7 @@ public class Page<T> implements Serializable {
 	 * 
 	 * @return 总页数
 	 */
+	@JsonIgnore
 	public int getTotalPages() {
 		return (int) Math.ceil((double) getTotal() / (double) getPageSize());
 	}

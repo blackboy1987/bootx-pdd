@@ -10,12 +10,15 @@ import com.bootx.security.CurrentUser;
 import com.bootx.service.MemberService;
 import com.bootx.service.StoreService;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author black
@@ -55,5 +58,15 @@ public class StoreController extends BaseController {
 
     }
 
+
+    @PostMapping("/tree")
+    public List<Map<String,Object>> tree(@CurrentUser Member member){
+        return storeService.tree(member);
+    }
+
+    @PostMapping("/info")
+    public PddMallInfoGetResponse info(Long storeId) throws Exception {
+        return storeService.info(storeId);
+    }
 
 }

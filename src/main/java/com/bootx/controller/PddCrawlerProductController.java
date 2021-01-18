@@ -1,16 +1,20 @@
 package com.bootx.controller;
 
 import com.bootx.common.Message;
+import com.bootx.common.Page;
 import com.bootx.common.Pageable;
 import com.bootx.common.Result;
 import com.bootx.controller.admin.BaseController;
+import com.bootx.elasticsearch.service.EsPddCrawlerProductService;
 import com.bootx.entity.BaseEntity;
 import com.bootx.entity.CrawlerProduct;
 import com.bootx.entity.Member;
 import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.bootx.pdd.service.PddCrawlerProductService;
+import com.bootx.pdd.service.PddLogService;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.CrawlerProductService;
+import com.bootx.service.ProductCategoryService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,11 +37,22 @@ public class PddCrawlerProductController extends BaseController {
 
     @Resource
     private CrawlerProductService crawlerProductService;
+    @Resource
+    private ProductCategoryService productCategoryService;
+    @Resource
+    private PddLogService pddLogService;
+
+    @Resource
+    private EsPddCrawlerProductService esPddCrawlerProductService;
 
     @PostMapping("/list")
     @JsonView(BaseEntity.PageView.class)
-    public Result list(Pageable pageable, String name, String sn, Integer status, Date beginDate, Date endDate, @CurrentUser Member member){ ;
-        return Result.success(pddCrawlerProductService.findPage(pageable,name,sn,status,null,false,beginDate,endDate,member));
+    public Result list(Pageable pageable, String name, String sn, Integer status, Date beginDate, Date endDate, @CurrentUser Member member){
+        Page<PddCrawlerProduct> page = pddCrawlerProductService.findPage(pageable,name,sn,status,null,false,beginDate,endDate,member);
+        for (PddCrawlerProduct product:page.getContent()) {
+            product.setPddLogs(pddLogService.query(product));
+        }
+        return Result.success(page);
     }
 
     @PostMapping("/list1")
@@ -110,10 +125,30 @@ public class PddCrawlerProductController extends BaseController {
                 crawlerProduct.setPddCrawlerProduct(pddCrawlerProduct);
                 crawlerProducts.add(crawlerProduct);
                 crawlerProductService.crawler(crawlerProducts,member);
+
+                esPddCrawlerProductService.add(pddCrawlerProduct);
             }
 
         }
         return Message.success("操作完成");
     }
 
+    @PostMapping("/updateProductCategory")
+    public Message updateProductCategory(Long id,Long[] productCategoryIds, @CurrentUser Member member){
+        PddCrawlerProduct pddCrawlerProduct = pddCrawlerProductService.find(id);
+        if(pddCrawlerProduct!=null){
+            pddCrawlerProduct.setProductCategory(productCategoryService.find(productCategoryIds[productCategoryIds.length-1]));
+            pddCrawlerProductService.update(pddCrawlerProduct);
+        }
+        return Message.success("操作完成");
+    }
+
+    @PostMapping("/publish")
+    public Message publish(Long[] ids,Long[] storeIds, @CurrentUser Member member) throws Exception {
+
+        pddCrawlerProductService.publish(ids,storeIds);
+
+
+        return Message.success("操作完成");
+    }
 }

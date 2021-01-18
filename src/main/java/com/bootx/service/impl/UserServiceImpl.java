@@ -177,8 +177,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
 			}
 		}else{
 			if(StringUtils.equals(userClass.getSimpleName(),"Member")){
-				String token = WebUtils.getRequest().getHeader("token");
-				return (T) find(Long.valueOf(JWTUtils.parseToken(token).getId()));
+				try{
+					String token = WebUtils.getRequest().getHeader("token");
+					return (T) find(Long.valueOf(JWTUtils.parseToken(token).getId()));
+				}catch (Exception e){
+					return null;
+				}
 			}else {
 				return null;
 			}

@@ -25,13 +25,19 @@ public abstract class PddBaseServiceImpl implements PddBaseService {
 
         PddGoodsImageUploadRequest request = new PddGoodsImageUploadRequest();
         request.setImage("data:image/png;base64,"+imageBase64);
-        PddGoodsImageUploadResponse response = POPHTTPCLIENT.syncInvoke(request, PddConfig.accessToken);
+        PddGoodsImageUploadResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
         return response;
     }
 
     @Override
     public AccessTokenResponse token (String code) throws Exception {
         PopAccessTokenClient accessTokenClient = new PopAccessTokenClient(PddConfig.clientId,PddConfig.clientSecret);
+
+        System.out.println("===================================================================================");
+        System.out.println("------------------------------------------------");
+        System.out.println("===================================================================================");
+
+
         return accessTokenClient.generate(code);
     }
 
@@ -45,7 +51,7 @@ public abstract class PddBaseServiceImpl implements PddBaseService {
     @Override
     public PddMallInfoGetResponse storeInfo(String accessToken) throws Exception {
         PddMallInfoGetRequest request = new PddMallInfoGetRequest();
-        return POPHTTPCLIENT.syncInvoke(request,  PddConfig.accessToken);
+        return POPHTTPCLIENT.syncInvoke(request,accessToken);
     }
 
     @Override

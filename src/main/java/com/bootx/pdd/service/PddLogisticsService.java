@@ -6,7 +6,7 @@ import com.pdd.pop.sdk.http.api.pop.response.PddLogisticsAddressGetResponse;
 /**
  * @author black
  */
-public interface LogisticsService extends PddService{
+public interface PddLogisticsService extends PddService{
 
     PddLogisticsAddressGetResponse addressGet() throws Exception;
 

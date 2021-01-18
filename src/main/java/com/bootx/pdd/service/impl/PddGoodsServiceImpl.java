@@ -1,10 +1,9 @@
 package com.bootx.pdd.service.impl;
 
 import com.bootx.common.Pageable;
-import com.bootx.constants.PddConfig;
-import com.bootx.entity.Product;
+import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.bootx.pdd.entity.PddGoodsAdd;
-import com.bootx.pdd.service.GoodsService;
+import com.bootx.pdd.service.PddGoodsService;
 import com.bootx.util.ImageUtils;
 import com.pdd.pop.sdk.common.util.JsonUtil;
 import com.pdd.pop.sdk.http.api.pop.request.*;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
  * @author blackoy
  */
 @Service
-public class GoodsServiceImpl extends PddBaseServiceImpl implements GoodsService {
+public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsService {
 
     @Override
     public PddDeleteDraftCommitResponse pddDeleteDraftCommit(String accessToken) throws Exception {
@@ -42,29 +41,27 @@ public class GoodsServiceImpl extends PddBaseServiceImpl implements GoodsService
     }
 
     @Override
-    public PddGoodsAddResponse pddGoodsAdd(Product product, String accessToken) throws Exception {
+    public PddGoodsAddResponse pddGoodsAdd(PddCrawlerProduct pddCrawlerProduct, String accessToken) throws Exception {
         // 处理掉product中的图片
         PddGoodsAdd pddGoodsAdd = new PddGoodsAdd();
-        pddGoodsAdd.setCarouselGallerys(parseImage(product,accessToken));
-        pddGoodsAdd.setDetailGallerys(parseDetailImage(product,accessToken));
-
-
-        PddGoodsAddRequest request = pddGoodsAdd.build(product);
-        PddGoodsAddResponse response = POPHTTPCLIENT.syncInvoke(request, PddConfig.accessToken);
+        pddGoodsAdd.setCarouselGallerys(parseImage(pddCrawlerProduct,accessToken));
+        pddGoodsAdd.setDetailGallerys(parseDetailImage(pddCrawlerProduct,accessToken));
+        PddGoodsAddRequest request = pddGoodsAdd.build(pddCrawlerProduct);
+        PddGoodsAddResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
 
     @Override
-    public PddGoodsEditGoodsCommitResponse pddGoodsEditGoodsCommit(Product product, String accessToken) throws Exception {
+    public PddGoodsEditGoodsCommitResponse pddGoodsEditGoodsCommit(PddCrawlerProduct pddCrawlerProduct, String accessToken) throws Exception {
         // 处理掉product中的图片
         PddGoodsAdd pddGoodsAdd = new PddGoodsAdd();
-        pddGoodsAdd.setCarouselGallerys(parseImage(product,accessToken));
-        pddGoodsAdd.setDetailGallerys(parseDetailImage(product,accessToken));
+        pddGoodsAdd.setCarouselGallerys(parseImage(pddCrawlerProduct,accessToken));
+        pddGoodsAdd.setDetailGallerys(parseDetailImage(pddCrawlerProduct,accessToken));
 
 
-        PddGoodsEditGoodsCommitRequest request = pddGoodsAdd.build1(product);
-        PddGoodsEditGoodsCommitResponse response = POPHTTPCLIENT.syncInvoke(request, PddConfig.accessToken);
+        PddGoodsEditGoodsCommitRequest request = pddGoodsAdd.build1(pddCrawlerProduct);
+        PddGoodsEditGoodsCommitResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
@@ -135,17 +132,16 @@ public class GoodsServiceImpl extends PddBaseServiceImpl implements GoodsService
 
     }
 
-    private List<String> parseImage(Product product, String accessToken) {
+    private List<String> parseImage(PddCrawlerProduct pddCrawlerProduct, String accessToken) {
         // productImages
-        return product.getProductImages().stream().map(item->{
-           if(StringUtils.isNotBlank(item.getSource())){
+        return pddCrawlerProduct.getCrawlerProductImage().getImages().stream().map(item->{
+           if(StringUtils.isNotBlank(item)){
                try {
-                   PddGoodsImageUploadResponse pddGoodsImageUploadResponse = uploadImage(ImageUtils.url2Base64(item.getSource()), accessToken);
+                   PddGoodsImageUploadResponse pddGoodsImageUploadResponse = uploadImage(ImageUtils.url2Base64(item), accessToken);
                    if(pddGoodsImageUploadResponse.getErrorResponse()==null){
                        return pddGoodsImageUploadResponse.getGoodsImageUploadResponse().getImageUrl();
                    }
                    return null;
-
                } catch (Exception exception) {
                    exception.printStackTrace();
                }
@@ -154,9 +150,9 @@ public class GoodsServiceImpl extends PddBaseServiceImpl implements GoodsService
         }).filter(StringUtils::isNotBlank).collect(Collectors.toList());
     }
 
-    private List<String> parseDetailImage(Product product, String accessToken) {
+    private List<String> parseDetailImage(PddCrawlerProduct pddCrawlerProduct, String accessToken) {
         // productImages
-        List<String> images = product.getProductIntroductionImage().getImages().stream().map(item->{
+        List<String> images = pddCrawlerProduct.getCrawlerProductIntroductionImage().getImages().stream().map(item->{
             if(StringUtils.isNotBlank(item)){
                 try {
                     PddGoodsImageUploadResponse pddGoodsImageUploadResponse = uploadImage(ImageUtils.url2Base64(item), accessToken);

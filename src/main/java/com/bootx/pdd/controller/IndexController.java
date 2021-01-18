@@ -1,6 +1,5 @@
 package com.bootx.pdd.controller;
 
-import com.bootx.constants.PddConfig;
 import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.Member;
 import com.bootx.pdd.service.PddService;
@@ -8,16 +7,17 @@ import com.bootx.security.UserAuthenticationToken;
 import com.bootx.service.MemberService;
 import com.bootx.service.StoreService;
 import com.bootx.service.UserService;
-import com.bootx.util.ImageUtils;
-import com.pdd.pop.sdk.http.api.pop.response.PddGoodsImageUploadResponse;
-import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
+import com.bootx.util.JWTUtils;
 import com.pdd.pop.sdk.http.token.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author black
@@ -58,13 +58,23 @@ public class IndexController extends BaseController {
         return accessTokenResponse;
     }
 
-    @GetMapping("/upload")
-    public PddGoodsImageUploadResponse upload(String url) throws Exception {
-        return pddService.uploadImage("data:image/png;base64,"+ImageUtils.url2Base64(url), PddConfig.accessToken);
+    @PostMapping("/authLogin")
+    public Map<String,Object> authLogin(String code, String state) throws Exception {
+        Map<String,Object> data = new HashMap<>();
+        AccessTokenResponse accessTokenResponse = pddService.token(code);
+        if(accessTokenResponse.getErrorResponse()==null){
+            data.put("code",0);
+            // 获取成功
+            Member member = storeService.create(accessTokenResponse,memberService.getCurrent(state)).getMember();
+            Map<String,Object> user = new HashMap<>();
+            user.put("id",member.getId());
+            user.put("username",member.getUsername());
+            data.put("token", JWTUtils.create(member.getId()+"",user));
+        }else{
+            data.put("code",-1);
+            data.put("msg", accessTokenResponse.getErrorResponse().getErrorMsg());
+        }
+        return data;
     }
 
-    @GetMapping("/store_info")
-    public PddMallInfoGetResponse storeInfo(String accessToken) throws Exception {
-        return pddService.storeInfo(accessToken);
-    }
 }

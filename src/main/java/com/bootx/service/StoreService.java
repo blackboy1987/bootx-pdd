@@ -10,6 +10,7 @@ import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
 import com.pdd.pop.sdk.http.token.AccessTokenResponse;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service - 审计日志
@@ -36,4 +37,8 @@ public interface StoreService extends BaseService<Store, Long> {
     Page<Store> findPage(Pageable pageable, Member member);
 
 	Message unbind(Store store);
+
+    List<Map<String, Object>> tree(Member member);
+
+	PddMallInfoGetResponse info(Long storeId) throws Exception;
 }

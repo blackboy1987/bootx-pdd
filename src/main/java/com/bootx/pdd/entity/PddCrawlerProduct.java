@@ -16,6 +16,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Entity - 商品
@@ -121,6 +122,10 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(nullable = false,updatable = false)
 	private Member member;
+
+	@Transient
+	@JsonView({PageView.class})
+	private List<Map<String, Object>> pddLogs = new ArrayList<>();
 
 	public CrawlerProduct getCrawlerProduct() {
 		return crawlerProduct;
@@ -327,6 +332,14 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 
 	public void setMember(Member member) {
 		this.member = member;
+	}
+
+	public List<Map<String, Object>> getPddLogs() {
+		return pddLogs;
+	}
+
+	public void setPddLogs(List<Map<String, Object>> pddLogs) {
+		this.pddLogs = pddLogs;
 	}
 
 	public void init(){

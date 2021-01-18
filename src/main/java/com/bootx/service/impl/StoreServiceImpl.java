@@ -7,15 +7,19 @@ import com.bootx.common.Pageable;
 import com.bootx.dao.StoreDao;
 import com.bootx.entity.Member;
 import com.bootx.entity.Store;
+import com.bootx.pdd.service.PddMallService;
 import com.bootx.service.StoreService;
 import com.bootx.util.DateUtils;
 import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
 import com.pdd.pop.sdk.http.token.AccessTokenResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Service - 审计日志
@@ -26,8 +30,10 @@ import java.util.List;
 @Service
 public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements StoreService {
 
-	@Autowired
+	@Resource
 	private StoreDao storeDao;
+	@Resource
+	private PddMallService pddMallService;
 
 	@Override
 	public Store findByMallId(Long mallId) {
@@ -119,5 +125,31 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements St
 	@Override
 	public Message unbind(Store store) {
 		return Message.success("解绑成功");
+	}
+
+	@Override
+	public List<Map<String, Object>> tree(Member member) {
+		if(member==null){
+			return Collections.emptyList();
+		}
+		List<Map<String, Object>> maps = jdbcTemplate.queryForList("select storecategory.id `key`,storecategory.name title,(select count(store.id) from store as store where store.member_id=" + member.getId() + " and store.storeCategory_id=storecategory.id) childrenCount from storecategory as storecategory where storecategory.member_id=" + member.getId() + ";");
+		for (Map<String,Object> map:maps) {
+			map.put("disableCheckbox",true);
+			map.put("checkable",false);
+			map.put("selectable",false);
+			if(Integer.parseInt(map.get("childrenCount")+"")>0){
+				map.put("children",jdbcTemplate.queryForList("select id `key`,mallName title from store where member_id="+member.getId()+" and storeCategory_id="+map.get("key")+";"));
+			}
+		}
+		return maps.stream().filter(item->Integer.parseInt(item.get("childrenCount")+"")>0).collect(Collectors.toList());
+	}
+
+	@Override
+	public PddMallInfoGetResponse info(Long id) throws Exception {
+		Store store = find(id);
+		PddMallInfoGetResponse pddMallInfoGetResponse = pddMallService.pddMallInfoGet(store.getAccessToken());
+
+		return pddMallInfoGetResponse;
+
 	}
 }
