@@ -9,6 +9,7 @@ import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.bootx.service.BaseService;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Service - 审计日志
@@ -23,4 +24,6 @@ public interface PddCrawlerProductService extends BaseService<PddCrawlerProduct,
     Page<PddCrawlerProduct> findPage(Pageable pageable, String name, String sn, Integer status,Integer publishStatus,Boolean isDeleted, Date beginDate, Date endDate, Member member);
 
     void publish(Long[] ids, Long[] storeIds) throws Exception;
+
+    Map<String, Object> detail(Long id);
 }

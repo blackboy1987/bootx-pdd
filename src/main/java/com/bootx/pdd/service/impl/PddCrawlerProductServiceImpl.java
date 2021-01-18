@@ -155,6 +155,12 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
     }
 
     @Override
+    public Map<String, Object> detail(Long id) {
+        Map<String,Object> data = new HashMap<>();
+        return data;
+    }
+
+    @Override
     public PddCrawlerProduct save(PddCrawlerProduct pddCrawlerProduct) {
         esPddCrawlerProductService.add(pddCrawlerProduct);
         return super.save(pddCrawlerProduct);

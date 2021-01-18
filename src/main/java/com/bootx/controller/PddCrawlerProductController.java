@@ -21,9 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author black
@@ -150,5 +148,11 @@ public class PddCrawlerProductController extends BaseController {
 
 
         return Message.success("操作完成");
+    }
+
+    @PostMapping("/detail")
+    @JsonView(BaseEntity.EditView.class)
+    public Result detail(Long id, @CurrentUser Member member){
+        return Result.success(pddCrawlerProductService.find(id));
     }
 }

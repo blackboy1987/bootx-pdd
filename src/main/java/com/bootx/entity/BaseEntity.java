@@ -110,7 +110,7 @@ public abstract class BaseEntity<ID extends Serializable> implements Serializabl
 	/**
 	 * 创建日期
 	 */
-	@JsonView({BaseView.class,EditView.class,ListView.class, ViewView.class,PageView.class})
+	@JsonView({BaseView.class,ListView.class, ViewView.class,PageView.class})
 	@CreatedDate
 	@Column(nullable = false, updatable = false)
 	private Date createdDate;

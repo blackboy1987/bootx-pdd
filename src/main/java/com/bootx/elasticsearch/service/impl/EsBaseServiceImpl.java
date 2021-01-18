@@ -11,7 +11,6 @@ public abstract class EsBaseServiceImpl implements EsBaseService {
     @Resource
     protected RestHighLevelClient restHighLevelClient;
 
-
     protected Long object2Long(Map<String,Object> map, String key){
         if(map.keySet().contains(key)){
             return Long.parseLong(map.get(key)+"");
