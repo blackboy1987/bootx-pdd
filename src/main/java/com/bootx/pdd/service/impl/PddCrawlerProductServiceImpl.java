@@ -69,6 +69,8 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
             pddCrawlerProduct.setCrawlerProductSku(crawlerProductSku(pddCrawlerProduct,crawlerProduct.getCrawlerProductSku()));
             pddCrawlerProduct.setCrawlerProductSpecification(crawlerProductSpecification(pddCrawlerProduct,crawlerProduct.getCrawlerProductSpecification()));
             super.update(pddCrawlerProduct);
+            esPddCrawlerProductService.add(pddCrawlerProduct);
+
         }
     }
 
