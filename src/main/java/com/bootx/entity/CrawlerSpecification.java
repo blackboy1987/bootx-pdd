@@ -133,6 +133,7 @@ public class CrawlerSpecification implements Serializable {
 		 */
 		@javax.validation.constraints.NotEmpty
 		@Length(max = 200)
+		@JsonView({BaseEntity.EditView.class})
 		private String name;
 
 		/**
@@ -140,8 +141,10 @@ public class CrawlerSpecification implements Serializable {
 		 */
 		@javax.validation.constraints.NotEmpty
 		@Length(max = 200)
+		@JsonView({BaseEntity.EditView.class})
 		private String value;
 
+		@JsonView({BaseEntity.EditView.class})
 		private String img;
 
 		public Entry() {

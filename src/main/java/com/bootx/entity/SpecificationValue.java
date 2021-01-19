@@ -5,6 +5,7 @@
  */
 package com.bootx.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Length;
@@ -24,14 +25,17 @@ public class SpecificationValue implements Serializable {
 	/**
 	 * ID
 	 */
+	@JsonView({BaseEntity.EditView.class})
 	private String id;
 
+	@JsonView({BaseEntity.EditView.class})
 	private String name;
 
 	/**
 	 * 值
 	 */
 	@Length(max = 200)
+	@JsonView({BaseEntity.EditView.class})
 	private String value;
 
 	public SpecificationValue() {

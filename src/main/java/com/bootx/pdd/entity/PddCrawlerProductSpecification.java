@@ -3,6 +3,7 @@ package com.bootx.pdd.entity;
 
 import com.bootx.common.BaseAttributeConverter;
 import com.bootx.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class PddCrawlerProductSpecification extends BaseEntity<Long> {
 
 	@Lob
 	@Convert(converter =CrawlerSpecificationConverter.class)
+	@JsonView({EditView.class})
 	private List<PddCrawlerSpecification> pddCrawlerSpecifications = new ArrayList<>();
 
 	public PddCrawlerProductSpecification() {

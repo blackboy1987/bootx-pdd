@@ -162,8 +162,9 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
 
     @Override
     public PddCrawlerProduct save(PddCrawlerProduct pddCrawlerProduct) {
-        esPddCrawlerProductService.add(pddCrawlerProduct);
-        return super.save(pddCrawlerProduct);
+        PddCrawlerProduct pddCrawlerProduct1 = super.save(pddCrawlerProduct);
+        esPddCrawlerProductService.add(pddCrawlerProduct1);
+        return pddCrawlerProduct1;
     }
 
     @Override

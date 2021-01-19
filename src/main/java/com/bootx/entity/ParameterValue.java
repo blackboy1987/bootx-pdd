@@ -108,6 +108,7 @@ public class ParameterValue implements Serializable {
 		 */
 		@javax.validation.constraints.NotEmpty
 		@Length(max = 200)
+		@JsonView({BaseEntity.EditView.class})
 		private String name;
 
 		/**
@@ -115,6 +116,7 @@ public class ParameterValue implements Serializable {
 		 */
 		@javax.validation.constraints.NotEmpty
 		@Length(max = 200)
+		@JsonView({BaseEntity.EditView.class})
 		private String value;
 
 		public Entry() {

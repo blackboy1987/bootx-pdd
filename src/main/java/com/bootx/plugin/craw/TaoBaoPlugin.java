@@ -172,18 +172,18 @@ public class TaoBaoPlugin extends CrawlerPlugin {
 
     private CrawlerProductSpecification specifications(Member member,Document root,CrawlerProduct crawlerProduct) {
         Element chooseAttrs = root.getElementById("J_isku");
+        List<CrawlerSpecification> crawlerSpecifications = new ArrayList<>();
         if(chooseAttrs!=null){
             Elements pChooses = chooseAttrs.getElementsByClass("J_Prop");
             for (Element pChoose:pChooses){
                 Elements dt = pChoose.getElementsByTag("dt");
                 Elements lis = pChoose.getElementsByTag("li");
-                List<CrawlerSpecification> crawlerSpecifications = new ArrayList<>();
+
                 if(dt!=null&&dt.size()>0&&lis!=null&&lis.size()>0){
                     CrawlerSpecification crawlerSpecification = new CrawlerSpecification();
                     crawlerSpecification.setName(dt.first().text());
                     crawlerSpecification.setEntries(new ArrayList<>());
                     crawlerSpecification.setOptions(new ArrayList());
-                    Integer order1 = 0;
                     for (Element item:lis) {
                         Elements as = item.getElementsByTag("a");
                         if(as!=null&&as.size()>0){
