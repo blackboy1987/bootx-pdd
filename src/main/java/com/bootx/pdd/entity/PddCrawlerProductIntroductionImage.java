@@ -6,6 +6,7 @@ import com.bootx.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,8 @@ import java.util.List;
 @Entity(name = "pdd_CrawlerProductIntroductionImage")
 public class PddCrawlerProductIntroductionImage extends BaseEntity<Long> {
 
+	@NotNull
+	@JoinColumn(updatable = false)
 	@OneToOne(fetch = FetchType.LAZY)
 	private PddCrawlerProduct crawlerProduct;
 

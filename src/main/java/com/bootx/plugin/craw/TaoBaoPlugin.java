@@ -61,6 +61,10 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         return "ftp_storage/setting";
     }
 
+    /**
+     * 平台分类
+     * @return
+     */
     @Override
     public List<ProductCategory> productCategory() {
         PluginConfig pluginConfig = getPluginConfig();
@@ -143,6 +147,12 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         return productCategories;
     }
 
+    /**
+     * 商品抓取
+     * @param member
+     * @param crawlerProduct
+     * @return
+     */
     @Override
     public CrawlerProduct product(Member member,CrawlerProduct crawlerProduct) {
         String html = WebUtils.get(crawlerProduct.getUrl(),null);
@@ -170,6 +180,12 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         }
     }
 
+    /**
+     * 商品的规格属性
+     * @param member
+     * @param crawlerProduct
+     * @return
+     */
     private CrawlerProductSpecification specifications(Member member,Document root,CrawlerProduct crawlerProduct) {
         Element chooseAttrs = root.getElementById("J_isku");
         List<CrawlerSpecification> crawlerSpecifications = new ArrayList<>();
@@ -219,6 +235,12 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         return crawlerProduct.getCrawlerProductSpecification();
     }
 
+    /**
+     * 商品属性
+     * @param root
+     * @param crawlerProduct
+     * @return
+     */
     private List<ParameterValue> parameterValues(Document root, CrawlerProduct crawlerProduct) {
         List<ParameterValue> parameterValues = new ArrayList<>();
         Elements elements = root.getElementsByClass("attributes-list");
@@ -249,6 +271,12 @@ public class TaoBaoPlugin extends CrawlerPlugin {
     }
 
 
+    /**
+     * 解析商品的信息
+     * @param member
+     * @param root
+     * @param crawlerProduct
+     */
     private void productInfo(Member member,Document root, CrawlerProduct crawlerProduct) {
         Elements elements = root.select("script");
         for (Element script:elements) {
@@ -276,10 +304,17 @@ public class TaoBaoPlugin extends CrawlerPlugin {
 
     }
 
+    /**
+     * 解析商品的sku信息
+     * @param member
+     * @param crawlerProduct
+     * @return
+     */
     private CrawlerProductSku skus(Member member, Document root, CrawlerProduct crawlerProduct) {
         Map<String,String> map = new HashMap<>();
+        crawlerProduct.getCrawlerProductSku().setSkus(new ArrayList<>());
         crawlerProduct.getCrawlerProductSpecification().getCrawlerSpecifications().stream().forEach(item->{
-            item.getEntries().stream().forEach(item1->map.put(item1.getValue(),item.getName()));
+            item.getEntries().stream().forEach(item1->map.put(item1.getValue(),item1.getName()+"_"+item.getName()));
         });
         Elements elements = root.select("script");
         for (Element script:elements) {
@@ -305,8 +340,10 @@ public class TaoBaoPlugin extends CrawlerPlugin {
                             SpecificationValue specificationValue = new SpecificationValue();
                             if(StringUtils.isNotBlank(item)){
                                 specificationValue.setId(item);
-                                specificationValue.setName(map.get(item));
-                                specificationValue.setValue(item);
+                                String s = map.get(item);
+                                specificationValue.setValue(s.split("_")[0]);
+                                specificationValue.setName(s.split("_")[1]);
+                                specificationValue.setValue(s.split("_")[0]);
                                 index++;
                                 sku.getSpecificationValues().add(specificationValue);
                             }
@@ -322,6 +359,12 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         return crawlerProduct.getCrawlerProductSku();
     }
 
+    /**
+     * 解析商品的介绍
+     * @param member
+     * @param crawlerProduct
+     * @return
+     */
     private String introduction(Member member,ProductRootBean root, CrawlerProduct crawlerProduct) {
         String desc = root.getDescUrl();
         String html = url(StringUtils.startsWith(desc,"http")?desc:"http:"+desc);
@@ -340,6 +383,12 @@ public class TaoBaoPlugin extends CrawlerPlugin {
     }
 
 
+    /**
+     * 解析商品主图
+     * @param member
+     * @param crawlerProduct
+     * @return
+     */
     private void productImages(Member member, ProductRootBean productRootBean, CrawlerProduct crawlerProduct) {
 
         List<String> images = productRootBean.getIdata().getItem().getAuctionImages();
@@ -351,7 +400,12 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         }).collect(Collectors.toList()));
     }
 
-
+    /**
+     * 商品标题
+     * @param root
+     * @param crawlerProduct
+     * @return
+     */
     private String title(Document root, CrawlerProduct crawlerProduct) {
         Elements titleElements = root.getElementsByClass("tb-main-title");
         if(titleElements!=null&&titleElements.size()>0){
@@ -362,6 +416,11 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         return "";
     }
 
+    /**
+     * 平台查询
+     * @param keywords
+     * @return
+     */
     @Override
     public List<CrawlerProduct> search(String keywords) {
         PluginConfig pluginConfig = getPluginConfig();

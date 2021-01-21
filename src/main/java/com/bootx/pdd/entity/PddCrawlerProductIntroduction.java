@@ -4,6 +4,7 @@ package com.bootx.pdd.entity;
 import com.bootx.entity.BaseEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Entity - 会员注册项
@@ -14,6 +15,8 @@ import javax.persistence.*;
 @Entity(name = "pdd_CrawlerProductIntroduction")
 public class PddCrawlerProductIntroduction extends BaseEntity<Long> {
 
+	@NotNull
+	@JoinColumn(updatable = false)
 	@OneToOne(fetch = FetchType.LAZY)
 	private PddCrawlerProduct crawlerProduct;
 

@@ -4,11 +4,13 @@ package com.bootx.entity;
 import cn.hutool.core.builder.EqualsBuilder;
 import cn.hutool.core.builder.HashCodeBuilder;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Entity - 参数值
@@ -58,7 +60,11 @@ public class ParameterValue implements Serializable {
 	 * @return 条目
 	 */
 	public List<Entry> getEntries() {
+		if(entries!=null){
+			return entries.stream().filter(entry -> StringUtils.isNotBlank(entry.getName())&&StringUtils.isNotBlank(entry.getValue())).collect(Collectors.toList());
+		}
 		return entries;
+
 	}
 
 	/**
@@ -68,6 +74,9 @@ public class ParameterValue implements Serializable {
 	 *            条目
 	 */
 	public void setEntries(List<Entry> entries) {
+		if(entries!=null){
+			this.entries = entries.stream().filter(entry -> StringUtils.isNotBlank(entry.getName())&&StringUtils.isNotBlank(entry.getValue())).collect(Collectors.toList());
+		}
 		this.entries = entries;
 	}
 

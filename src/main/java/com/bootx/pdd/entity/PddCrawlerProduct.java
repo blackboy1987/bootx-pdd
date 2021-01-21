@@ -87,6 +87,7 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 
 	@Column(length = 60)
 	@Convert(converter = CrawlerProductCategoryIdConverter.class)
+	@JsonView({EditView.class})
 	private List<Long> productCategoryIds = new ArrayList<>();
 
 	@Column(length = 300)
@@ -134,6 +135,8 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 	public void setCrawlerProduct(CrawlerProduct crawlerProduct) {
 		this.crawlerProduct = crawlerProduct;
 	}
+
+
 
 	/**
 	 * 0：待采集

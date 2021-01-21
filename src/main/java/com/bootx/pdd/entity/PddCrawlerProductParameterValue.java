@@ -7,6 +7,7 @@ import com.bootx.entity.ParameterValue;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,8 @@ import java.util.List;
 @Entity(name = "pdd_CrawlerProductParameterValue")
 public class PddCrawlerProductParameterValue extends BaseEntity<Long> {
 
+	@NotNull
+	@JoinColumn(updatable = false)
 	@OneToOne(fetch = FetchType.LAZY)
 	private PddCrawlerProduct crawlerProduct;
 

@@ -15,6 +15,7 @@ import com.bootx.pdd.service.PddLogService;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.CrawlerProductService;
 import com.bootx.service.ProductCategoryService;
+import com.bootx.util.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -154,5 +155,27 @@ public class PddCrawlerProductController extends BaseController {
     @JsonView(BaseEntity.EditView.class)
     public Result detail(Long id, @CurrentUser Member member){
         return Result.success(pddCrawlerProductService.find(id));
+    }
+
+    @PostMapping("/update")
+    @JsonView(BaseEntity.EditView.class)
+    public Result update(String dataStr, @CurrentUser Member member){
+        PddCrawlerProduct pddCrawlerProduct = JsonUtils.toObject(dataStr,PddCrawlerProduct.class);
+        PddCrawlerProduct parent = pddCrawlerProductService.find(pddCrawlerProduct.getId());
+        parent.getCrawlerProductImage().setImages(pddCrawlerProduct.getCrawlerProductImage().getImages());
+        parent.getCrawlerProductIntroduction().setContent(pddCrawlerProduct.getCrawlerProductIntroduction().getContent());
+        parent.getCrawlerProductIntroductionImage().setImages(pddCrawlerProduct.getCrawlerProductIntroductionImage().getImages());
+        parent.getCrawlerProductParameterValue().setParameterValues(pddCrawlerProduct.getCrawlerProductParameterValue().getParameterValues());
+        parent.getCrawlerProductSku().setSkus(pddCrawlerProduct.getCrawlerProductSku().getSkus());
+        parent.getCrawlerProductSpecification().setCrawlerSpecifications(pddCrawlerProduct.getCrawlerProductSpecification().getCrawlerSpecifications());
+        parent.setSn(pddCrawlerProduct.getSn());
+        parent.setName(pddCrawlerProduct.getName());
+        List<Long> productCategoryIds = pddCrawlerProduct.getProductCategoryIds();
+        if(productCategoryIds!=null&&productCategoryIds.size()>0){
+            parent.setProductCategory(productCategoryService.find(productCategoryIds.get(productCategoryIds.size()-1)));
+        }
+        parent.setProductCategoryIds(productCategoryIds);
+
+        return Result.success(pddCrawlerProductService.update(parent));
     }
 }

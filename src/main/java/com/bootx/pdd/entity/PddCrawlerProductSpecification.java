@@ -6,6 +6,7 @@ import com.bootx.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +19,15 @@ import java.util.List;
 @Entity(name = "pdd_CrawlerProductSpecification")
 public class PddCrawlerProductSpecification extends BaseEntity<Long> {
 
+	@NotNull
+	@JoinColumn(updatable = false)
 	@OneToOne(fetch = FetchType.LAZY)
 	private PddCrawlerProduct crawlerProduct;
 
 	@Lob
 	@Convert(converter =CrawlerSpecificationConverter.class)
 	@JsonView({EditView.class})
-	private List<PddCrawlerSpecification> pddCrawlerSpecifications = new ArrayList<>();
+	private List<PddCrawlerSpecification> crawlerSpecifications = new ArrayList<>();
 
 	public PddCrawlerProductSpecification() {
 		setCrawlerSpecifications(new ArrayList<>());
@@ -44,11 +47,11 @@ public class PddCrawlerProductSpecification extends BaseEntity<Long> {
 	}
 
 	public List<PddCrawlerSpecification> getCrawlerSpecifications() {
-		return pddCrawlerSpecifications;
+		return crawlerSpecifications;
 	}
 
 	public void setCrawlerSpecifications(List<PddCrawlerSpecification> pddCrawlerSpecifications) {
-		this.pddCrawlerSpecifications = pddCrawlerSpecifications;
+		this.crawlerSpecifications = pddCrawlerSpecifications;
 	}
 
 	@Converter
