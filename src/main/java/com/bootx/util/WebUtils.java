@@ -476,11 +476,7 @@ public final class WebUtils {
 				EntityUtils.consume(httpEntity);
 				IOUtils.closeQuietly(httpResponse);
 			}
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		} catch (ParseException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		} catch (IOException e) {
+		} catch (ParseException | IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 		return null;
@@ -521,13 +517,7 @@ public final class WebUtils {
 			} finally {
 				IOUtils.closeQuietly(httpResponse);
 			}
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		} catch (ParseException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		} catch (ClientProtocolException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		} catch (IOException e) {
+		} catch (IOException | ParseException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 		return result;

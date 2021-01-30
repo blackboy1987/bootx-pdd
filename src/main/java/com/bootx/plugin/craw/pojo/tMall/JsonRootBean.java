@@ -19,6 +19,10 @@ public class JsonRootBean implements Serializable {
     @Convert(converter = PropertyPicsConverter.class)
     private Map<String, List<String>> propertyPics = new HashMap<>();
 
+
+    @Convert(converter = ApiConverter.class)
+    private Map<String, String> api = new HashMap<>();
+
     public ValItemInfo getValItemInfo() {
         return valItemInfo;
     }
@@ -42,8 +46,21 @@ public class JsonRootBean implements Serializable {
     public void setPropertyPics(Map<String, List<String>> propertyPics) {
         this.propertyPics = propertyPics;
     }
+
+    public Map<String, String> getApi() {
+        return api;
+    }
+
+    public void setApi(Map<String, String> api) {
+        this.api = api;
+    }
+
     @Converter
     public static class PropertyPicsConverter extends BaseAttributeConverter<Map<String, List<String>>> {
+
+    }
+    @Converter
+    public static class ApiConverter extends BaseAttributeConverter<Map<String, String>> {
 
     }
 }

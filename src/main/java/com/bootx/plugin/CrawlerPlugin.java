@@ -1,7 +1,10 @@
 
 package com.bootx.plugin;
 
-import com.bootx.entity.*;
+import com.bootx.entity.CrawlerProduct;
+import com.bootx.entity.Member;
+import com.bootx.entity.PluginConfig;
+import com.bootx.entity.ProductCategory;
 import com.bootx.service.PluginConfigService;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -15,7 +18,9 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -140,11 +145,25 @@ public abstract class CrawlerPlugin implements Comparable<CrawlerPlugin> {
 		return pluginConfig != null ? pluginConfig.getOrder() : null;
 	}
 
-
+	/**
+	 * 分类
+	 * @return
+	 */
 	public abstract List<ProductCategory> productCategory();
 
+	/**
+	 * 商品抓取
+	 * @param member
+	 * @param crawlerProduct
+	 * @return
+	 */
 	public abstract CrawlerProduct product(Member member, CrawlerProduct crawlerProduct);
 
+	/**
+	 * 商品搜索
+	 * @param keywords
+	 * @return
+	 */
 	public abstract List<CrawlerProduct> search(String keywords);
 
 	/**
@@ -243,5 +262,24 @@ public abstract class CrawlerPlugin implements Comparable<CrawlerPlugin> {
 			}
 		}
 		return tempList;
+	}
+
+
+	public static Map<String,String> params(String url) {
+		Map<String,String> params = new HashMap<>();
+		String [] s = url.split("\\?");
+		if(s.length==2){
+			String s1 = s[1];
+			String[] split = s1.split("&");
+			for (String ss:split) {
+				String[] split1 = ss.split("=");
+				if(split1.length==1){
+					params.put(split1[0],"");
+				}else if(split1.length==2){
+					params.put(split1[0],split1[1]);
+				}
+			}
+		}
+		return params;
 	}
 }

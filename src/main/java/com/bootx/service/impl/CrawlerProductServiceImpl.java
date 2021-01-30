@@ -50,8 +50,8 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
 
         for (CrawlerProduct crawlerProduct:crawlerProducts) {
             if(crawlerProduct.getStatus()==1){
-                pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
-                continue;
+               // pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
+                //continue;
             }
             String pluginId = CrawlerUtils.getPlugInId(crawlerProduct.getUrl());
             CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);

@@ -60,9 +60,6 @@ public class ParameterValue implements Serializable {
 	 * @return 条目
 	 */
 	public List<Entry> getEntries() {
-		if(entries!=null){
-			return entries.stream().filter(entry -> StringUtils.isNotBlank(entry.getName())&&StringUtils.isNotBlank(entry.getValue())).collect(Collectors.toList());
-		}
 		return entries;
 
 	}
@@ -74,9 +71,6 @@ public class ParameterValue implements Serializable {
 	 *            条目
 	 */
 	public void setEntries(List<Entry> entries) {
-		if(entries!=null){
-			this.entries = entries.stream().filter(entry -> StringUtils.isNotBlank(entry.getName())&&StringUtils.isNotBlank(entry.getValue())).collect(Collectors.toList());
-		}
 		this.entries = entries;
 	}
 

@@ -4,6 +4,8 @@ package com.bootx.plugin.craw.pojo.oneSixEightEightPlugin;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -14,6 +16,9 @@ public class Sku implements Serializable {
     private String discountPrice;
     private long canBookCount;
     private String skuId;
+
+    private List<SpecAttr> specAttrs = new ArrayList<>();
+
 
     public String getSpecId() {
         return specId;
@@ -53,5 +58,13 @@ public class Sku implements Serializable {
 
     public void setSkuId(String skuId) {
         this.skuId = skuId;
+    }
+
+    public List<SpecAttr> getSpecAttrs() {
+        return specAttrs;
+    }
+
+    public void setSpecAttrs(List<SpecAttr> specAttrs) {
+        this.specAttrs = specAttrs;
     }
 }

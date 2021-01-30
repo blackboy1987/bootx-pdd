@@ -161,6 +161,7 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         }
        try{
            Document root = Jsoup.parse(html);
+           crawlerProduct.setSn(params(crawlerProduct.getUrl()).get("id"));
            title(root,crawlerProduct);
            price(root,crawlerProduct);
            crawlerProduct.getCrawlerProductParameterValue().setParameterValues(parameterValues(root,crawlerProduct));
@@ -173,7 +174,7 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         return crawlerProduct;
     }
 
-    private void price(Document root, CrawlerProduct crawlerProduct) {
+    public void price(Document root, CrawlerProduct crawlerProduct) {
         Elements tbRmbNum = root.getElementsByClass("tb-rmb-num");
         if(tbRmbNum!=null){
             crawlerProduct.setPrice(tbRmbNum.first().text());
@@ -186,7 +187,7 @@ public class TaoBaoPlugin extends CrawlerPlugin {
      * @param crawlerProduct
      * @return
      */
-    private CrawlerProductSpecification specifications(Member member,Document root,CrawlerProduct crawlerProduct) {
+    public CrawlerProductSpecification specifications(Member member,Document root,CrawlerProduct crawlerProduct) {
         Element chooseAttrs = root.getElementById("J_isku");
         List<CrawlerSpecification> crawlerSpecifications = new ArrayList<>();
         if(chooseAttrs!=null){
@@ -241,7 +242,7 @@ public class TaoBaoPlugin extends CrawlerPlugin {
      * @param crawlerProduct
      * @return
      */
-    private List<ParameterValue> parameterValues(Document root, CrawlerProduct crawlerProduct) {
+    public List<ParameterValue> parameterValues(Document root, CrawlerProduct crawlerProduct) {
         List<ParameterValue> parameterValues = new ArrayList<>();
         Elements elements = root.getElementsByClass("attributes-list");
         if(elements!=null){
@@ -406,7 +407,7 @@ public class TaoBaoPlugin extends CrawlerPlugin {
      * @param crawlerProduct
      * @return
      */
-    private String title(Document root, CrawlerProduct crawlerProduct) {
+    public String title(Document root, CrawlerProduct crawlerProduct) {
         Elements titleElements = root.getElementsByClass("tb-main-title");
         if(titleElements!=null&&titleElements.size()>0){
             String name = titleElements.first().text();
@@ -442,6 +443,9 @@ public class TaoBaoPlugin extends CrawlerPlugin {
     }
 
     public static String url(String url) {
+        if(!StringUtils.startsWith(url,"http:")&&!StringUtils.startsWith(url,"https:")){
+            url = "http:"+url;
+        }
         Map<String,Object> headers = new HashMap<>();
         headers.put("cookie","thw=cn; _fbp=fb.1.1609508506732.672226623; v=0; _tb_token_=3e77655e1f6bb; tfstk=cBEOB3AyD6fi_nMLUPQHlciYY3FAZtBtTdM9DTWKQzXfEf-AiZZu2zgl5fkAs9C..; l=eBO5vy8POd0VyR6tmOfwourza77OSIRAguPzaNbMiOCP_eC95gs5WZ8in1TpC3GVh6oJR3yUFAx0BeYBqI2wsWRKe5DDwQHmn; isg=BNzcYzJ-7xRa7Zt8VuL6nZ5XrfqOVYB_IfJsk7bd6EeqAXyL3mVQD1KzYWn5ibjX");
         headers.put("sec-fetch-mode"," navigate");

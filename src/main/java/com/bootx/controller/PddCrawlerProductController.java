@@ -9,6 +9,7 @@ import com.bootx.elasticsearch.service.EsPddCrawlerProductService;
 import com.bootx.entity.BaseEntity;
 import com.bootx.entity.CrawlerProduct;
 import com.bootx.entity.Member;
+import com.bootx.entity.ParameterValue;
 import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.bootx.pdd.service.PddCrawlerProductService;
 import com.bootx.pdd.service.PddLogService;
@@ -17,12 +18,14 @@ import com.bootx.service.CrawlerProductService;
 import com.bootx.service.ProductCategoryService;
 import com.bootx.util.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author black
@@ -165,7 +168,13 @@ public class PddCrawlerProductController extends BaseController {
         parent.getCrawlerProductImage().setImages(pddCrawlerProduct.getCrawlerProductImage().getImages());
         parent.getCrawlerProductIntroduction().setContent(pddCrawlerProduct.getCrawlerProductIntroduction().getContent());
         parent.getCrawlerProductIntroductionImage().setImages(pddCrawlerProduct.getCrawlerProductIntroductionImage().getImages());
-        parent.getCrawlerProductParameterValue().setParameterValues(pddCrawlerProduct.getCrawlerProductParameterValue().getParameterValues());
+
+        List<ParameterValue> parameterValues = pddCrawlerProduct.getCrawlerProductParameterValue().getParameterValues().stream().map(item -> {
+            List<ParameterValue.Entry> entries = item.getEntries().stream().filter((entry -> StringUtils.isNotBlank(entry.getName()) && StringUtils.isNotBlank(entry.getValue()))).collect(Collectors.toList());
+            item.setEntries(entries);
+            return item;
+        }).collect(Collectors.toList());
+        parent.getCrawlerProductParameterValue().setParameterValues(parameterValues);
         parent.getCrawlerProductSku().setSkus(pddCrawlerProduct.getCrawlerProductSku().getSkus());
         parent.getCrawlerProductSpecification().setCrawlerSpecifications(pddCrawlerProduct.getCrawlerProductSpecification().getCrawlerSpecifications());
         parent.setSn(pddCrawlerProduct.getSn());

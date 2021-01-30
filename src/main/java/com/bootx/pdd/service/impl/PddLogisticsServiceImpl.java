@@ -6,10 +6,12 @@ import com.pdd.pop.sdk.http.api.pop.request.PddGoodsLogisticsTemplateGetRequest;
 import com.pdd.pop.sdk.http.api.pop.request.PddLogisticsAddressGetRequest;
 import com.pdd.pop.sdk.http.api.pop.response.PddGoodsLogisticsTemplateGetResponse;
 import com.pdd.pop.sdk.http.api.pop.response.PddLogisticsAddressGetResponse;
+import org.springframework.stereotype.Service;
 
 /**
  * @author black
  */
+@Service
 public class PddLogisticsServiceImpl extends PddBaseServiceImpl implements PddLogisticsService {
 
 

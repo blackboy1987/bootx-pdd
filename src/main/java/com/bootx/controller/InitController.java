@@ -3,12 +3,12 @@ package com.bootx.controller;
 import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.Platform;
 import com.bootx.entity.ProductCategory;
-import com.bootx.pdd.service.PddService;
+import com.bootx.pdd.service.PddLogisticsService;
 import com.bootx.plugin.CrawlerPlugin;
-import com.bootx.service.MemberService;
 import com.bootx.service.PlatformService;
 import com.bootx.service.PluginService;
 import com.bootx.service.ProductCategoryService;
+import com.pdd.pop.sdk.http.api.pop.response.PddGoodsLogisticsTemplateGetResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,9 +29,7 @@ public class InitController extends BaseController {
     @Resource
     private ProductCategoryService productCategoryService;
     @Resource
-    private PddService pddService;
-    @Resource
-    private MemberService memberService;
+    private PddLogisticsService pddLogisticsService;
 
     @GetMapping("/index")
     public String init(){
@@ -126,5 +124,10 @@ public class InitController extends BaseController {
         CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin("taoBaoPlugin");
         // Product product = crawlerPlugin.product(memberService.findAll().get(0),//url);
         return "ok";
+    }
+
+    @GetMapping("/template")
+    public PddGoodsLogisticsTemplateGetResponse template(String token) throws Exception {
+        return pddLogisticsService.templateGet(token);
     }
 }
