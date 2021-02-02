@@ -6,7 +6,7 @@ import com.bootx.elasticsearch.repository.EsPddCrawlerProductRepository;
 import com.bootx.elasticsearch.service.EsPddCrawlerProductService;
 import com.bootx.entity.Member;
 import com.bootx.pdd.entity.PddCrawlerProduct;
-import com.bootx.pdd.service.PddLogService;
+import com.bootx.pdd.service.PddPublishLogService;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -23,10 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class EsPddCrawlerProductServiceImpl extends EsBaseServiceImpl implements EsPddCrawlerProductService {
@@ -34,7 +31,7 @@ public class EsPddCrawlerProductServiceImpl extends EsBaseServiceImpl implements
     @Resource
     private EsPddCrawlerProductRepository esPddCrawlerProductRepository;
     @Resource
-    private PddLogService pddLogService;
+    private PddPublishLogService pddPublishLogService;
 
     @Override
     public void add(PddCrawlerProduct pddCrawlerProduct) {
@@ -51,7 +48,7 @@ public class EsPddCrawlerProductServiceImpl extends EsBaseServiceImpl implements
         esPddCrawlerProduct.setStatus(pddCrawlerProduct.getStatus());
         esPddCrawlerProduct.setIsDeleted(pddCrawlerProduct.getIsDeleted());
         esPddCrawlerProduct.setPublishStatus(pddCrawlerProduct.getPublishStatus());
-        esPddCrawlerProduct.setPddLogs(pddLogService.query(pddCrawlerProduct));
+        esPddCrawlerProduct.setPddLogs(pddPublishLogService.query(pddCrawlerProduct));
         esPddCrawlerProduct.setImage(pddCrawlerProduct.getImage());
         esPddCrawlerProduct.setCreatedDate(pddCrawlerProduct.getCreatedDate());
         esPddCrawlerProduct.setLastModifiedDate(pddCrawlerProduct.getLastModifiedDate());
@@ -74,11 +71,17 @@ public class EsPddCrawlerProductServiceImpl extends EsBaseServiceImpl implements
 
     @Override
     public Page<EsPddCrawlerProduct> findPage(Pageable pageable, String name, String sn, Integer status,Integer publishStatus,Boolean isDeleted, Date beginDate, Date endDate, Member member) throws IOException {
+        if(member==null){
+            return new Page<EsPddCrawlerProduct>(Collections.emptyList(),0L,pageable);
+        }
+
+
         SearchRequest searchRequest = new SearchRequest();
         List<Map<String,Object>> esPddCrawlerProducts = new ArrayList<>();
         searchRequest.indices("pdd_crawler_product");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        boolQueryBuilder.must(QueryBuilders.matchQuery("memberId",member.getId()));
         if(StringUtils.isNotBlank(name)){
             boolQueryBuilder.must(QueryBuilders.matchQuery("name",name));
             HighlightBuilder highlightBuilder=new HighlightBuilder();
@@ -102,6 +105,7 @@ public class EsPddCrawlerProductServiceImpl extends EsBaseServiceImpl implements
         if(isDeleted!=null){
             boolQueryBuilder.must(QueryBuilders.matchQuery("isDeleted",isDeleted));
         }
+
         searchSourceBuilder.query(boolQueryBuilder);
         searchSourceBuilder.sort("createdDate", SortOrder.DESC);
         searchRequest.source(searchSourceBuilder);

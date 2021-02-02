@@ -11,13 +11,13 @@ import com.fasterxml.jackson.annotation.JsonView;
  */
 public class Result {
 
-	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class, BaseEntity.PageView.class})
+	@JsonView({BaseEntity.BaseView.class,BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class, BaseEntity.PageView.class})
 	private Integer code;
 
-	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class, BaseEntity.PageView.class})
+	@JsonView({BaseEntity.BaseView.class,BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class, BaseEntity.PageView.class})
 	private String content;
 
-	@JsonView({BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class, BaseEntity.PageView.class})
+	@JsonView({BaseEntity.BaseView.class,BaseEntity.ViewView.class, BaseEntity.ListView.class, BaseEntity.EditView.class, BaseEntity.BaseView.class, BaseEntity.PageView.class})
 	private Object data;
 
 

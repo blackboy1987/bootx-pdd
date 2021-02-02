@@ -34,4 +34,17 @@ public class StoreCategoryServiceImpl extends BaseServiceImpl<StoreCategory, Lon
 		return storeCategoryDao.findPage(pageable,member);
 	}
 
+    @Override
+    public StoreCategory findDefault(Member member) {
+		StoreCategory storeCategory = storeCategoryDao.findDefault(member);
+		if(storeCategory==null){
+			storeCategory = new StoreCategory();
+			storeCategory.setIsDefault(true);
+			storeCategory.setName("默认");
+			storeCategory.setMember(member);
+			return super.save(storeCategory);
+		}
+		return storeCategory;
+    }
+
 }

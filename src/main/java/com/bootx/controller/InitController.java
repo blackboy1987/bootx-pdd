@@ -9,6 +9,7 @@ import com.bootx.service.PlatformService;
 import com.bootx.service.PluginService;
 import com.bootx.service.ProductCategoryService;
 import com.pdd.pop.sdk.http.api.pop.response.PddGoodsLogisticsTemplateGetResponse;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/init")
+@CrossOrigin
 public class InitController extends BaseController {
 
     @Resource

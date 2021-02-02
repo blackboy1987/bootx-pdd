@@ -8,6 +8,7 @@ import com.bootx.entity.MemberDepositLog;
 import com.bootx.entity.PointLog;
 import com.bootx.entity.Store;
 import com.bootx.security.AuthenticationProvider;
+import com.pdd.pop.sdk.http.token.AccessTokenResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -42,6 +43,7 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 */
 	Member findByUsername(String username);
 
+	Member findByMainStoreId(Long mainStoreId);
 	/**
 	 * 判断E-mail是否存在
 	 * 
@@ -200,4 +202,8 @@ public interface MemberService extends BaseService<Member, Long>, Authentication
 	 * @return
 	 */
     Member getCurrent(String token);
+
+	Member getCurrent1(String username);
+
+	Member create(AccessTokenResponse accessTokenResponse);
 }

@@ -8,6 +8,7 @@ import com.bootx.entity.Member;
 import com.bootx.entity.StoreCategory;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -52,5 +53,15 @@ public class StoreCategoryDaoImpl extends BaseDaoImpl<StoreCategory, Long> imple
         restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("member"),member));
         criteriaQuery.where(restrictions);
         return super.findPage(criteriaQuery, pageable);
+    }
+
+    @Override
+    public StoreCategory findDefault(Member member) {
+        try {
+            String jpql = "select storeCategory from StoreCategory storeCategory where storeCategory.isDefault = true and storeCategory.member = :member";
+            return entityManager.createQuery(jpql, StoreCategory.class).setParameter("member",member).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }

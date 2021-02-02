@@ -13,6 +13,7 @@ import com.bootx.service.MemberService;
 import com.bootx.service.SmsService;
 import com.bootx.util.CodeUtils;
 import com.bootx.util.JWTUtils;
+import com.pdd.pop.sdk.http.token.AccessTokenResponse;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +102,13 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	public Member findByUsername(String username) {
 		return memberDao.find("username", StringUtils.lowerCase(username));
 	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Member findByMainStoreId(Long mainStoreId) {
+		return memberDao.find("mainStoreId", mainStoreId);
+	}
+
 
 	@Override
 	@Transactional(readOnly = true)
@@ -312,8 +320,13 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 
 	@Override
 	public Member create(Store store) {
-	    Member member = new Member();
+	    Member member = findByMainStoreId(store.getMallId());
+	    if(member!=null){
+	    	return member;
+		}
+	    member = new Member();
 		member.setUsername(store.getMallName());
+		member.setMainStoreId(store.getMallId());
 		member.setPassword("12345678");
 		member.setEmail(member.getUsername()+"@qq.com");
 		member.init();
@@ -329,5 +342,32 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 			e.printStackTrace();
 		}
 		return null;
+    }
+
+	@Override
+	public Member getCurrent1(String username) {
+		try{
+			return findByUsername(username);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+    @Override
+    public Member create(AccessTokenResponse accessTokenResponse) {
+		Member member = findByMainStoreId(Long.valueOf(accessTokenResponse.getOwnerId()));
+		if(member!=null){
+			return member;
+		}
+		member = new Member();
+		member.setUsername(accessTokenResponse.getOwnerName());
+		member.setMainStoreId(Long.valueOf(accessTokenResponse.getOwnerId()));
+		member.setPassword("12345678");
+		member.setEmail(member.getUsername()+"@qq.com");
+		member.init();
+		member.setMemberRank(memberRankService.findDefault());
+		return super.save(member);
+
     }
 }

@@ -14,8 +14,11 @@ import java.util.Map;
 public class PddPublishLog extends BaseEntity<Long> {
 
     @ManyToOne
+    @JoinColumn(nullable = false,updatable = false)
     private Store store;
 
+    @NotEmpty
+    @JoinColumn(nullable = false,updatable = false)
     private String storeName;
 
     @NotNull
@@ -23,8 +26,10 @@ public class PddPublishLog extends BaseEntity<Long> {
     private Long sn;
 
     @ManyToOne
+    @JoinColumn(nullable = false,updatable = false)
     private PddCrawlerProduct crawlerProduct;
 
+    @JoinColumn(nullable = false,updatable = false)
     private String productName;
 
     @NotEmpty
@@ -35,8 +40,17 @@ public class PddPublishLog extends BaseEntity<Long> {
 
     private String msg;
 
-    @NotEmpty
-    @Column(length = 2000,nullable = false,updatable = false)
+    /**
+     * 0: 已创建
+     * 1： 进行中
+     * 2： 已完成
+     * 3： 已失败
+     */
+    @NotNull
+    @Column(nullable = false)
+    private Integer status;
+
+    @Column(length = 2000)
     @Convert(converter = ResultConverter.class)
     public Map<String,Object> result = new HashMap<>();
 
@@ -111,6 +125,14 @@ public class PddPublishLog extends BaseEntity<Long> {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Converter

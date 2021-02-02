@@ -54,7 +54,6 @@ public class Member extends User {
 		setPointLogs(null);
 		setParent(null);
 		setChildren(new HashSet<>());
-		
 	}
 
 	/**
@@ -290,6 +289,11 @@ public class Member extends User {
 
 	@OneToMany(mappedBy = "parent",fetch = FetchType.LAZY)
 	private Set<Member> children = new HashSet<>();
+
+	@NotNull
+	@Column(nullable = false,updatable = false,unique = true)
+	private Long mainStoreId;
+
 
 	/**
 	 * 获取用户名
@@ -840,6 +844,14 @@ public class Member extends User {
 
 	public void setChildren(Set<Member> children) {
 		this.children = children;
+	}
+
+	public Long getMainStoreId() {
+		return mainStoreId;
+	}
+
+	public void setMainStoreId(Long mainStoreId) {
+		this.mainStoreId = mainStoreId;
 	}
 
 	/**

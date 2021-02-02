@@ -212,11 +212,11 @@ public class TaoBaoPlugin extends CrawlerPlugin {
                                 if(style.length()>") center no-repeat;".length()){
                                     style = style.substring(0,style.length()-") center no-repeat;".length());
                                     if(StringUtils.isNotBlank(style)){
-                                        String extension = FilenameUtils.getName(style);
-                                        String path = member.getUsername()+"/image/"+ crawlerProduct.getSn()+"/specification/"+extension;
-                                        UploadUtils.upload(style,path);
-                                        String url = UploadUtils.getUrl(path);
-                                        crawlerSpecification.getEntries().add(new CrawlerSpecification.Entry(a.text(),item.attr("data-value"),url));
+                                        //String extension = FilenameUtils.getName(style);
+                                       // String path = member.getUsername()+"/image/"+ crawlerProduct.getSn()+"/specification/"+extension;
+                                       // UploadUtils.upload(style,path);
+                                      //  String url = UploadUtils.getUrl(path);
+                                        crawlerSpecification.getEntries().add(new CrawlerSpecification.Entry(a.text(),item.attr("data-value"),style));
                                     }else{
                                         crawlerSpecification.getEntries().add(new CrawlerSpecification.Entry(a.text(),item.attr("data-value"),null));
                                     }
@@ -374,11 +374,12 @@ public class TaoBaoPlugin extends CrawlerPlugin {
         if(imgs!=null){
             crawlerProduct.getCrawlerProductIntroductionImage().setImages(imgs.stream().map(img->{
                 String url = img.attr("src");
-                String extension = FilenameUtils.getName(url);
-                String path = member.getUsername()+"/image/"+ crawlerProduct.getSn()+"/introduction/"+extension;
-                UploadUtils.upload(url,path);
-               return UploadUtils.getUrl(path);
-            }).collect(Collectors.toList()));
+              //  String extension = FilenameUtils.getName(url);
+              //  String path = member.getUsername()+"/image/"+ crawlerProduct.getSn()+"/introduction/"+extension;
+                //UploadUtils.upload(url,path);
+              // return UploadUtils.getUrl(path);
+                return url;
+            }).filter(StringUtils::isNotBlank).collect(Collectors.toList()));
         }
         return html;
     }
@@ -394,11 +395,12 @@ public class TaoBaoPlugin extends CrawlerPlugin {
 
         List<String> images = productRootBean.getIdata().getItem().getAuctionImages();
         crawlerProduct.getCrawlerProductImage().setImages(images.stream().map(image->{
-            String extension = FilenameUtils.getName(image);
-            String path = member.getUsername()+"/image/"+ crawlerProduct.getSn() +"/images/" +extension;
-            UploadUtils.upload(image,path);
-            return UploadUtils.getUrl(path);
-        }).collect(Collectors.toList()));
+           // String extension = FilenameUtils.getName(image);
+            //String path = member.getUsername()+"/image/"+ crawlerProduct.getSn() +"/images/" +extension;
+          //  UploadUtils.upload(image,path);
+           // return UploadUtils.getUrl(path);
+            return image;
+        }).filter(StringUtils::isNotBlank).collect(Collectors.toList()));
     }
 
     /**

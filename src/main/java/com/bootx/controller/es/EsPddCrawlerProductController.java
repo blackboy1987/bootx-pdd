@@ -5,6 +5,7 @@ import com.bootx.common.Result;
 import com.bootx.elasticsearch.service.EsPddCrawlerProductService;
 import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/pdd/es/product")
+@CrossOrigin
 public class EsPddCrawlerProductController {
 
     @Resource

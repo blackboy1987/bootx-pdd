@@ -9,7 +9,7 @@ import com.bootx.pdd.dao.PddCrawlerProductDao;
 import com.bootx.pdd.entity.*;
 import com.bootx.pdd.service.PddCrawlerProductService;
 import com.bootx.pdd.service.PddGoodsService;
-import com.bootx.pdd.service.PddLogService;
+import com.bootx.pdd.service.PddPublishLogService;
 import com.bootx.service.StoreService;
 import com.bootx.service.impl.BaseServiceImpl;
 import com.pdd.pop.sdk.http.api.pop.response.PddGoodsAddResponse;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +38,7 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
     @Resource
     private StoreService storeService;
     @Resource
-    private PddLogService pddLogService;
+    private PddPublishLogService pddPublishLogService;
     @Resource
     private EsPddCrawlerProductService esPddCrawlerProductService;
 
@@ -136,22 +137,36 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
 
     @Override
     @Async
-    public void publish(Long[] ids, Long[] storeIds) throws Exception {
+    public void publish(Long[] ids, Long[] storeIds) {
         Long sn = System.currentTimeMillis();
         List<PddCrawlerProduct> pddCrawlerProducts = findList(ids);
         List<Store> stores = storeService.findList(storeIds);
         for (PddCrawlerProduct product:pddCrawlerProducts) {
             for (Store store:stores) {
-                PddGoodsAddResponse pddGoodsAddResponse = goodsService.pddGoodsAdd(product, store.getAccessToken());
-                Map<String,Object> map = new HashMap<>();
-                if(pddGoodsAddResponse.getGoodsAddResponse()!=null){
-                    PddGoodsAddResponse.GoodsAddResponse goodsAddResponse = pddGoodsAddResponse.getGoodsAddResponse();
-                    map.put("goodsId",goodsAddResponse.getGoodsId());
-                    map.put("goodsCommitId",goodsAddResponse.getGoodsCommitId());
-                }
-                pddLogService.create(sn,product,store,map,pddGoodsAddResponse.getErrorResponse());
+                PddPublishLog pddPublishLog = pddPublishLogService.create1(sn,product,store);
+                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                    try {
+                        publish(product,store,pddPublishLog);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        pddPublishLog.setStatus(3);
+                        pddPublishLogService.update1(pddPublishLog,product,store,null,null);
+                    }
+                });
+
             }
         }
+    }
+
+    void publish(PddCrawlerProduct product, Store store, PddPublishLog pddPublishLog) throws Exception {
+        PddGoodsAddResponse pddGoodsAddResponse = goodsService.pddGoodsAdd(product, store.getAccessToken(),store.getStoreUploadConfig());
+        Map<String,Object> map = new HashMap<>();
+        if(pddGoodsAddResponse.getGoodsAddResponse()!=null){
+            PddGoodsAddResponse.GoodsAddResponse goodsAddResponse = pddGoodsAddResponse.getGoodsAddResponse();
+            map.put("goodsId",goodsAddResponse.getGoodsId());
+            map.put("goodsCommitId",goodsAddResponse.getGoodsCommitId());
+        }
+        pddPublishLogService.update(pddPublishLog,product,store,map,pddGoodsAddResponse.getErrorResponse());
     }
 
     @Override
@@ -193,4 +208,5 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
     public void delete(PddCrawlerProduct pddCrawlerProduct) {
         super.delete(pddCrawlerProduct);
     }
+
 }

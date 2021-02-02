@@ -5,6 +5,9 @@ import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.MemberService;
+import com.bootx.service.StoreService;
+import com.bootx.util.HutToolUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,10 +20,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/pdd")
+@CrossOrigin
 public class IndexController extends BaseController {
 
     @Resource
     private MemberService memberService;
+    @Resource
+    private StoreService storeService;
 
     @GetMapping("/currentUser")
     public Map<String,Object> currentUser(HttpServletResponse response, @CurrentUser Member member, HttpServletRequest request){
@@ -34,7 +40,10 @@ public class IndexController extends BaseController {
             return data;
         }
         data.put("id", member.getId());
+        data.put("storeCount",storeService.count1(member));
+        data.put("createdDate",member.getCreatedDate());
         data.put("username", member.getUsername());
+        data.put("md5Key", member.getUsername()+"::"+ HutToolUtils.signHex(member.getUsername()));
         return data;
     }
 }

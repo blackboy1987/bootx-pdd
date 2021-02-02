@@ -6,6 +6,8 @@ import com.bootx.common.Page;
 import com.bootx.common.Pageable;
 import com.bootx.entity.Member;
 import com.bootx.entity.Store;
+import com.bootx.entity.StoreDeliveryTemplate;
+import com.bootx.entity.StoreUploadConfig;
 import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
 import com.pdd.pop.sdk.http.token.AccessTokenResponse;
 
@@ -41,4 +43,15 @@ public interface StoreService extends BaseService<Store, Long> {
     List<Map<String, Object>> tree(Member member);
 
 	PddMallInfoGetResponse info(Long storeId) throws Exception;
+
+    Long count1(Member member);
+
+	Store create1(AccessTokenResponse accessTokenResponse, Member current);
+
+	List<StoreDeliveryTemplate> getStoreDeliveryTemplate(Store store) throws Exception;
+
+
+	List<StoreDeliveryTemplate> updateDeliveryTemplate(Long id) throws Exception;
+
+	StoreUploadConfig build(StoreUploadConfig storeUploadConfig);
 }

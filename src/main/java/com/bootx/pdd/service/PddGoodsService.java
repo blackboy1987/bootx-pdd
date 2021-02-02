@@ -1,6 +1,7 @@
 package com.bootx.pdd.service;
 
 import com.bootx.common.Pageable;
+import com.bootx.entity.StoreUploadConfig;
 import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.pdd.pop.sdk.http.api.pop.response.*;
 
@@ -34,7 +35,7 @@ public interface PddGoodsService {
      * @param accessToken
      *      accessToken
      */
-    PddGoodsAddResponse pddGoodsAdd(PddCrawlerProduct pddCrawlerProduct, String accessToken) throws Exception;
+    PddGoodsAddResponse pddGoodsAdd(PddCrawlerProduct pddCrawlerProduct, String accessToken, StoreUploadConfig storeUploadConfig) throws Exception;
 
 
     PddGoodsEditGoodsCommitResponse pddGoodsEditGoodsCommit(PddCrawlerProduct pddCrawlerProduct, String accessToken) throws Exception;

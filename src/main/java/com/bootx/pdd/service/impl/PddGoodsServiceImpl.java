@@ -1,6 +1,7 @@
 package com.bootx.pdd.service.impl;
 
 import com.bootx.common.Pageable;
+import com.bootx.entity.StoreUploadConfig;
 import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.bootx.pdd.entity.PddGoodsAdd;
 import com.bootx.pdd.service.PddGoodsService;
@@ -41,12 +42,12 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
     }
 
     @Override
-    public PddGoodsAddResponse pddGoodsAdd(PddCrawlerProduct pddCrawlerProduct, String accessToken) throws Exception {
+    public PddGoodsAddResponse pddGoodsAdd(PddCrawlerProduct pddCrawlerProduct, String accessToken, StoreUploadConfig storeUploadConfig) throws Exception {
         // 处理掉product中的图片
         PddGoodsAdd pddGoodsAdd = new PddGoodsAdd();
         pddGoodsAdd.setCarouselGallerys(parseImage(pddCrawlerProduct,accessToken));
         pddGoodsAdd.setDetailGallerys(parseDetailImage(pddCrawlerProduct,accessToken));
-        PddGoodsAddRequest request = pddGoodsAdd.build(pddCrawlerProduct);
+        PddGoodsAddRequest request = pddGoodsAdd.build(pddCrawlerProduct,storeUploadConfig);
         PddGoodsAddResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
@@ -136,8 +137,12 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
         // productImages
         return pddCrawlerProduct.getCrawlerProductImage().getImages().stream().map(item->{
            if(StringUtils.isNotBlank(item)){
+               String s = ImageUtils.url2Base64(item);
+               if(StringUtils.isBlank(s)){
+                   return null;
+               }
                try {
-                   PddGoodsImageUploadResponse pddGoodsImageUploadResponse = uploadImage(ImageUtils.url2Base64(item), accessToken);
+                   PddGoodsImageUploadResponse pddGoodsImageUploadResponse = uploadImage(s, accessToken);
                    if(pddGoodsImageUploadResponse.getErrorResponse()==null){
                        return pddGoodsImageUploadResponse.getGoodsImageUploadResponse().getImageUrl();
                    }
@@ -154,8 +159,12 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
         // productImages
         List<String> images = pddCrawlerProduct.getCrawlerProductIntroductionImage().getImages().stream().map(item->{
             if(StringUtils.isNotBlank(item)){
+                String s = ImageUtils.url2Base64(item);
+                if(StringUtils.isBlank(s)){
+                    return null;
+                }
                 try {
-                    PddGoodsImageUploadResponse pddGoodsImageUploadResponse = uploadImage(ImageUtils.url2Base64(item), accessToken);
+                    PddGoodsImageUploadResponse pddGoodsImageUploadResponse = uploadImage(s, accessToken);
                     if(pddGoodsImageUploadResponse.getErrorResponse()==null){
                         return pddGoodsImageUploadResponse.getGoodsImageUploadResponse().getImageUrl();
                     }

@@ -12,19 +12,22 @@ import com.bootx.entity.Member;
 import com.bootx.entity.ParameterValue;
 import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.bootx.pdd.service.PddCrawlerProductService;
-import com.bootx.pdd.service.PddLogService;
+import com.bootx.pdd.service.PddPublishLogService;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.CrawlerProductService;
 import com.bootx.service.ProductCategoryService;
 import com.bootx.util.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +35,7 @@ import java.util.stream.Collectors;
  */
 @RestController("pddPddCrawlerProductController")
 @RequestMapping("/pdd/product")
+@CrossOrigin
 public class PddCrawlerProductController extends BaseController {
 
     @Resource
@@ -42,7 +46,7 @@ public class PddCrawlerProductController extends BaseController {
     @Resource
     private ProductCategoryService productCategoryService;
     @Resource
-    private PddLogService pddLogService;
+    private PddPublishLogService pddPublishLogService;
 
     @Resource
     private EsPddCrawlerProductService esPddCrawlerProductService;
@@ -52,7 +56,7 @@ public class PddCrawlerProductController extends BaseController {
     public Result list(Pageable pageable, String name, String sn, Integer status, Date beginDate, Date endDate, @CurrentUser Member member){
         Page<PddCrawlerProduct> page = pddCrawlerProductService.findPage(pageable,name,sn,status,null,false,beginDate,endDate,member);
         for (PddCrawlerProduct product:page.getContent()) {
-            product.setPddLogs(pddLogService.query(product));
+            product.setPddLogs(pddPublishLogService.query(product));
         }
         return Result.success(page);
     }

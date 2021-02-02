@@ -8,6 +8,7 @@ package com.bootx.controller.admin;
 import com.bootx.entity.ProductCategory;
 import com.bootx.service.ProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController("adminProductCategoryController")
 @RequestMapping("/admin/product_category")
+@CrossOrigin
 public class ProductCategoryController extends BaseController {
 
 	@Autowired

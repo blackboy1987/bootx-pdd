@@ -18,7 +18,10 @@ import java.util.Map;
  */
 public interface PddPublishLogService extends BaseService<PddPublishLog, Long> {
 
-    void create(Long sn,PddCrawlerProduct product, Store store, Map<String, Object> map, PopBaseHttpResponse.ErrorResponse errorResponse);
-
+    PddPublishLog create(Long sn,PddCrawlerProduct product, Store store, Map<String, Object> map, PopBaseHttpResponse.ErrorResponse errorResponse);
+    PddPublishLog create1(Long sn,PddCrawlerProduct product, Store store);
+    PddPublishLog update(PddPublishLog pddPublishLog,PddCrawlerProduct product, Store store, Map<String, Object> map, PopBaseHttpResponse.ErrorResponse errorResponse);
     List<Map<String, Object>> query(PddCrawlerProduct pddCrawlerProduct);
+
+    PddPublishLog update1(PddPublishLog pddPublishLog,PddCrawlerProduct product, Store store, Map<String, Object> map, PopBaseHttpResponse.ErrorResponse errorResponse);
 }

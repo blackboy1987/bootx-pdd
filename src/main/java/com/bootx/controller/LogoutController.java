@@ -4,6 +4,7 @@ package com.bootx.controller;
 import com.bootx.controller.admin.BaseController;
 import com.bootx.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import java.util.Map;
  */
 @RestController("memberLogoutController")
 @RequestMapping("/pdd/logout")
+@CrossOrigin
 public class LogoutController extends BaseController {
 
 	@Autowired

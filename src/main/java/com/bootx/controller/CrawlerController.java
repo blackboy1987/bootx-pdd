@@ -8,6 +8,7 @@ import com.bootx.security.CurrentUser;
 import com.bootx.service.CrawlerProductService;
 import com.bootx.service.MemberService;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController("pddCrawlerController")
 @RequestMapping("/pdd/crawler")
+@CrossOrigin
 public class CrawlerController extends BaseController {
 
     @Resource

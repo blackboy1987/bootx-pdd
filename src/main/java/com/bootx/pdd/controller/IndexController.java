@@ -9,6 +9,7 @@ import com.bootx.service.StoreService;
 import com.bootx.service.UserService;
 import com.bootx.util.JWTUtils;
 import com.pdd.pop.sdk.http.token.AccessTokenResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,8 +65,18 @@ public class IndexController extends BaseController {
         AccessTokenResponse accessTokenResponse = pddService.token(code);
         if(accessTokenResponse.getErrorResponse()==null){
             data.put("code",0);
+            Member member = null;
             // 获取成功
-            Member member = storeService.create(accessTokenResponse,memberService.getCurrent(state)).getMember();
+            if(StringUtils.isBlank(state)){
+                member = storeService.create(accessTokenResponse,memberService.getCurrent(state)).getMember();
+            }else{
+                String [] states = state.split("::");
+                if(states.length==1){
+                    member = storeService.create(accessTokenResponse,memberService.getCurrent(state)).getMember();
+                }else if(states.length==2){
+                    member = storeService.create1(accessTokenResponse,memberService.getCurrent1(states[0])).getMember();
+                }
+            }
             Map<String,Object> user = new HashMap<>();
             user.put("id",member.getId());
             user.put("username",member.getUsername());

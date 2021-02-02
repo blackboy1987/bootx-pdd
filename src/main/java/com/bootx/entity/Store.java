@@ -1,11 +1,14 @@
 package com.bootx.entity;
 
+import com.bootx.common.BaseAttributeConverter;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Store extends BaseEntity<Long>{
@@ -28,6 +31,11 @@ public class Store extends BaseEntity<Long>{
     @JsonView({ListView.class})
     private String mallName;
 
+    @ManyToOne
+    @JoinColumn(updatable = false)
+    public Member salesMan;
+
+
     /**
      * 店铺类型,
      * 1:个人
@@ -45,6 +53,14 @@ public class Store extends BaseEntity<Long>{
 
     @ManyToOne(fetch = FetchType.LAZY)
     private StoreCategory storeCategory;
+
+    @Lob
+    @Convert(converter = StoreUploadConfigConverter.class)
+    private StoreUploadConfig storeUploadConfig;
+
+    @Convert(converter = StoreDeliveryTemplateConverter.class)
+    private List<StoreDeliveryTemplate> storeDeliveryTemplates = new ArrayList<>();
+
 
     /**
      * accessToken 的过期时间
@@ -123,6 +139,30 @@ public class Store extends BaseEntity<Long>{
         this.storeCategory = storeCategory;
     }
 
+    public Member getSalesMan() {
+        return salesMan;
+    }
+
+    public void setSalesMan(Member salesMan) {
+        this.salesMan = salesMan;
+    }
+
+    public StoreUploadConfig getStoreUploadConfig() {
+        return storeUploadConfig;
+    }
+
+    public void setStoreUploadConfig(StoreUploadConfig storeUploadConfig) {
+        this.storeUploadConfig = storeUploadConfig;
+    }
+
+    public List<StoreDeliveryTemplate> getStoreDeliveryTemplates() {
+        return storeDeliveryTemplates;
+    }
+
+    public void setStoreDeliveryTemplates(List<StoreDeliveryTemplate> storeDeliveryTemplates) {
+        this.storeDeliveryTemplates = storeDeliveryTemplates;
+    }
+
     @Transient
     public boolean isExpired(){
         if(expireDate==null){
@@ -138,5 +178,14 @@ public class Store extends BaseEntity<Long>{
             return null;
         }
         return getStoreCategory().getName();
+    }
+
+    @Convert
+    public static class StoreUploadConfigConverter extends BaseAttributeConverter<StoreUploadConfig>{}
+
+
+    @Convert
+    public static class StoreDeliveryTemplateConverter extends BaseAttributeConverter<List<StoreDeliveryTemplate>>{
+
     }
 }

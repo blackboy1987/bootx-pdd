@@ -19,4 +19,6 @@ public interface StoreCategoryDao extends BaseDao<StoreCategory, Long> {
     List<StoreCategory> findList(Member member);
 
     Page<StoreCategory> findPage(Pageable pageable, Member member);
+
+    StoreCategory findDefault(Member member);
 }

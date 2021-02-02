@@ -4,12 +4,10 @@ import com.bootx.common.Pageable;
 import com.bootx.common.Result;
 import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.BaseEntity;
-import com.bootx.entity.Member;
 import com.bootx.entity.SensitiveWord;
-import com.bootx.security.CurrentUser;
-import com.bootx.service.CrawlerLogService;
 import com.bootx.service.SensitiveWordService;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +19,7 @@ import javax.annotation.Resource;
  */
 @RestController("pddSensitiveWordController")
 @RequestMapping("/pdd/sensitive_word")
+@CrossOrigin
 public class SensitiveWordController extends BaseController {
 
     @Resource

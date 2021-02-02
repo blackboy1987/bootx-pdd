@@ -8,6 +8,7 @@ import com.bootx.entity.Member;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.CrawlerLogService;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import javax.annotation.Resource;
  */
 @RestController("pddCrawlerLogController")
 @RequestMapping("/pdd/crawler_log")
+@CrossOrigin
 public class CrawlerLogController extends BaseController {
 
     @Resource

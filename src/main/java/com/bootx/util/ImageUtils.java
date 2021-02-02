@@ -479,32 +479,37 @@ public final class ImageUtils {
 	}
 
 	public static String url2Base64(String imgUrl) {
-		ByteArrayOutputStream data = new ByteArrayOutputStream();
-		InputStream is = null;
-		try {
-			URL url = new URL(imgUrl);
-			byte[] by = new byte[1024];
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setConnectTimeout(5000);
-			is = conn.getInputStream();
-			int len = -1;
-			while ((len = is.read(by)) != -1) {
-				data.write(by, 0, len);
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally {
+		try{
+			ByteArrayOutputStream data = new ByteArrayOutputStream();
+			InputStream is = null;
 			try {
-				if(is!=null){
-					is.close();
+				URL url = new URL(imgUrl);
+				byte[] by = new byte[1024];
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("GET");
+				conn.setConnectTimeout(5000);
+				is = conn.getInputStream();
+				int len = -1;
+				while ((len = is.read(by)) != -1) {
+					data.write(by, 0, len);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			}finally {
+				try {
+					if(is!=null){
+						is.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
+			return Base64.encodeBase64String(data.toByteArray());
+		}catch (Exception e){
+			e.printStackTrace();
 		}
-		return Base64.encodeBase64String(data.toByteArray());
+
+		return null;
 	}
 
 }

@@ -10,6 +10,7 @@ import com.bootx.security.CurrentUser;
 import com.bootx.service.MemberService;
 import com.bootx.service.StoreCategoryService;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController("pddStoreCategoryController")
 @RequestMapping("/pdd/store_category")
+@CrossOrigin
 public class StoreCategoryController extends BaseController {
 
     @Resource

@@ -27,7 +27,6 @@ public class PddLogisticsServiceImpl extends PddBaseServiceImpl implements PddLo
     public PddGoodsLogisticsTemplateGetResponse templateGet(String accessToken) throws Exception {
         PddGoodsLogisticsTemplateGetRequest request = new PddGoodsLogisticsTemplateGetRequest();
         PddGoodsLogisticsTemplateGetResponse response = POPHTTPCLIENT.syncInvoke(request,accessToken);
-        System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
 }

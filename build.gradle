@@ -9,16 +9,19 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {
-    mavenCentral()
     maven {
         url 'http://maven.aliyun.com/nexus/content/groups/public'
     }
+    mavenLocal()
+    mavenCentral()
+
 }
 
 dependencies {
 
 
     compile group: 'cn.hutool', name: 'hutool-all', version: '5.5.2'
+    compile 'org.bouncycastle:bcprov-jdk15to18:1.66'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.4.1'
     compile group: 'org.apache.commons', name: 'commons-compress', version: '1.20'
