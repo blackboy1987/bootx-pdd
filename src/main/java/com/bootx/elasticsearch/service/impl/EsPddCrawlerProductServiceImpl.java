@@ -37,6 +37,7 @@ public class EsPddCrawlerProductServiceImpl extends EsBaseServiceImpl implements
     public void add(PddCrawlerProduct pddCrawlerProduct) {
         EsPddCrawlerProduct esPddCrawlerProduct = new EsPddCrawlerProduct();
         esPddCrawlerProduct.setId(pddCrawlerProduct.getId());
+        esPddCrawlerProduct.setBatchId(pddCrawlerProduct.getBatchId());
         esPddCrawlerProduct.setCrawlerProductId(pddCrawlerProduct.getCrawlerProduct().getId());
         esPddCrawlerProduct.setSn(pddCrawlerProduct.getSn());
         esPddCrawlerProduct.setName(pddCrawlerProduct.getName());

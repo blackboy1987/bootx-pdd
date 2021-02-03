@@ -1,11 +1,13 @@
 package com.bootx.pdd.service.impl;
 
 import com.bootx.common.Pageable;
+import com.bootx.entity.Sku;
 import com.bootx.entity.StoreUploadConfig;
 import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.bootx.pdd.entity.PddGoodsAdd;
 import com.bootx.pdd.service.PddGoodsService;
 import com.bootx.util.ImageUtils;
+import com.bootx.util.JsonUtils;
 import com.pdd.pop.sdk.common.util.JsonUtil;
 import com.pdd.pop.sdk.http.api.pop.request.*;
 import com.pdd.pop.sdk.http.api.pop.response.*;
@@ -42,12 +44,14 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
     }
 
     @Override
-    public PddGoodsAddResponse pddGoodsAdd(PddCrawlerProduct pddCrawlerProduct, String accessToken, StoreUploadConfig storeUploadConfig) throws Exception {
+    public PddGoodsAddResponse pddGoodsAdd(PddCrawlerProduct pddCrawlerProduct, List<Sku> skus, String accessToken, StoreUploadConfig storeUploadConfig) throws Exception {
         // 处理掉product中的图片
         PddGoodsAdd pddGoodsAdd = new PddGoodsAdd();
         pddGoodsAdd.setCarouselGallerys(parseImage(pddCrawlerProduct,accessToken));
         pddGoodsAdd.setDetailGallerys(parseDetailImage(pddCrawlerProduct,accessToken));
-        PddGoodsAddRequest request = pddGoodsAdd.build(pddCrawlerProduct,storeUploadConfig);
+        PddGoodsAddRequest request = pddGoodsAdd.build(pddCrawlerProduct,skus,storeUploadConfig);
+
+        System.out.println(JsonUtils.toJson(request));
         PddGoodsAddResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
@@ -59,8 +63,6 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
         PddGoodsAdd pddGoodsAdd = new PddGoodsAdd();
         pddGoodsAdd.setCarouselGallerys(parseImage(pddCrawlerProduct,accessToken));
         pddGoodsAdd.setDetailGallerys(parseDetailImage(pddCrawlerProduct,accessToken));
-
-
         PddGoodsEditGoodsCommitRequest request = pddGoodsAdd.build1(pddCrawlerProduct);
         PddGoodsEditGoodsCommitResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
@@ -124,13 +126,22 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
     }
 
     @Override
-    public void f(String accessToken) throws Exception {
-
+    public PddGoodsSpecIdGetResponse specIdGet(Long parentSpecId, String specName, String accessToken) throws Exception {
+        PddGoodsSpecIdGetRequest request = new PddGoodsSpecIdGetRequest();
+        request.setParentSpecId(parentSpecId);
+        request.setSpecName(specName);
+        PddGoodsSpecIdGetResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        System.out.println(JsonUtil.transferToJson(response));
+        return response;
     }
 
     @Override
-    public void g(String accessToken) throws Exception {
-
+    public PddGoodsSpecGetResponse specGet(Long categoryId,String accessToken) throws Exception {
+        PddGoodsSpecGetRequest request = new PddGoodsSpecGetRequest();
+        request.setCatId(categoryId);
+        PddGoodsSpecGetResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        System.out.println(JsonUtil.transferToJson(response));
+        return response;
     }
 
     private List<String> parseImage(PddCrawlerProduct pddCrawlerProduct, String accessToken) {

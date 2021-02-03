@@ -13,6 +13,7 @@ import com.bootx.pdd.service.PddPublishLogService;
 import com.bootx.service.StoreService;
 import com.bootx.service.impl.BaseServiceImpl;
 import com.pdd.pop.sdk.http.api.pop.response.PddGoodsAddResponse;
+import com.pdd.pop.sdk.http.api.pop.response.PddGoodsSpecIdGetResponse;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +51,9 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
             }else{
                 pddCrawlerProduct.setPublishStatus(null);
             }
+            pddCrawlerProduct.setBatchId(crawlerProduct.getBatchId());
             pddCrawlerProduct.setName(crawlerProduct.getName());
+            pddCrawlerProduct.setSn(crawlerProduct.getSn());
             pddCrawlerProduct.setProductCategory(crawlerProduct.getProductCategory());
             pddCrawlerProduct.setStock(crawlerProduct.getStock());
             pddCrawlerProduct.setStatus(crawlerProduct.getStatus());
@@ -137,16 +140,19 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
 
     @Override
     @Async
-    public void publish(Long[] ids, Long[] storeIds) {
+    public void publish(Long[] ids, Long[] storeIds) throws Exception {
         Long sn = System.currentTimeMillis();
         List<PddCrawlerProduct> pddCrawlerProducts = findList(ids);
         List<Store> stores = storeService.findList(storeIds);
         for (PddCrawlerProduct product:pddCrawlerProducts) {
             for (Store store:stores) {
+                // 处理Sku里面的规格问题
+                List<Sku> skus = parseSku(product, store);
+
                 PddPublishLog pddPublishLog = pddPublishLogService.create1(sn,product,store);
                 CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                     try {
-                        publish(product,store,pddPublishLog);
+                        publish(product,store,skus,pddPublishLog);
                     } catch (Exception e) {
                         e.printStackTrace();
                         pddPublishLog.setStatus(3);
@@ -158,8 +164,31 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
         }
     }
 
-    void publish(PddCrawlerProduct product, Store store, PddPublishLog pddPublishLog) throws Exception {
-        PddGoodsAddResponse pddGoodsAddResponse = goodsService.pddGoodsAdd(product, store.getAccessToken(),store.getStoreUploadConfig());
+    private List<Sku> parseSku(PddCrawlerProduct product,Store store){
+        List<Sku> skus = product.getCrawlerProductSku().getSkus();
+        for (Sku sku:skus){
+            List<SpecificationValue> specificationValues = sku.getSpecificationValues();
+            for (SpecificationValue specificationValue:specificationValues) {
+                PddGoodsSpecIdGetResponse pddGoodsSpecIdGetResponse = null;
+                try {
+                    pddGoodsSpecIdGetResponse = goodsService.specIdGet(0L, specificationValue.getValue(), store.getAccessToken());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(pddGoodsSpecIdGetResponse.getErrorResponse()==null){
+                    specificationValue.setPddId(pddGoodsSpecIdGetResponse.getGoodsSpecIdGetResponse().getSpecId());
+                    sku.setIsError(false);
+                }else{
+                    // 移除这个规格的
+                    sku.setIsError(true);
+                }
+            }
+        }
+        return skus;
+    }
+
+    void publish(PddCrawlerProduct product, Store store, List<Sku> skus,PddPublishLog pddPublishLog) throws Exception {
+        PddGoodsAddResponse pddGoodsAddResponse = goodsService.pddGoodsAdd(product,skus, store.getAccessToken(),store.getStoreUploadConfig());
         Map<String,Object> map = new HashMap<>();
         if(pddGoodsAddResponse.getGoodsAddResponse()!=null){
             PddGoodsAddResponse.GoodsAddResponse goodsAddResponse = pddGoodsAddResponse.getGoodsAddResponse();
@@ -173,6 +202,11 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
     public Map<String, Object> detail(Long id) {
         Map<String,Object> data = new HashMap<>();
         return data;
+    }
+
+    @Override
+    public List<PddCrawlerProduct> findList1(String batchId) {
+        return pddCrawlerProductDao.findList1(batchId);
     }
 
     @Override

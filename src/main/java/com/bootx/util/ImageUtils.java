@@ -483,6 +483,9 @@ public final class ImageUtils {
 			ByteArrayOutputStream data = new ByteArrayOutputStream();
 			InputStream is = null;
 			try {
+				if(!StringUtils.startsWith(imgUrl,"http")){
+					imgUrl = "http:"+imgUrl;
+				}
 				URL url = new URL(imgUrl);
 				byte[] by = new byte[1024];
 				HttpURLConnection conn = (HttpURLConnection) url.openConnection();

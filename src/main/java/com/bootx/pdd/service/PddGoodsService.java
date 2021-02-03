@@ -1,9 +1,12 @@
 package com.bootx.pdd.service;
 
 import com.bootx.common.Pageable;
+import com.bootx.entity.Sku;
 import com.bootx.entity.StoreUploadConfig;
 import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.pdd.pop.sdk.http.api.pop.response.*;
+
+import java.util.List;
 
 /**
  * @author black
@@ -35,7 +38,7 @@ public interface PddGoodsService {
      * @param accessToken
      *      accessToken
      */
-    PddGoodsAddResponse pddGoodsAdd(PddCrawlerProduct pddCrawlerProduct, String accessToken, StoreUploadConfig storeUploadConfig) throws Exception;
+    PddGoodsAddResponse pddGoodsAdd(PddCrawlerProduct pddCrawlerProduct, List<Sku> skus, String accessToken, StoreUploadConfig storeUploadConfig) throws Exception;
 
 
     PddGoodsEditGoodsCommitResponse pddGoodsEditGoodsCommit(PddCrawlerProduct pddCrawlerProduct, String accessToken) throws Exception;
@@ -56,7 +59,20 @@ public interface PddGoodsService {
 
     void commitListGet(String accessToken, Integer checkStatus, Long goodsId, Pageable pageable) throws Exception;
 
-    void f(String accessToken) throws Exception;
+    /**
+     * 生成商家自定义的规格
+     * @param accessToken
+     * @return
+     * @throws Exception
+     */
+    PddGoodsSpecIdGetResponse specIdGet(Long parentSpecId, String specName, String accessToken) throws Exception;
 
-    void g(String accessToken) throws Exception;
+    /**
+     * 商品属性类目接口
+     * @param categoryId
+     * @param accessToken
+     * @return
+     * @throws Exception
+     */
+    PddGoodsSpecGetResponse specGet(Long categoryId,String accessToken) throws Exception;
 }

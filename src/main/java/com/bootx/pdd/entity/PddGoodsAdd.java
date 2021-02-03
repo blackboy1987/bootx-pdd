@@ -1,6 +1,8 @@
 package com.bootx.pdd.entity;
 
+import com.bootx.entity.Sku;
 import com.bootx.entity.StoreUploadConfig;
+import com.bootx.util.JsonUtils;
 import com.pdd.pop.sdk.http.api.pop.request.PddGoodsAddRequest;
 import com.pdd.pop.sdk.http.api.pop.request.PddGoodsEditGoodsCommitRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +12,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author black
@@ -37,7 +40,7 @@ public final class PddGoodsAdd {
         this.detailGallerys = detailGallerys;
     }
 
-    public PddGoodsAddRequest build(PddCrawlerProduct pddCrawlerProduct, StoreUploadConfig storeUploadConfig){
+    public PddGoodsAddRequest build(PddCrawlerProduct pddCrawlerProduct, List<Sku> skus, StoreUploadConfig storeUploadConfig){
         PddGoodsAddRequest request = new PddGoodsAddRequest();
         // 坏果包赔
         request.setBadFruitClaim(0);
@@ -120,7 +123,7 @@ public final class PddGoodsAdd {
 
 
         // 商品描述， 字数限制：20-500，例如，新包装，保证产品的口感和新鲜度。单颗独立小包装，双重营养，1斤家庭分享装，更实惠新疆一级骏枣夹核桃仁。
-        // request.setGoodsDesc("新包装，保证产品的口感和新鲜度。单颗独立小包装，双重营养，1斤家庭分享装，更实惠新疆一级骏枣夹核桃仁");
+        request.setGoodsDesc(pddCrawlerProduct.getCrawlerProductIntroduction().getContent()==null?"":pddCrawlerProduct.getCrawlerProductIntroduction().getContent());
         // 商品标题，例如，新疆特产 红满疆枣夹核桃500g
         request.setGoodsName(dealName(pddCrawlerProduct.getName(),storeUploadConfig));
         /*List<PddGoodsAddRequest.GoodsPropertiesItem> goodsProperties = new ArrayList<>();
@@ -175,7 +178,7 @@ public final class PddGoodsAdd {
         if(storeUploadConfig.getCarouselIndex()>pddCrawlerProduct.getCrawlerProductImage().getImages().size()){
             storeUploadConfig.setCarouselIndex(0);
         }
-        request.setImageUrl(pddCrawlerProduct.getCrawlerProductImage().getImages().get(storeUploadConfig.getCarouselIndex()));
+        request.setImageUrl(carouselGallerys.get(storeUploadConfig.getCarouselIndex()));
         // 是否支持开票（测试中）
         // request.setInvoiceStatus(false);
         // 是否需要上报海关，false-无需上报海关，true-需上报海关
@@ -238,7 +241,7 @@ public final class PddGoodsAdd {
         // request.setSizeSpecId(0L);
 
         List<PddGoodsAddRequest.SkuListItem> skuList = new ArrayList<>();
-        pddCrawlerProduct.getCrawlerProductSku().getSkus().stream().forEach(sku->{
+        skus.stream().filter(sku -> !sku.getIsError()).forEach(sku->{
             // sku对象列表,实例：[{ "is_onsale": 1, "limit_quantity": 999, "price": "2200", "weight": 1000, "multi_price": "1900", "thumb_url": "http://t06img.yangkeduo.com/images/2018-04-15/ced035033b5d40b589140af882621c03.jpg", "out_sku_sn": "L", "quantity": 100, "spec_id_list": "[25]", "oversea_sku": { "measurement_code": "计量单位编码", "taxation": "税费", "specifications": "规格" } }]
             PddGoodsAddRequest.SkuListItem item2 = new PddGoodsAddRequest.SkuListItem();
             // sku上架状态，0-已下架，1-上架中
@@ -259,9 +262,10 @@ public final class PddGoodsAdd {
             // 商品sku库存初始数量，后续库存update只使用stocks.update接口进行调用
             item2.setQuantity(stock(sku.getStock(),storeUploadConfig));
             // 商品规格列表，根据pdd.goods.spec.id.get生成的规格属性id，例如：颜色规格下商家新增白色和黑色，大小规格下商家新增L和XL，则由4种spec组合，入参一种组合即可，在skulist中需要有4个spec组合的sku，示例：[20,5]
-            item2.setSpecIdList("str");
+            List<Long> collect = sku.getSpecificationValues().stream().map(specificationValue -> specificationValue.getPddId()).collect(Collectors.toList());
+            item2.setSpecIdList(JsonUtils.toJson(collect));
             // 	sku 缩略图
-            item2.setThumbUrl(skuImg(pddCrawlerProduct.getCrawlerProductImage().getImages(),storeUploadConfig));
+            item2.setThumbUrl(skuImg(getCarouselGallerys(),storeUploadConfig));
             // 	重量，单位为g
             item2.setWeight(0L);
             skuList.add(item2);

@@ -43,6 +43,11 @@ public class Sku implements Serializable {
 	@JsonView({BaseEntity.EditView.class})
 	private BigDecimal price;
 
+	/**
+	 * 处理规格失败，最终这个规格不能上传
+	 */
+	private Boolean isError;
+
 	public String getSn() {
 		return sn;
 	}
@@ -84,6 +89,14 @@ public class Sku implements Serializable {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+
+	public Boolean getIsError() {
+		return isError;
+	}
+
+	public void setIsError(Boolean isError) {
+		this.isError = isError;
 	}
 
 	/**

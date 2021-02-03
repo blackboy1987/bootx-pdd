@@ -2,6 +2,7 @@
 package com.bootx.pdd.entity;
 
 import com.bootx.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ public class PddCrawlerProductIntroduction extends BaseEntity<Long> {
 	private PddCrawlerProduct crawlerProduct;
 
 	@Lob
+	@JsonView({EditView.class})
 	private String content;
 
 	public PddCrawlerProductIntroduction() {

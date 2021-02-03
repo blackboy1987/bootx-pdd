@@ -14,7 +14,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Dao - 审计日志
@@ -59,5 +61,21 @@ public class PddCrawlerProductDaoImpl extends BaseDaoImpl<PddCrawlerProduct, Lon
 
         criteriaQuery.where(restrictions);
         return super.findPage(criteriaQuery, pageable);
+    }
+
+    @Override
+    public List<PddCrawlerProduct> findList1(String batchId) {
+        if (StringUtils.isBlank(batchId)) {
+            return Collections.emptyList();
+        }
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<PddCrawlerProduct> criteriaQuery = criteriaBuilder.createQuery(PddCrawlerProduct.class);
+        Root<PddCrawlerProduct> root = criteriaQuery.from(PddCrawlerProduct.class);
+        criteriaQuery.select(root);
+        Predicate restrictions = criteriaBuilder.conjunction();
+        restrictions = criteriaBuilder.and(restrictions, criteriaBuilder.equal(root.get("batchId"), batchId));
+
+        criteriaQuery.where(restrictions);
+        return super.findList(criteriaQuery);
     }
 }

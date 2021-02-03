@@ -74,6 +74,8 @@ public class EsPddCrawlerProduct implements Serializable {
 
 	private Long productCategoryId;
 
+	private String batchId;
+
 	public Long getId() {
 		return id;
 	}
@@ -216,5 +218,13 @@ public class EsPddCrawlerProduct implements Serializable {
 
 	public void setProductCategoryId(Long productCategoryId) {
 		this.productCategoryId = productCategoryId;
+	}
+
+	public String getBatchId() {
+		return batchId;
+	}
+
+	public void setBatchId(String batchId) {
+		this.batchId = batchId;
 	}
 }

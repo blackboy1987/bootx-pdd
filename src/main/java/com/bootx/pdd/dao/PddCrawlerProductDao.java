@@ -8,6 +8,7 @@ import com.bootx.entity.Member;
 import com.bootx.pdd.entity.PddCrawlerProduct;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Dao - 审计日志
@@ -18,4 +19,6 @@ import java.util.Date;
 public interface PddCrawlerProductDao extends BaseDao<PddCrawlerProduct, Long> {
 
     Page<PddCrawlerProduct> findPage(Pageable pageable, String name, String sn, Integer status,Integer publishStatus,Boolean isDeleted, Date beginDate, Date endDate, Member member);
+
+    List<PddCrawlerProduct> findList1(String batchId);
 }

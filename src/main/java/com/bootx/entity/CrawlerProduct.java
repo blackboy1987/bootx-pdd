@@ -120,6 +120,10 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	@JsonView(PageView.class)
 	private Integer status;
 
+	@NotEmpty
+	@Column(nullable = false,updatable = false)
+	private String batchId;
+
 	@Transient
 	private PddCrawlerProduct pddCrawlerProduct;
 
@@ -289,6 +293,14 @@ public class CrawlerProduct extends BaseEntity<Long> {
 
 	public void setPddCrawlerProduct(PddCrawlerProduct pddCrawlerProduct) {
 		this.pddCrawlerProduct = pddCrawlerProduct;
+	}
+
+	public String getBatchId() {
+		return batchId;
+	}
+
+	public void setBatchId(String batchId) {
+		this.batchId = batchId;
 	}
 
 	public void init(){

@@ -135,10 +135,10 @@ public class PddPublishLogServiceImpl extends BaseServiceImpl<PddPublishLog,Long
     public List<Map<String, Object>> query(PddCrawlerProduct pddCrawlerProduct) {
         StringBuffer sql = new StringBuffer();
 
-        sql.append("select code,msg,storename storeName,productname productName from pddlog where 1=1");
+        sql.append("select code,msg,storename storeName,productname productName from pddpublishlog where 1=1");
         if(pddCrawlerProduct!=null){
             sql.append(" and crawlerProduct_id="+pddCrawlerProduct.getId());
-            sql.append(" and sn = (select max(sn) from pddlog where crawlerProduct_id="+pddCrawlerProduct.getId()+")");
+            sql.append(" and sn = (select max(sn) from pddpublishlog where crawlerProduct_id="+pddCrawlerProduct.getId()+")");
         }
         return jdbcTemplate.queryForList(sql.toString());
     }

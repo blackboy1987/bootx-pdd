@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,6 +57,10 @@ public class CrawlerLog extends BaseEntity<Long>{
     @Column(nullable = false)
     @JsonView({PageView.class})
     private Integer fail;
+
+    @NotEmpty
+    @Column(nullable = false,updatable = false)
+    private String batchId;
 
     public Member getMember() {
         return member;
@@ -119,6 +124,14 @@ public class CrawlerLog extends BaseEntity<Long>{
 
     public void setFail(Integer fail) {
         this.fail = fail;
+    }
+
+    public String getBatchId() {
+        return batchId;
+    }
+
+    public void setBatchId(String batchId) {
+        this.batchId = batchId;
     }
 
     /**

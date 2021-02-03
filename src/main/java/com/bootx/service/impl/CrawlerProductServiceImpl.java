@@ -44,30 +44,9 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
     private PddCrawlerProductService pddCrawlerProductService;
 
     @Override
-    public List<CrawlerProduct> crawler(Member member, String[] urls, Integer type) {
-
-        List<CrawlerProduct> crawlerProducts = saveCrawler(member,urls,type);
-
-        for (CrawlerProduct crawlerProduct:crawlerProducts) {
-            if(crawlerProduct.getStatus()==1){
-               // pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
-                //continue;
-            }
-            String pluginId = CrawlerUtils.getPlugInId(crawlerProduct.getUrl());
-            CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);
-            if(crawlerPlugin!=null){
-                crawlerPlugin.product(member,crawlerProduct);
-                if(crawlerProduct.getProductCategoryIds().size()>0){
-                    crawlerProduct.setProductCategory(productCategoryService.findByOtherId(pluginId+"_"+crawlerProduct.getProductCategoryIds().get(crawlerProduct.getProductCategoryIds().size()-1)));
-                }
-                crawlerProduct.setStatus(1);
-            }else{
-                crawlerProduct.setStatus(2);
-            }
-            update(crawlerProduct);
-            pddCrawlerProductService.update(crawlerProduct,crawlerProduct.getPddCrawlerProduct());
-        }
-        return crawlerProducts;
+    public List<CrawlerProduct> crawler(Member member, String[] urls, Integer type,String batchId) {
+        List<CrawlerProduct> crawlerProducts = saveCrawler(member,urls,type,batchId);
+        return crawler(crawlerProducts,member);
     }
 
     @Override
@@ -96,7 +75,7 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
     }
 
 
-    private List<CrawlerProduct> saveCrawler(Member member, String[] urls, Integer type) {
+    private List<CrawlerProduct> saveCrawler(Member member, String[] urls, Integer type,String batchId) {
         List<CrawlerProduct> crawlerProducts = new ArrayList<>();
         CrawlerLog crawlerLog = new CrawlerLog();
         crawlerLog.setPluginIds(new ArrayList<>());
@@ -107,6 +86,7 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
         crawlerLog.setTotal(urls.length);
         crawlerLog.setSuccess(0);
         crawlerLog.setFail(0);
+        crawlerLog.setBatchId(batchId);
         crawlerLogService.save(crawlerLog);
         for (String url:urls) {
             if(StringUtils.isNotBlank(url)){
@@ -114,6 +94,7 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
                 if(crawlerProduct==null){
                     crawlerProduct = new CrawlerProduct();
                     crawlerProduct.setUrl(url);
+                    crawlerProduct.setBatchId(batchId);
                     crawlerProduct.setMd5(DigestUtils.md5Hex(url));
                     crawlerProduct.getCrawlerLogs().add(crawlerLog);
                     if(StringUtils.isNotBlank(CrawlerUtils.getPlugInId(url)) &&!crawlerLog.getPluginIds().contains(CrawlerUtils.getPlugInId(url))){
@@ -123,6 +104,7 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
                     crawlerProducts.add(super.save(crawlerProduct));
                 }else{
                     crawlerLog.setSuccess(crawlerLog.getSuccess()+1);
+                    crawlerProducts.add(crawlerProduct);
                 }
             }
         }
@@ -134,6 +116,7 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
             pddCrawlerProduct.setMember(member);
             pddCrawlerProduct.setCrawlerProduct(crawlerProduct);
             pddCrawlerProduct.setIsDeleted(false);
+            pddCrawlerProduct.setBatchId(batchId);
             pddCrawlerProductService.save(pddCrawlerProduct);
             crawlerProduct.setPddCrawlerProduct(pddCrawlerProduct);
         }

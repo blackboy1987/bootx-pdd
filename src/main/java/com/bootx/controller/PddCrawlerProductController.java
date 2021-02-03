@@ -131,7 +131,6 @@ public class PddCrawlerProductController extends BaseController {
                 crawlerProduct.setPddCrawlerProduct(pddCrawlerProduct);
                 crawlerProducts.add(crawlerProduct);
                 crawlerProductService.crawler(crawlerProducts,member);
-
                 esPddCrawlerProductService.add(pddCrawlerProduct);
             }
 
@@ -172,6 +171,7 @@ public class PddCrawlerProductController extends BaseController {
         parent.getCrawlerProductImage().setImages(pddCrawlerProduct.getCrawlerProductImage().getImages());
         parent.getCrawlerProductIntroduction().setContent(pddCrawlerProduct.getCrawlerProductIntroduction().getContent());
         parent.getCrawlerProductIntroductionImage().setImages(pddCrawlerProduct.getCrawlerProductIntroductionImage().getImages());
+        parent.getCrawlerProductIntroduction().setContent(pddCrawlerProduct.getContent());
 
         List<ParameterValue> parameterValues = pddCrawlerProduct.getCrawlerProductParameterValue().getParameterValues().stream().map(item -> {
             List<ParameterValue.Entry> entries = item.getEntries().stream().filter((entry -> StringUtils.isNotBlank(entry.getName()) && StringUtils.isNotBlank(entry.getValue()))).collect(Collectors.toList());

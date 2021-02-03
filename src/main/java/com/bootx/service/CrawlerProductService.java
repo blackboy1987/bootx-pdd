@@ -13,7 +13,7 @@ import java.util.List;
  * @version 6.1
  */
 public interface CrawlerProductService extends BaseService<CrawlerProduct, Long> {
-    List<CrawlerProduct> crawler(Member member, String[] urls, Integer type);
+    List<CrawlerProduct> crawler(Member member, String[] urls, Integer type,String batchId);
     List<CrawlerProduct> crawler(List<CrawlerProduct> crawlerProducts,Member member);
     CrawlerProduct findBySn(String sn);
 

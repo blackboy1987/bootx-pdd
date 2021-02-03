@@ -9,6 +9,7 @@ import com.bootx.pdd.entity.PddCrawlerProduct;
 import com.bootx.service.BaseService;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,4 +27,6 @@ public interface PddCrawlerProductService extends BaseService<PddCrawlerProduct,
     void publish(Long[] ids, Long[] storeIds) throws Exception;
 
     Map<String, Object> detail(Long id);
+
+    List<PddCrawlerProduct> findList1(String batchId);
 }

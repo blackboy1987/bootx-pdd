@@ -28,6 +28,11 @@ public class SpecificationValue implements Serializable {
 	@JsonView({BaseEntity.EditView.class})
 	private String id;
 
+	/**
+	 * 对应拼多多中的规格id
+	 */
+	private Long pddId;
+
 	@JsonView({BaseEntity.EditView.class})
 	private String name;
 
@@ -69,6 +74,14 @@ public class SpecificationValue implements Serializable {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Long getPddId() {
+		return pddId;
+	}
+
+	public void setPddId(Long pddId) {
+		this.pddId = pddId;
 	}
 
 	public String getName() {

@@ -58,6 +58,7 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 	 * 介绍
 	 */
 	@OneToOne(mappedBy = "crawlerProduct",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@JsonView({EditView.class})
 	private PddCrawlerProductIntroduction crawlerProductIntroduction;
 
 	@OneToOne(mappedBy = "crawlerProduct",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
@@ -124,9 +125,16 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 	@JoinColumn(nullable = false,updatable = false)
 	private Member member;
 
+	@NotEmpty
+	@Column(nullable = false,updatable = false)
+	private String batchId;
+
 	@Transient
 	@JsonView({PageView.class})
 	private List<Map<String, Object>> pddLogs = new ArrayList<>();
+
+	@Lob
+	private String content;
 
 	public CrawlerProduct getCrawlerProduct() {
 		return crawlerProduct;
@@ -343,6 +351,22 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 
 	public void setPddLogs(List<Map<String, Object>> pddLogs) {
 		this.pddLogs = pddLogs;
+	}
+
+	public String getBatchId() {
+		return batchId;
+	}
+
+	public void setBatchId(String batchId) {
+		this.batchId = batchId;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	public void init(){

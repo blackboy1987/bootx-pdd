@@ -4,6 +4,7 @@ import com.bootx.common.Result;
 import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.BaseEntity;
 import com.bootx.entity.Member;
+import com.bootx.pdd.service.PddCrawlerProductService;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.CrawlerProductService;
 import com.bootx.service.MemberService;
@@ -27,6 +28,9 @@ public class CrawlerController extends BaseController {
     @Resource
     private CrawlerProductService crawlerProductService;
     @Resource
+    private PddCrawlerProductService pddCrawlerProductService;
+
+    @Resource
     private MemberService memberService;
 
     @PostMapping
@@ -37,10 +41,16 @@ public class CrawlerController extends BaseController {
         if(member==null){
             return Result.error("请先登录");
         }
-        crawlerProductService.crawler(member,urls,type);
-        return Result.success("success");
+        String batchId = member.getId()+"_"+System.currentTimeMillis();
+        crawlerProductService.crawler(member,urls,type,batchId);
+        return Result.success(batchId);
     }
 
+    @PostMapping("/list")
+    @JsonView(BaseEntity.PageView.class)
+    public Result list(String batchId, @CurrentUser Member member, HttpServletRequest request){
+        return Result.success(pddCrawlerProductService.findList1(batchId));
+    }
 
 
 
