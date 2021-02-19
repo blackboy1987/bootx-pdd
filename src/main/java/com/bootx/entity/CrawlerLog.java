@@ -58,8 +58,7 @@ public class CrawlerLog extends BaseEntity<Long>{
     @JsonView({PageView.class})
     private Integer fail;
 
-    @NotEmpty
-    @Column(nullable = false,updatable = false)
+    @Column(updatable = false)
     private String batchId;
 
     public Member getMember() {

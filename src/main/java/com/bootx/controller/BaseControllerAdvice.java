@@ -4,7 +4,7 @@ package com.bootx.controller;
 import com.bootx.common.DateEditor;
 import com.bootx.common.StringEditor;
 import com.bootx.exception.ResourceNotFoundException;
-import org.apache.shiro.authz.UnauthorizedException;
+import com.bootx.exception.UnauthorizedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;

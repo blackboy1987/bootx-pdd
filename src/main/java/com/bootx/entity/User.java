@@ -251,5 +251,4 @@ public abstract class User extends BaseEntity<Long> {
 	 */
 	@Transient
 	public abstract boolean isValidCredentials(Object credentials);
-
 }

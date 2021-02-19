@@ -18,7 +18,7 @@ public class PddLogisticsServiceImpl extends PddBaseServiceImpl implements PddLo
     @Override
     public PddLogisticsAddressGetResponse addressGet() throws Exception {
         PddLogisticsAddressGetRequest request = new PddLogisticsAddressGetRequest();
-        PddLogisticsAddressGetResponse response = POPHTTPCLIENT.syncInvoke(request);
+        PddLogisticsAddressGetResponse response = popClient.syncInvoke(request);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
@@ -26,7 +26,7 @@ public class PddLogisticsServiceImpl extends PddBaseServiceImpl implements PddLo
     @Override
     public PddGoodsLogisticsTemplateGetResponse templateGet(String accessToken) throws Exception {
         PddGoodsLogisticsTemplateGetRequest request = new PddGoodsLogisticsTemplateGetRequest();
-        PddGoodsLogisticsTemplateGetResponse response = POPHTTPCLIENT.syncInvoke(request,accessToken);
+        PddGoodsLogisticsTemplateGetResponse response = popClient.syncInvoke(request,accessToken);
         return response;
     }
 }

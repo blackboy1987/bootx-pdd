@@ -92,4 +92,6 @@ public interface ProductCategoryDao extends BaseDao<ProductCategory, Long> {
 	 * @return 下级商品分类
 	 */
 	List<ProductCategory> findChildren(String pluginId,ProductCategory productCategory, boolean recursive, Integer count);
+
+	ProductCategory findByName(String name);
 }

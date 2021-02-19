@@ -203,4 +203,5 @@ public interface ProductCategoryService extends BaseService<ProductCategory, Lon
 
 	List<ProductCategoryTree> findTree1(String pluginId);
 
+    ProductCategory findByName(String name);
 }

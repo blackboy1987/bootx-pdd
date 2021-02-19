@@ -32,7 +32,7 @@ public class LogoutController extends BaseController {
 	@PostMapping
 	public Map<String,Object> index() {
 		Map<String,Object> data = new HashMap<>();
-		userService.logout();
+		// userService.logout();
 		data.put("status","ok");
 		data.put("content","退出成功");
 		return data;

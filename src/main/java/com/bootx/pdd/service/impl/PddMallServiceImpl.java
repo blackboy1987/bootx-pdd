@@ -15,7 +15,7 @@ public class PddMallServiceImpl extends PddBaseServiceImpl implements PddMallSer
     public PddMallInfoGetResponse pddMallInfoGet(String accessToken) throws Exception {
 
         PddMallInfoGetRequest request = new PddMallInfoGetRequest();
-        PddMallInfoGetResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddMallInfoGetResponse response = popClient.syncInvoke(request, accessToken);
         System.out.println(JsonUtils.toJson(response));
         return response;
     }
@@ -24,7 +24,7 @@ public class PddMallServiceImpl extends PddBaseServiceImpl implements PddMallSer
     public PddMallCpsProtocolStatusQueryResponse pddMallCpsProtocolStatusQuery(String accessToken) throws Exception {
 
         PddMallCpsProtocolStatusQueryRequest request = new PddMallCpsProtocolStatusQueryRequest();
-        PddMallCpsProtocolStatusQueryResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddMallCpsProtocolStatusQueryResponse response = popClient.syncInvoke(request, accessToken);
         System.out.println(JsonUtils.toJson(response));
         return response;
     }

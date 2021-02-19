@@ -3,6 +3,7 @@ package com.bootx.pdd.service.impl;
 
 import com.bootx.common.Page;
 import com.bootx.common.Pageable;
+import com.bootx.constants.PddConfig;
 import com.bootx.elasticsearch.service.EsPddCrawlerProductService;
 import com.bootx.entity.*;
 import com.bootx.pdd.dao.PddCrawlerProductDao;
@@ -12,7 +13,10 @@ import com.bootx.pdd.service.PddGoodsService;
 import com.bootx.pdd.service.PddPublishLogService;
 import com.bootx.service.StoreService;
 import com.bootx.service.impl.BaseServiceImpl;
+import com.bootx.util.JsonUtils;
+import com.bootx.util.pdd.ShangPin;
 import com.pdd.pop.sdk.http.api.pop.response.PddGoodsAddResponse;
+import com.pdd.pop.sdk.http.api.pop.response.PddGoodsSpecGetResponse;
 import com.pdd.pop.sdk.http.api.pop.response.PddGoodsSpecIdGetResponse;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -165,13 +169,22 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
     }
 
     private List<Sku> parseSku(PddCrawlerProduct product,Store store){
+        List<PddGoodsSpecGetResponse.GoodsSpecGetResponseGoodsSpecListItem> specListItem = new ArrayList<>();
+        Map<String,Long> map = new HashMap<>();
+        try{
+            specListItem = ShangPin.specGet(Long.parseLong(product.getProductCategory().getOtherId().replace("pddPlugin_", "")), store.getAccessToken(), PddConfig.popClient);
+            specListItem.stream().forEach(item->map.put(item.getParentSpecName(),item.getParentSpecId()));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         List<Sku> skus = product.getCrawlerProductSku().getSkus();
         for (Sku sku:skus){
             List<SpecificationValue> specificationValues = sku.getSpecificationValues();
             for (SpecificationValue specificationValue:specificationValues) {
                 PddGoodsSpecIdGetResponse pddGoodsSpecIdGetResponse = null;
+                String name = specificationValue.getName().replace("分类","").replace("请选择","").replace("选择","");
                 try {
-                    pddGoodsSpecIdGetResponse = goodsService.specIdGet(0L, specificationValue.getValue(), store.getAccessToken());
+                    pddGoodsSpecIdGetResponse = goodsService.specIdGet(map.get(name), specificationValue.getValue(), store.getAccessToken());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -188,7 +201,8 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
     }
 
     void publish(PddCrawlerProduct product, Store store, List<Sku> skus,PddPublishLog pddPublishLog) throws Exception {
-        PddGoodsAddResponse pddGoodsAddResponse = goodsService.pddGoodsAdd(product,skus, store.getAccessToken(),store.getStoreUploadConfig());
+        StoreUploadConfig storeUploadConfig = JsonUtils.toObject(stringRedisTemplate.opsForValue().get(store.getId()+""),StoreUploadConfig.class);
+        PddGoodsAddResponse pddGoodsAddResponse = goodsService.pddGoodsAdd(product,skus, store.getAccessToken(),storeUploadConfig);
         Map<String,Object> map = new HashMap<>();
         if(pddGoodsAddResponse.getGoodsAddResponse()!=null){
             PddGoodsAddResponse.GoodsAddResponse goodsAddResponse = pddGoodsAddResponse.getGoodsAddResponse();
@@ -230,16 +244,22 @@ public class PddCrawlerProductServiceImpl extends BaseServiceImpl<PddCrawlerProd
 
     @Override
     public void delete(Long id) {
+        esPddCrawlerProductService.remove(id);
         super.delete(id);
     }
 
     @Override
     public void delete(Long... ids) {
+        esPddCrawlerProductService.remove(ids);
         super.delete(ids);
     }
 
     @Override
     public void delete(PddCrawlerProduct pddCrawlerProduct) {
+        if(pddCrawlerProduct.getId()==null){
+            return;
+        }
+        esPddCrawlerProductService.remove(pddCrawlerProduct.getId());
         super.delete(pddCrawlerProduct);
     }
 

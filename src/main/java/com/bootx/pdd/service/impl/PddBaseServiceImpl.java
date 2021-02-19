@@ -18,14 +18,14 @@ import com.pdd.pop.sdk.http.token.AccessTokenResponse;
  */
 public abstract class PddBaseServiceImpl implements PddBaseService {
 
-    protected static final PopClient POPHTTPCLIENT = new PopHttpClient(PddConfig.clientId,PddConfig.clientSecret);
+    protected static final PopClient popClient = new PopHttpClient(PddConfig.clientId,PddConfig.clientSecret);
 
     @Override
     public PddGoodsImageUploadResponse uploadImage(String imageBase64, String accessToken) throws Exception {
 
         PddGoodsImageUploadRequest request = new PddGoodsImageUploadRequest();
         request.setImage("data:image/png;base64,"+imageBase64);
-        PddGoodsImageUploadResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddGoodsImageUploadResponse response = popClient.syncInvoke(request, accessToken);
         return response;
     }
 
@@ -51,14 +51,14 @@ public abstract class PddBaseServiceImpl implements PddBaseService {
     @Override
     public PddMallInfoGetResponse storeInfo(String accessToken) throws Exception {
         PddMallInfoGetRequest request = new PddMallInfoGetRequest();
-        return POPHTTPCLIENT.syncInvoke(request,accessToken);
+        return popClient.syncInvoke(request,accessToken);
     }
 
     @Override
     public PddGoodsCatsGetResponse category(Long parentId) throws Exception {
         PddGoodsCatsGetRequest request = new PddGoodsCatsGetRequest();
         request.setParentCatId(parentId);
-        PddGoodsCatsGetResponse response = POPHTTPCLIENT.syncInvoke(request);
+        PddGoodsCatsGetResponse response = popClient.syncInvoke(request);
         return response;
     }
 }

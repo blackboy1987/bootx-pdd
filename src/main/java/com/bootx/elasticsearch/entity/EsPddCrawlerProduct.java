@@ -64,6 +64,8 @@ public class EsPddCrawlerProduct implements Serializable {
 
 	private List<Map<String, Object>> pddLogs = new ArrayList<>();
 
+	List<Map<String,Object>> productCategories = new ArrayList<>();
+
 	private String image;
 
 	private Date createdDate;
@@ -178,6 +180,14 @@ public class EsPddCrawlerProduct implements Serializable {
 
 	public void setPddLogs(List<Map<String, Object>> pddLogs) {
 		this.pddLogs = pddLogs;
+	}
+
+	public List<Map<String, Object>> getProductCategories() {
+		return productCategories;
+	}
+
+	public void setProductCategories(List<Map<String, Object>> productCategories) {
+		this.productCategories = productCategories;
 	}
 
 	public String getImage() {

@@ -3,7 +3,6 @@ package com.bootx.pdd.controller;
 import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.Member;
 import com.bootx.pdd.service.PddService;
-import com.bootx.security.UserAuthenticationToken;
 import com.bootx.service.MemberService;
 import com.bootx.service.StoreService;
 import com.bootx.service.UserService;
@@ -53,7 +52,7 @@ public class IndexController extends BaseController {
         if(accessTokenResponse!=null){
             Member member = storeService.create(accessTokenResponse,memberService.getCurrent(state)).getMember();
             if(member!=null){
-                userService.login(new UserAuthenticationToken(Member.class, member.getUsername(), "12345678", false, "0:0:0:0"));
+                //userService.login(new UserAuthenticationToken(Member.class, member.getUsername(), "12345678", false, "0:0:0:0"));
             }
         }
         return accessTokenResponse;

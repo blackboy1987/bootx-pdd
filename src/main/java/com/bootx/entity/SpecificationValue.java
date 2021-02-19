@@ -52,6 +52,7 @@ public class SpecificationValue implements Serializable {
 	}
 
 	public SpecificationValue(String id, String name,  @Length(max = 200) String value) {
+		name = name.replace("分类","").replace("请选择","").replace("选择","");
 		this.id = id;
 		this.name = name;
 		this.value = value;
@@ -85,11 +86,11 @@ public class SpecificationValue implements Serializable {
 	}
 
 	public String getName() {
-		return name;
+		return name.replace("分类","").replace("请选择","").replace("选择","");
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name.replace("分类","").replace("请选择","").replace("选择","");
 	}
 
 	/**

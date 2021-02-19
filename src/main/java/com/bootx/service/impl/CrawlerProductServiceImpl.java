@@ -61,9 +61,13 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
             CrawlerPlugin crawlerPlugin = pluginService.getCrawlerPlugin(pluginId);
             if(crawlerPlugin!=null){
                 crawlerPlugin.product(member,crawlerProduct);
-                if(crawlerProduct.getProductCategoryIds().size()>0){
+                /*if(crawlerProduct.getProductCategoryIds().size()>0){
                     crawlerProduct.setProductCategory(productCategoryService.findByOtherId(pluginId+"_"+crawlerProduct.getProductCategoryIds().get(crawlerProduct.getProductCategoryIds().size()-1)));
-                }
+                    if(crawlerProduct.getProductCategory()==null){
+                        // 只能推荐分类
+                        tuiJianCategory(crawlerProduct);
+                    }
+                }*/
                 crawlerProduct.setStatus(1);
             }else{
                 crawlerProduct.setStatus(2);
@@ -88,8 +92,9 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
         crawlerLog.setFail(0);
         crawlerLog.setBatchId(batchId);
         crawlerLogService.save(crawlerLog);
+        Integer index = 0;
         for (String url:urls) {
-            if(StringUtils.isNotBlank(url)){
+            if(StringUtils.isNotBlank(url) || index<=10){
                 CrawlerProduct crawlerProduct = findByUrl(url);
                 if(crawlerProduct==null){
                     crawlerProduct = new CrawlerProduct();
@@ -106,6 +111,7 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
                     crawlerLog.setSuccess(crawlerLog.getSuccess()+1);
                     crawlerProducts.add(crawlerProduct);
                 }
+                index++;
             }
         }
         crawlerLogService.update(crawlerLog);

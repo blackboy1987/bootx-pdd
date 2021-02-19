@@ -144,6 +144,20 @@ public class ProductCategoryDaoImpl extends BaseDaoImpl<ProductCategory, Long> i
 		}
 	}
 
+	@Override
+	public ProductCategory findByName(String name) {
+		if(StringUtils.isBlank(name)){
+			return null;
+		}
+		String jpql = "select productCategory from ProductCategory productCategory where productCategory.name =:name and productCategory.grade=2 and productCategory.pluginId =:pluginId";
+		TypedQuery<ProductCategory> query = entityManager.createQuery(jpql, ProductCategory.class).setParameter("name",name).setParameter("pluginId","pddPlugin");
+		try{
+			return query.getResultList().get(0);
+		}catch (Exception e){
+			return null;
+		}
+	}
+
 	/**
 	 * 排序商品分类
 	 * 

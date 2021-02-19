@@ -9,6 +9,11 @@ import java.math.BigDecimal;
 public class StoreUploadConfig implements Serializable {
 
     /**
+     * INTEGER	非必填	坏果包赔
+     */
+    private Integer badFruitClaim;
+
+    /**
      *是否加后缀
      */
     private Boolean addAfter;
@@ -243,6 +248,18 @@ public class StoreUploadConfig implements Serializable {
      */
     private Integer uploadType;
 
+    /**
+     * INTEGER	非必填	缺重包退
+     */
+    private Integer lackOfWeightClaim;
+
+    public Integer getBadFruitClaim() {
+        return badFruitClaim;
+    }
+
+    public void setBadFruitClaim(Integer badFruitClaim) {
+        this.badFruitClaim = badFruitClaim;
+    }
 
     public Boolean getAddAfter() {
         return addAfter;
@@ -610,5 +627,13 @@ public class StoreUploadConfig implements Serializable {
 
     public void setUploadType(Integer uploadType) {
         this.uploadType = uploadType;
+    }
+
+    public Integer getLackOfWeightClaim() {
+        return lackOfWeightClaim;
+    }
+
+    public void setLackOfWeightClaim(Integer lackOfWeightClaim) {
+        this.lackOfWeightClaim = lackOfWeightClaim;
     }
 }

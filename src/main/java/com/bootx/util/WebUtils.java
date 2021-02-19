@@ -1,7 +1,6 @@
 
 package com.bootx.util;
 
-import com.bootx.common.Setting;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -177,8 +176,7 @@ public final class WebUtils {
 		Assert.hasText(name, "[Assertion failed] - name must have text; it must not be null, empty, or blank");
 		Assert.hasText(value, "[Assertion failed] - value must have text; it must not be null, empty, or blank");
 
-		Setting setting = SystemUtils.getSetting();
-		addCookie(request, response, name, value, maxAge, setting.getCookiePath(), setting.getCookieDomain(), null);
+		addCookie(request, response, name, value, maxAge, null,null, null);
 	}
 
 	/**
@@ -199,8 +197,7 @@ public final class WebUtils {
 		Assert.hasText(name, "[Assertion failed] - name must have text; it must not be null, empty, or blank");
 		Assert.hasText(value, "[Assertion failed] - value must have text; it must not be null, empty, or blank");
 
-		Setting setting = SystemUtils.getSetting();
-		addCookie(request, response, name, value, null, setting.getCookiePath(), setting.getCookieDomain(), null);
+		addCookie(request, response, name, value, null, null, null, null);
 	}
 
 	/**
@@ -282,8 +279,7 @@ public final class WebUtils {
 		Assert.notNull(response, "[Assertion failed] - response is required; it must not be null");
 		Assert.hasText(name, "[Assertion failed] - name must have text; it must not be null, empty, or blank");
 
-		Setting setting = SystemUtils.getSetting();
-		removeCookie(request, response, name, setting.getCookiePath(), setting.getCookieDomain());
+		removeCookie(request, response, name, null, null);
 	}
 
 	/**

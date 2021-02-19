@@ -4,6 +4,7 @@ package com.bootx.service.impl;
 import com.bootx.common.Message;
 import com.bootx.common.Page;
 import com.bootx.common.Pageable;
+import com.bootx.constants.PddConfig;
 import com.bootx.dao.StoreDao;
 import com.bootx.entity.*;
 import com.bootx.pdd.service.PddLogisticsService;
@@ -12,8 +13,10 @@ import com.bootx.service.MemberService;
 import com.bootx.service.StoreCategoryService;
 import com.bootx.service.StoreService;
 import com.bootx.util.DateUtils;
+import com.bootx.util.pdd.FuWuShiChang;
 import com.pdd.pop.sdk.http.api.pop.response.PddGoodsLogisticsTemplateGetResponse;
 import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
+import com.pdd.pop.sdk.http.api.pop.response.PddServicemarketContractSearchResponse;
 import com.pdd.pop.sdk.http.token.AccessTokenResponse;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -106,10 +109,25 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements St
 			store.setExpireDate(DateUtils.getNextSecond(accessTokenResponse.getExpiresIn()));
 			store.setStoreCategory(storeCategory);
 			store.setMember(member);
+			/**
+			 * 获取店铺的订单信息
+			 */
+			PddServicemarketContractSearchResponse.ServicemarketContractSearchResponse servicemarketContractSearchResponse = FuWuShiChang.contractSearch(store.getMallId(), PddConfig.popClient);
+			Long endAt = servicemarketContractSearchResponse.getEndAt();
+			Long startAt = servicemarketContractSearchResponse.getStartAt();
+			store.setEndAt(endAt);
+			store.setStartAt(startAt);
 			return super.save(store);
 		}
 		store.setAccessToken(accessTokenResponse.getAccessToken());
 		store.setExpireDate(DateUtils.getNextSecond(accessTokenResponse.getExpiresIn()));
+		if(store.getEndAt()==null){
+			PddServicemarketContractSearchResponse.ServicemarketContractSearchResponse servicemarketContractSearchResponse = FuWuShiChang.contractSearch(store.getMallId(), PddConfig.popClient);
+			Long endAt = servicemarketContractSearchResponse.getEndAt();
+			Long startAt = servicemarketContractSearchResponse.getStartAt();
+			store.setEndAt(endAt);
+			store.setStartAt(startAt);
+		}
 		return super.update(store);
 	}
 
@@ -130,6 +148,8 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements St
 
 	@Override
 	public Message unbind(Store store) {
+		jdbcTemplate.update("delete from pddpublishlog where store_id="+store.getId());
+		super.delete(store);
 		return Message.success("解绑成功");
 	}
 
@@ -239,10 +259,6 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements St
 			storeUploadConfig.setAddABeforeWord("");
 		}
 
-		if(storeUploadConfig.getBuyLimit()==null){
-			storeUploadConfig.setBuyLimit(null);
-		}
-
 		if(storeUploadConfig.getCarouselAddTen()==null){
 			storeUploadConfig.setCarouselAddTen(false);
 		}
@@ -259,20 +275,12 @@ public class StoreServiceImpl extends BaseServiceImpl<Store, Long> implements St
 			storeUploadConfig.setCostTemplateId(0L);
 		}
 
-		if(storeUploadConfig.getCustomerNum()==null){
-			storeUploadConfig.setCustomerNum(null);
-		}
-
 		if(storeUploadConfig.getDelete()==null){
 			storeUploadConfig.setDelete(false);
 		}
 
 		if(storeUploadConfig.getDeleteWord()==null){
-			storeUploadConfig.setDeleteWord(null);
-		}
-
-		if(storeUploadConfig.getDeliveryType()==null){
-			storeUploadConfig.setDeliveryType(0);
+			storeUploadConfig.setDeleteWord("");
 		}
 
 		if(storeUploadConfig.getDetailPicDelEnd()==null){

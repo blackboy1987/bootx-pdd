@@ -50,7 +50,7 @@ public class AuditLogInterceptor extends HandlerInterceptorAdapter {
 				auditLog.setIp(request.getRemoteAddr());
 				auditLog.setRequestUrl(String.valueOf(request.getRequestURL()));
 				auditLog.setParameters(new HashMap<>(request.getParameterMap()));
-				auditLog.setUser(userService.getCurrent());
+				// auditLog.setUser(userService.getCurrent());
 				request.setAttribute(AuditLog.AUDIT_LOG_ATTRIBUTE_NAME, auditLog);
 			}
 		}

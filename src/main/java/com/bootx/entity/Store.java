@@ -61,6 +61,16 @@ public class Store extends BaseEntity<Long>{
     @Convert(converter = StoreDeliveryTemplateConverter.class)
     private List<StoreDeliveryTemplate> storeDeliveryTemplates = new ArrayList<>();
 
+    /**
+     * 授权开始时间
+     */
+    private Long startAt;
+
+    /**
+     * 授权结束时间
+     */
+    private Long endAt;
+
 
     /**
      * accessToken 的过期时间
@@ -161,6 +171,22 @@ public class Store extends BaseEntity<Long>{
 
     public void setStoreDeliveryTemplates(List<StoreDeliveryTemplate> storeDeliveryTemplates) {
         this.storeDeliveryTemplates = storeDeliveryTemplates;
+    }
+
+    public Long getStartAt() {
+        return startAt;
+    }
+
+    public void setStartAt(Long startAt) {
+        this.startAt = startAt;
+    }
+
+    public Long getEndAt() {
+        return endAt;
+    }
+
+    public void setEndAt(Long endAt) {
+        this.endAt = endAt;
     }
 
     @Transient

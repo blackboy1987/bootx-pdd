@@ -3,7 +3,6 @@ package com.bootx.controller;
 
 import com.bootx.controller.admin.BaseController;
 import com.bootx.entity.Member;
-import com.bootx.security.UserAuthenticationToken;
 import com.bootx.service.MemberService;
 import com.bootx.service.UserService;
 import com.bootx.util.JWTUtils;
@@ -65,7 +64,6 @@ public class LoginController extends BaseController {
 		user.put("username",member.getUsername());
 		data.put("user",user);
 		data.put("token", JWTUtils.create(member.getId()+"",user));
-		userService.login(new UserAuthenticationToken(Member.class, username, password, false, request.getRemoteAddr()));
 		return data;
 	}
 

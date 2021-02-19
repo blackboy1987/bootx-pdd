@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Entity - 商品
@@ -86,6 +87,18 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ProductCategory productCategory;
 
+	@Transient
+	@JsonView(BaseEntity.PageView.class)
+	List<Map<String,Object>> productCategories = new ArrayList<>();
+
+	public List<Map<String, Object>> getProductCategories() {
+		return productCategories;
+	}
+
+	public void setProductCategories(List<Map<String, Object>> productCategories) {
+		this.productCategories = productCategories;
+	}
+
 	@Column(length = 60)
 	@Convert(converter = CrawlerProductCategoryIdConverter.class)
 	@JsonView({EditView.class})
@@ -125,8 +138,7 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 	@JoinColumn(nullable = false,updatable = false)
 	private Member member;
 
-	@NotEmpty
-	@Column(nullable = false,updatable = false)
+	@Column(updatable = false)
 	private String batchId;
 
 	@Transient
@@ -398,7 +410,7 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 	@JsonView({PageView.class})
 	public String getProductCategoryName(){
 		if(productCategory!=null){
-			return productCategory.getName();
+			return productCategory.getParents().stream().map(item->item.getName()).collect(Collectors.joining(","))+","+productCategory.getName();
 		}
 		return null;
 	}
@@ -411,6 +423,10 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 	}
 	@Converter
 	public static class CrawlerProductStoreConverter extends BaseAttributeConverter<PddCrawlerProductStore> {
+	}
+
+	@Converter
+	public static class ProductCategoriesConvert extends BaseAttributeConverter<Map<String,Object>> {
 	}
 
 }

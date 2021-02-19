@@ -28,7 +28,7 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
     public PddDeleteDraftCommitResponse pddDeleteDraftCommit(String accessToken) throws Exception {
         PddDeleteDraftCommitRequest request = new PddDeleteDraftCommitRequest();
         request.setGoodsCommitId(0L);
-        PddDeleteDraftCommitResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddDeleteDraftCommitResponse response = popClient.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
@@ -38,7 +38,7 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
         List<Long> goodsIds = new ArrayList<Long>();
         goodsIds.add(0L);
         request.setGoodsIds(goodsIds);
-        PddDeleteGoodsCommitResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddDeleteGoodsCommitResponse response = popClient.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
@@ -52,7 +52,7 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
         PddGoodsAddRequest request = pddGoodsAdd.build(pddCrawlerProduct,skus,storeUploadConfig);
 
         System.out.println(JsonUtils.toJson(request));
-        PddGoodsAddResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddGoodsAddResponse response = popClient.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
@@ -60,13 +60,13 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
     @Override
     public PddGoodsEditGoodsCommitResponse pddGoodsEditGoodsCommit(PddCrawlerProduct pddCrawlerProduct, String accessToken) throws Exception {
         // 处理掉product中的图片
-        PddGoodsAdd pddGoodsAdd = new PddGoodsAdd();
+        /*PddGoodsAdd pddGoodsAdd = new PddGoodsAdd();
         pddGoodsAdd.setCarouselGallerys(parseImage(pddCrawlerProduct,accessToken));
         pddGoodsAdd.setDetailGallerys(parseDetailImage(pddCrawlerProduct,accessToken));
-        PddGoodsEditGoodsCommitRequest request = pddGoodsAdd.build1(pddCrawlerProduct);
-        PddGoodsEditGoodsCommitResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
-        System.out.println(JsonUtil.transferToJson(response));
-        return response;
+        PddGoodsEditGoodsCommitRequest request = pddGoodsAdd.build(pddCrawlerProduct);
+        PddGoodsEditGoodsCommitResponse response = popClient.syncInvoke(request, accessToken);
+        System.out.println(JsonUtil.transferToJson(response));*/
+        return null;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
 
         PddGoodsAuthorizationCatsRequest request = new PddGoodsAuthorizationCatsRequest();
         request.setParentCatId(0L);
-        PddGoodsAuthorizationCatsResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddGoodsAuthorizationCatsResponse response = popClient.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
@@ -84,7 +84,7 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
 
         PddGoodsCatRuleGetRequest request = new PddGoodsCatRuleGetRequest();
         request.setCatId(catId);
-        PddGoodsCatRuleGetResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddGoodsCatRuleGetResponse response = popClient.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
@@ -93,7 +93,7 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
     public PddGoodsCatTemplateGetResponse pddGoodsCatTemplateGet(String accessToken,Long catId) throws Exception {
         PddGoodsCatTemplateGetRequest request = new PddGoodsCatTemplateGetRequest();
         request.setCatId(catId);
-        PddGoodsCatTemplateGetResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddGoodsCatTemplateGetResponse response = popClient.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
@@ -102,7 +102,7 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
     public PddGoodsCatsGetResponse pddGoodsCatsGet(String accessToken,Long catId) throws Exception {
         PddGoodsCatsGetRequest request = new PddGoodsCatsGetRequest();
         request.setParentCatId(0L);
-        PddGoodsCatsGetResponse response = POPHTTPCLIENT.syncInvoke(request);
+        PddGoodsCatsGetResponse response = popClient.syncInvoke(request);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
@@ -121,7 +121,7 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
         }
         request.setPage(pageable.getPageNumber());
         request.setPageSize(pageable.getPageSize());
-        PddGoodsCommitListGetResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddGoodsCommitListGetResponse response = popClient.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
     }
 
@@ -130,7 +130,7 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
         PddGoodsSpecIdGetRequest request = new PddGoodsSpecIdGetRequest();
         request.setParentSpecId(parentSpecId);
         request.setSpecName(specName);
-        PddGoodsSpecIdGetResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddGoodsSpecIdGetResponse response = popClient.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }
@@ -139,7 +139,7 @@ public class PddGoodsServiceImpl extends PddBaseServiceImpl implements PddGoodsS
     public PddGoodsSpecGetResponse specGet(Long categoryId,String accessToken) throws Exception {
         PddGoodsSpecGetRequest request = new PddGoodsSpecGetRequest();
         request.setCatId(categoryId);
-        PddGoodsSpecGetResponse response = POPHTTPCLIENT.syncInvoke(request, accessToken);
+        PddGoodsSpecGetResponse response = popClient.syncInvoke(request, accessToken);
         System.out.println(JsonUtil.transferToJson(response));
         return response;
     }

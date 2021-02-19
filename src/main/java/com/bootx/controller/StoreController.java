@@ -11,8 +11,10 @@ import com.bootx.entity.StoreUploadConfig;
 import com.bootx.security.CurrentUser;
 import com.bootx.service.MemberService;
 import com.bootx.service.StoreService;
+import com.bootx.util.JsonUtils;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.pdd.pop.sdk.http.api.pop.response.PddMallInfoGetResponse;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +39,9 @@ public class StoreController extends BaseController {
     @Resource
     private MemberService memberService;
 
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+
     @PostMapping("/list")
     @JsonView(BaseEntity.ListView.class)
     public Message list(@CurrentUser Member member, HttpServletRequest request, Pageable pageable){
@@ -46,6 +51,13 @@ public class StoreController extends BaseController {
         return Message.success(storeService.findPage(pageable,member));
     }
 
+    /**
+     * 店铺解除绑定
+     * @param member
+     * @param request
+     * @param id
+     * @return
+     */
     @PostMapping("/unbind")
     public Message unbind(@CurrentUser Member member, HttpServletRequest request, Long id){
         if(member==null){
@@ -58,9 +70,7 @@ public class StoreController extends BaseController {
         if(store==null||store.getMember()!=member){
             return Message.error("不存在该店铺");
         }
-
         return storeService.unbind(store);
-
     }
 
 
@@ -83,7 +93,10 @@ public class StoreController extends BaseController {
         if(store==null){
             return Result.error("店铺不存在");
         }
-        StoreUploadConfig storeUploadConfig = store.getStoreUploadConfig();
+        // StoreUploadConfig storeUploadConfig = store.getStoreUploadConfig();
+        StoreUploadConfig storeUploadConfig = JsonUtils.toObject(stringRedisTemplate.opsForValue().get(storeId+""),StoreUploadConfig.class);
+
+
         Map<String,Object> data = new HashMap<>();
         data.put("storeUploadConfig", storeService.build(storeUploadConfig));
         data.put("storeDeliveryTemplates",store.getStoreDeliveryTemplates());
@@ -105,7 +118,9 @@ public class StoreController extends BaseController {
             return Result.error("店铺不存在");
         }
         store.setStoreUploadConfig(storeService.build(storeUploadConfig));
-        storeService.update(store);
+        // 配置写到redis里面
+        stringRedisTemplate.opsForValue().set(store.getId()+"", JsonUtils.toJson(storeUploadConfig));
+        // storeService.update(store);
         return Result.success("ok");
     }
 

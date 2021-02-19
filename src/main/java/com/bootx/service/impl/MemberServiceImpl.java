@@ -7,10 +7,8 @@ import com.bootx.dao.MemberDao;
 import com.bootx.dao.MemberDepositLogDao;
 import com.bootx.dao.PointLogDao;
 import com.bootx.entity.*;
-import com.bootx.service.MailService;
 import com.bootx.service.MemberRankService;
 import com.bootx.service.MemberService;
-import com.bootx.service.SmsService;
 import com.bootx.util.CodeUtils;
 import com.bootx.util.JWTUtils;
 import com.pdd.pop.sdk.http.token.AccessTokenResponse;
@@ -55,10 +53,6 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	private MemberDepositLogDao memberDepositLogDao;
 	@Autowired
 	private PointLogDao pointLogDao;
-	@Autowired
-	private MailService mailService;
-	@Autowired
-	private SmsService smsService;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -261,10 +255,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member, Long> implements 
 	@Transactional
 	public Member save(Member member) {
 		Assert.notNull(member, "[Assertion failed] - member is required; it must not be null");
-
 		Member pMember = super.save(member);
-		mailService.sendRegisterMemberMail(pMember);
-		smsService.sendRegisterMemberSms(pMember);
 		return pMember;
 	}
 

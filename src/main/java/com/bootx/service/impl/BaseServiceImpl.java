@@ -12,6 +12,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -52,9 +53,10 @@ public abstract class BaseServiceImpl<T extends BaseEntity<ID>, ID extends Seria
 
 	@Autowired
 	protected JdbcTemplate jdbcTemplate;
-
 	@Resource
 	protected RedisTemplate<String,String> redisTemplate;
+	@Resource
+	protected StringRedisTemplate stringRedisTemplate;
 
 	@Override
 	@Transactional(readOnly = true)

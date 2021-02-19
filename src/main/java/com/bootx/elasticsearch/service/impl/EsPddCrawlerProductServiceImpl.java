@@ -53,6 +53,7 @@ public class EsPddCrawlerProductServiceImpl extends EsBaseServiceImpl implements
         esPddCrawlerProduct.setImage(pddCrawlerProduct.getImage());
         esPddCrawlerProduct.setCreatedDate(pddCrawlerProduct.getCreatedDate());
         esPddCrawlerProduct.setLastModifiedDate(pddCrawlerProduct.getLastModifiedDate());
+        esPddCrawlerProduct.setProductCategories(pddCrawlerProduct.getProductCategories());
         if(pddCrawlerProduct.getProductCategory()!=null){
             esPddCrawlerProduct.setProductCategoryId(pddCrawlerProduct.getProductCategory().getId());
             esPddCrawlerProduct.setProductCategoryName(pddCrawlerProduct.getProductCategoryName());
@@ -67,7 +68,11 @@ public class EsPddCrawlerProductServiceImpl extends EsBaseServiceImpl implements
 
     @Override
     public void remove(Long id) {
-        esPddCrawlerProductRepository.delete(esPddCrawlerProductRepository.findById(id).get());
+        try{
+            esPddCrawlerProductRepository.delete(esPddCrawlerProductRepository.findById(id).get());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -123,5 +128,12 @@ public class EsPddCrawlerProductServiceImpl extends EsBaseServiceImpl implements
             esPddCrawlerProducts.add(sourceAsMap);
         }
         return new Page(esPddCrawlerProducts,hits.getTotalHits().value,pageable);
+    }
+
+    @Override
+    public void remove(Long... ids) {
+        for (Long id:ids){
+            remove(id);
+        }
     }
 }

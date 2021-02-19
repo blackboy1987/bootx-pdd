@@ -1,10 +1,10 @@
 
 package com.bootx.dao.impl;
 
+import cn.hutool.extra.template.TemplateException;
 import com.bootx.dao.SnDao;
 import com.bootx.entity.Sn;
-import com.bootx.util.FreeMarkerUtils;
-import freemarker.template.TemplateException;
+import com.bootx.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,7 @@ import org.springframework.util.Assert;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
-import java.io.IOException;
+import java.util.Date;
 
 /**
  * Dao - 序列号
@@ -227,9 +227,7 @@ public class SnDaoImpl implements SnDao, InitializingBean {
 				hi = lastValue * (maxLo + 1);
 			}
 			try {
-				return FreeMarkerUtils.process(prefix) + (hi + lo++);
-			} catch (IOException e) {
-				throw new RuntimeException(e.getMessage(), e);
+				return DateUtils.formatDateToString(new Date(),prefix) + (hi + lo++);
 			} catch (TemplateException e) {
 				throw new RuntimeException(e.getMessage(), e);
 			}

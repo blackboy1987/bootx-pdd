@@ -178,6 +178,11 @@ public class ProductCategoryServiceImpl extends BaseServiceImpl<ProductCategory,
 
 	}
 
+	@Override
+	public ProductCategory findByName(String name) {
+		return productCategoryDao.findByName(name);
+	}
+
 	private List<ProductCategoryTree> findTree(String pluginId, Long parenId) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select parent.id,parent.name,(select count(child.id) from `bootx-pdd`.productcategory as child where child.parent_id=parent.id and child.pluginId='").append(pluginId).append("') childrenCount from `bootx-pdd`.productcategory as parent");

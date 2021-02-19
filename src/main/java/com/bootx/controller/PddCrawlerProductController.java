@@ -102,10 +102,12 @@ public class PddCrawlerProductController extends BaseController {
 
     @PostMapping("/delete")
     public Message delete(Long[] ids, @CurrentUser Member member){
+        esPddCrawlerProductService.remove(ids);
         List<PddCrawlerProduct> pddCrawlerProductList = pddCrawlerProductService.findList(ids);
         for (PddCrawlerProduct pddCrawlerProduct:pddCrawlerProductList) {
-            pddCrawlerProduct.setIsDeleted(true);
-            pddCrawlerProductService.update(pddCrawlerProduct);
+            //pddCrawlerProduct.setIsDeleted(true);
+           // pddCrawlerProductService.update(pddCrawlerProduct);
+            pddCrawlerProductService.delete(pddCrawlerProduct);
         }
         return Message.success("操作成功");
     }
@@ -120,6 +122,12 @@ public class PddCrawlerProductController extends BaseController {
         return Message.success("操作成功");
     }
 
+    /**
+     * 单个商品的采集
+     * @param id
+     * @param member
+     * @return
+     */
     @PostMapping("/crawler")
     public Message crawler(Long id, @CurrentUser Member member){
         PddCrawlerProduct pddCrawlerProduct = pddCrawlerProductService.find(id);

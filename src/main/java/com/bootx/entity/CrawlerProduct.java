@@ -9,10 +9,8 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Entity - 商品
@@ -120,13 +118,22 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	@JsonView(PageView.class)
 	private Integer status;
 
-	@NotEmpty
-	@Column(nullable = false,updatable = false)
+	@Column(updatable = false)
 	private String batchId;
 
 	@Transient
 	private PddCrawlerProduct pddCrawlerProduct;
 
+	@Transient
+	List<Map<String,Object>> productCategories = new ArrayList<>();
+
+	public List<Map<String, Object>> getProductCategories() {
+		return productCategories;
+	}
+
+	public void setProductCategories(List<Map<String, Object>> productCategories) {
+		this.productCategories = productCategories;
+	}
 
 	public CrawlerProduct() {
 		init();
@@ -333,11 +340,10 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	@JsonView({PageView.class})
 	public String getProductCategoryName(){
 		if(productCategory!=null){
-			return productCategory.getName();
+			return productCategory.getParents().stream().map(item->item.getName()).collect(Collectors.joining(","))+","+productCategory.getName();
 		}
 		return null;
 	}
-
 
 	@Converter
 	public static class CrawlerProductCategoryIdConverter extends BaseAttributeConverter<List<Long>> {
@@ -348,5 +354,10 @@ public class CrawlerProduct extends BaseEntity<Long> {
 	@Converter
 	public static class CrawlerProductStoreConverter extends BaseAttributeConverter<CrawlerProductStore> {
 	}
+	@Converter
+	public static class ProductCategoriesConvert extends BaseAttributeConverter<Map<String,Object>> {
+	}
+
+
 
 }
