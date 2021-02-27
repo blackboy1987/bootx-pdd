@@ -17,7 +17,7 @@ public interface EsPddCrawlerProductService extends EsBaseService {
 
     void remove(Long id);
 
-    Page<EsPddCrawlerProduct> findPage(Pageable pageable, String name, String sn, Integer status,Integer publishStatus,Boolean isDeleted, Date beginDate, Date endDate, Member member) throws IOException;
+    Page<EsPddCrawlerProduct> findPage(Pageable pageable, String name, String sn, Integer status,String batchId,Integer publishStatus,Boolean isDeleted, Date beginDate, Date endDate, Member member) throws IOException;
 
     void remove(Long... ids);
 }

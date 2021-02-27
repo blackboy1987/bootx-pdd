@@ -76,9 +76,9 @@ public class EsPddCrawlerProductServiceImpl extends EsBaseServiceImpl implements
     }
 
     @Override
-    public Page<EsPddCrawlerProduct> findPage(Pageable pageable, String name, String sn, Integer status,Integer publishStatus,Boolean isDeleted, Date beginDate, Date endDate, Member member) throws IOException {
+    public Page<EsPddCrawlerProduct> findPage(Pageable pageable, String name, String sn, Integer status,String batchId,Integer publishStatus,Boolean isDeleted, Date beginDate, Date endDate, Member member) throws IOException {
         if(member==null){
-            return new Page<EsPddCrawlerProduct>(Collections.emptyList(),0L,pageable);
+            return new Page(Collections.emptyList(),0L,pageable);
         }
 
 
@@ -98,6 +98,9 @@ public class EsPddCrawlerProductServiceImpl extends EsBaseServiceImpl implements
         }
         if(StringUtils.isNotBlank(sn)){
             boolQueryBuilder.must(QueryBuilders.matchQuery("sn",sn));
+        }
+        if(StringUtils.isNotBlank(batchId)){
+            boolQueryBuilder.must(QueryBuilders.matchQuery("batchId",batchId));
         }
         if(status!=null){
             boolQueryBuilder.must(QueryBuilders.matchQuery("status",status));

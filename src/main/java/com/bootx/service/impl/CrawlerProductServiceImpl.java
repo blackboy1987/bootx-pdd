@@ -94,7 +94,7 @@ public class CrawlerProductServiceImpl extends BaseServiceImpl<CrawlerProduct, L
         crawlerLogService.save(crawlerLog);
         Integer index = 0;
         for (String url:urls) {
-            if(StringUtils.isNotBlank(url) || index<=10){
+            if(StringUtils.isNotBlank(url) || index<=5){
                 CrawlerProduct crawlerProduct = findByUrl(url);
                 if(crawlerProduct==null){
                     crawlerProduct = new CrawlerProduct();

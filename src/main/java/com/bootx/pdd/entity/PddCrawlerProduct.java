@@ -410,7 +410,7 @@ public class PddCrawlerProduct extends BaseEntity<Long> {
 	@JsonView({PageView.class})
 	public String getProductCategoryName(){
 		if(productCategory!=null){
-			return productCategory.getParents().stream().map(item->item.getName()).collect(Collectors.joining(","))+","+productCategory.getName();
+			return productCategory.getParents().stream().map(item->item.getName()).collect(Collectors.joining(">"))+">"+productCategory.getName();
 		}
 		return null;
 	}

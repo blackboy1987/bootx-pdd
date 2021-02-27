@@ -23,8 +23,8 @@ public class EsPddCrawlerProductController {
     private EsPddCrawlerProductService esPddCrawlerProductService;
 
     @PostMapping("/list")
-    public Result list(Pageable pageable, String name, String sn, Integer status,Integer publishStatus, Date beginDate, Date endDate, @CurrentUser Member member) throws IOException {
-        return Result.success(esPddCrawlerProductService.findPage(pageable,name,sn,status,publishStatus,false,beginDate,endDate,member));
+    public Result list(Pageable pageable, String name, String sn, Integer status,String batchId,Integer publishStatus, Date beginDate, Date endDate, @CurrentUser Member member) throws IOException {
+        return Result.success(esPddCrawlerProductService.findPage(pageable,name,sn,status,batchId,publishStatus,false,beginDate,endDate,member));
     }
 
 }
